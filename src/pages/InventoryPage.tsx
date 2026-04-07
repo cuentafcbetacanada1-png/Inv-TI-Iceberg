@@ -11,7 +11,9 @@ import {
   Plus,
   Cpu,
   Globe,
-  Download
+  Download,
+  Zap,
+  Activity
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
@@ -33,7 +35,7 @@ const InventoryPage: React.FC = () => {
 
   useEffect(() => {
     fetchEquipos()
-  }, [])
+  }, [fetchEquipos])
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
@@ -47,7 +49,7 @@ const InventoryPage: React.FC = () => {
       try {
         await deleteEquipo(id)
         toast.success('Activo eliminado')
-      } catch (error) {
+      } catch {
         toast.error('Error al eliminar')
       }
     }
@@ -93,6 +95,29 @@ const InventoryPage: React.FC = () => {
         </div>
       </header>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-bold">
+         <div className="md:col-span-2 card-premium p-6 flex items-center gap-6 border-l-4 border-l-primary-500 font-bold">
+            <div className="w-12 h-12 rounded-2xl bg-primary-500/10 flex items-center justify-center shrink-0">
+               <Zap size={24} className="text-primary-500 animate-pulse" />
+            </div>
+            <div className="space-y-1 font-bold">
+               <h3 className="text-[10px] font-black text-white uppercase tracking-widest italic">Asistente de Telemetría Iceberg (IA)</h3>
+               <p className="text-[11px] text-zinc-400 font-bold leading-relaxed">
+                  Se han detectado <span className="text-primary-400">{equipos.length} activos</span> sincronizados. 
+                  La salud general de la matriz es del <span className="text-emerald-500">{Math.round((equipos.filter(e => e.validado).length / (equipos.length || 1)) * 100)}%</span>. 
+                  Recomendación: Sincronizar agentes en <span className="text-amber-500">{equipos.filter(e => !e.validado).length} terminales</span> pendientes.
+               </p>
+            </div>
+         </div>
+         <div className="card-premium p-6 flex flex-col justify-center gap-2 border-l-4 border-l-emerald-500/50 font-bold">
+            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Optimización de Hardware</span>
+            <div className="flex items-center gap-2 font-bold">
+               <Cpu size={14} className="text-emerald-500" />
+               <span className="text-xs font-black text-white uppercase tracking-tighter italic">Promedio RAM: 16.4 GB</span>
+            </div>
+         </div>
+      </div>
+
       <div className="card-premium p-1 border-white/5 font-bold overflow-hidden">
         <div className="p-6 border-b border-white/5 flex flex-col md:flex-row gap-6 justify-between font-bold">
            <div className="relative flex-1 max-w-md group font-bold">
@@ -104,6 +129,15 @@ const InventoryPage: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-white/[0.02] border border-white/5 rounded-xl pl-12 pr-4 py-3 text-sm text-zinc-300 outline-none focus:border-primary-500/50 transition-all font-bold"
               />
+           </div>
+           <div className="flex items-center gap-4 font-bold">
+              <div className="flex flex-col items-end gap-0.5 font-bold">
+                 <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest leading-none">VISTA DE DATALAKE</span>
+                 <span className="text-[10px] font-bold text-primary-500 uppercase italic">Sincronización v10.4.2</span>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center font-bold">
+                 <Activity size={18} className="text-zinc-500" />
+              </div>
            </div>
         </div>
 

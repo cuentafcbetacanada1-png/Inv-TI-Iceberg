@@ -40,7 +40,7 @@ const LoginPage: React.FC = () => {
         toast.success('Conexión establecida')
         navigate('/', { replace: true })
       }
-    } catch (error) {
+    } catch {
       toast.error('Error de autenticación')
     } finally {
       setLoading(false)

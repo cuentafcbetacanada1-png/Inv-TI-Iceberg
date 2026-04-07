@@ -7,11 +7,21 @@ import {
   ArrowUpRight,
   RefreshCcw,
   Clock,
-  Zap
+  Zap,
+  Cpu
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
 import { cn } from '../lib/utils'
+import { 
+  ResponsiveContainer, 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip 
+} from 'recharts'
 
 const StatCard: React.FC<{ 
   label: string, 
@@ -40,6 +50,16 @@ const StatCard: React.FC<{
     </div>
   </div>
 )
+
+const chartData = [
+  { time: '00:00', load: 30 },
+  { time: '04:00', load: 25 },
+  { time: '08:00', load: 45 },
+  { time: '12:00', load: 60 },
+  { time: '16:00', load: 40 },
+  { time: '20:00', load: 55 },
+  { time: '23:00', load: 35 },
+]
 
 const DashboardPage: React.FC = () => {
   const { equipos, fetchEquipos } = useEquipmentStore()
@@ -157,47 +177,65 @@ const DashboardPage: React.FC = () => {
               </div>
            </div>
            
-           <div className="h-80 w-full relative group font-bold">
-              {/* Simulación de gráfico de telemetría de alto nivel */}
-              <svg className="w-full h-full font-bold" viewBox="0 0 1000 400" preserveAspectRatio="none">
-                 <defs>
-                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                       <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
-                       <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+           <div className="h-80 w-full relative group">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="colorTelem" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                     </linearGradient>
-                 </defs>
-                 <path 
-                   d="M0,300 C100,280 200,320 300,250 C400,180 500,280 600,220 C700,160 800,240 900,230 L1000,240 L1000,400 L0,400 Z" 
-                   fill="url(#chartGradient)" 
-                   className="animate-in fade-in duration-1000 font-bold"
-                 />
-                 <path 
-                   d="M0,300 C100,280 200,320 300,250 C400,180 500,280 600,220 C700,160 800,240 900,230 L1000,240" 
-                   fill="none" 
-                   stroke="#3b82f6" 
-                   strokeWidth="3" 
-                   className="animate-in slide-in-from-left duration-1000 font-bold"
-                 />
-                 {/* Puntos de datos */}
-                 {[300, 250, 220, 240].map((y, i) => (
-                    <circle key={i} cx={i * 300} cy={y} r="4" fill="#3b82f6" className="animate-pulse" />
-                 ))}
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity font-bold">
-                 <div className="bg-zinc-900/90 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-md shadow-2xl font-bold">
-                    <span className="text-[10px] font-black text-primary-400 uppercase tracking-widest font-bold">Analizando Flujos...</span>
-                 </div>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis 
+                    dataKey="time" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{fill: '#52525b', fontSize: 10, fontWeight: 900}} 
+                    dy={10}
+                  />
+                  <YAxis hide />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(9, 9, 11, 0.9)', 
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '12px',
+                      fontSize: '10px',
+                      fontWeight: 'bold',
+                      color: '#fff'
+                    }}
+                    itemStyle={{ color: '#3b82f6' }}
+                    cursor={{ stroke: '#3b82f6', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="load" 
+                    stroke="#3b82f6" 
+                    strokeWidth={3}
+                    fillOpacity={1} 
+                    fill="url(#colorTelem)" 
+                    animationDuration={2000}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+              
+              <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 backdrop-blur-md">
+                 <div className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse" />
+                 <span className="text-[9px] font-black text-primary-400 uppercase tracking-widest">Live Feed active</span>
               </div>
            </div>
            
-           <div className="flex justify-between items-center text-[9px] font-black text-zinc-700 uppercase tracking-tighter pt-6 border-t border-white/5 font-bold">
-              <span>00:00</span>
-              <span>04:00</span>
-              <span>08:00</span>
-              <span>12:00</span>
-              <span>16:00</span>
-              <span>20:00</span>
-              <span>23:00</span>
+           <div className="p-4 rounded-2xl bg-zinc-900/50 border border-white/5 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                 <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center">
+                    <Zap size={18} className="text-primary-500" />
+                 </div>
+                 <div>
+                    <h4 className="text-[10px] font-black text-white uppercase italic">Análisis Inteligente de Red</h4>
+                    <p className="text-[9px] text-zinc-500 font-bold uppercase">Optimización automática de recursos detectada en el sector Gamma.</p>
+                 </div>
+              </div>
+              <button className="text-[9px] font-black text-zinc-600 hover:text-white transition-colors uppercase tracking-widest px-4 py-2 border border-white/5 rounded-lg">Ver Informe IA</button>
            </div>
         </div>
 

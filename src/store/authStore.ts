@@ -8,7 +8,7 @@ export interface User {
 interface AuthState {
   user: User | null
   isLoading: boolean
-  setUser: (user: any | null) => void
+  setUser: (user: User | null) => void
   setLoading: (loading: boolean) => void
   signOut: () => Promise<void>
 }
