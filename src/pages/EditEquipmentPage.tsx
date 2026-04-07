@@ -19,7 +19,6 @@ import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { cn } from '../lib/utils'
-import { motion } from 'framer-motion'
 
 const EditEquipmentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
