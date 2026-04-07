@@ -10,7 +10,8 @@ import {
   RefreshCcw,
   Plus,
   Cpu,
-  Globe
+  Globe,
+  Download
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
@@ -69,6 +70,14 @@ const InventoryPage: React.FC = () => {
            <p className="text-sm text-zinc-500 font-bold">Monitoreo de telemetría y matriz técnica de activos.</p>
         </div>
         <div className="flex gap-3 font-bold">
+           <a 
+             href="/iceberg-agent.bat" 
+             download 
+             className="px-4 py-2.5 rounded-xl border border-primary-500/20 text-primary-400 hover:text-white hover:bg-primary-500/10 transition-all flex items-center gap-2 font-bold"
+           >
+              <Download size={16} />
+              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Descargar Agente</span>
+           </a>
            <button 
              onClick={handleRefresh}
              disabled={isRefreshing || isLoading}
