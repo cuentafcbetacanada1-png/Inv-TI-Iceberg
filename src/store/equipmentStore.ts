@@ -69,13 +69,19 @@ export const useEquipmentStore = create<EquipmentState>((set, get) => ({
     const { error } = await supabase
       .from('equipos')
       .delete()
-      .eq('id', id)
+      .match({ id })
 
     if (error) {
+      console.error('Error deleting:', error)
       set({ error: error.message, isLoading: false })
       throw error
     } else {
-      await get().fetchEquipos()
+      // Forzar actualización inmediata del estado local para evitar que "parezca" que sigue ahí
+      set((state) => ({
+        equipos: state.equipos.filter(e => e.id !== id),
+        isLoading: false
+      }))
+      await get().fetchEquipos() // Recargar para sincronizar totalmente
     }
   },
 
