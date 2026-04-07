@@ -16,6 +16,7 @@ export interface Equipo {
   memoria_ram: string
   sistema_operativo: string
   sku?: string
+  modelo?: string
   validado?: boolean
   created_at: string
   updated_at: string

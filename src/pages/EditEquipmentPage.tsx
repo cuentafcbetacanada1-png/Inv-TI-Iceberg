@@ -32,7 +32,8 @@ const EditEquipmentPage: React.FC = () => {
     es_laptop: false,
     memoria_ram: '',
     sistema_operativo: '',
-    sku: ''
+    sku: '',
+    modelo: ''
   })
 
   useEffect(() => {
@@ -49,7 +50,8 @@ const EditEquipmentPage: React.FC = () => {
         es_laptop: equipo.es_laptop || false,
         memoria_ram: equipo.memoria_ram || '',
         sistema_operativo: equipo.sistema_operativo || '',
-        sku: equipo.sku || ''
+        sku: equipo.sku || '',
+        modelo: equipo.modelo || ''
       })
     }
   }, [id, equipos])
@@ -170,6 +172,10 @@ const EditEquipmentPage: React.FC = () => {
                   <div className="space-y-2 font-bold">
                      <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">System SKU</label>
                      <input type="text" value={formData.sku} onChange={(e) => setFormData({ ...formData, sku: e.target.value })} className="input-v10 text-[10px] uppercase font-bold text-primary-400" placeholder="N/D" />
+                  </div>
+                  <div className="space-y-2 font-bold col-span-2">
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">Modelo del Sistema</label>
+                     <input type="text" value={formData.modelo} onChange={(e) => setFormData({ ...formData, modelo: e.target.value })} className="input-v10 text-[10px] uppercase font-bold" placeholder="Ej: EliteBook 840 G5" />
                   </div>
                </div>
 

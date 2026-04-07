@@ -51,15 +51,21 @@ if "%SERIAL_NUM%"=="" (
 )
 if "%SERIAL_NUM%"=="" set "SERIAL_NUM=GENERIC-%NODE_NAME%"
 
-:: 3.5 System SKU (Detección Avanzada)
-set "SYS_SKU="
-:: Intento 1: ComputerSystem SKU
-for /f "tokens=2 delims==" %%a in ('wmic computersystem get systemsku /value 2^>nul') do set "SYS_SKU=%%a"
-:: Intento 2: CSPRODUCT SKU
-if "%SYS_SKU%"=="" for /f "tokens=2 delims==" %%a in ('wmic csproduct get skunumber /value 2^>nul') do set "SYS_SKU=%%a"
-:: Intento 3: BaseBoard SKU o Model
-if "%SYS_SKU%"=="" for /f "tokens=2 delims==" %%a in ('wmic baseboard get product /value 2^>nul') do set "SYS_SKU=%%a"
+:: 3.5 System SKU & Model (Nueva Función)
+set "SYS_SKU=N/A"
+set "SYS_MODEL=N/A"
 
+:: Detectar Modelo de Sistema
+for /f "usebackq tokens=*" %%a in (`powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystem).Model.Trim()"`) do set "SYS_MODEL=%%a"
+if "%SYS_MODEL%"=="" for /f "tokens=2 delims==" %%a in ('wmic computersystem get model /value 2^>nul') do set "SYS_MODEL=%%a"
+
+:: Detectar SKU (Metodología Refinada)
+for /f "usebackq tokens=*" %%a in (`powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystem).SystemSKU.Trim()"`) do set "tempSKU=%%a"
+if "%tempSKU%"=="" for /f "usebackq tokens=*" %%a in (`powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystemProduct).SKUNumber.Trim()"`) do set "tempSKU=%%a"
+
+set "SYS_SKU=%tempSKU%"
+if /i "%SYS_SKU%"=="None" set "SYS_SKU=N/A"
+if /i "%SYS_SKU%"=="Default string" set "SYS_SKU=N/A"
 if "%SYS_SKU%"=="" set "SYS_SKU=N/A"
 
 :: 4. Marca del Equipo
@@ -94,11 +100,12 @@ echo  [+] Host: %NODE_NAME%
 echo  [+] User: %USER_NAME%
 echo  [+] IP  : %IP_ADDR%
 echo  [+] S/N : %SERIAL_NUM%
+echo  [+] Mod : %SYS_MODEL%
 echo  [+] SKU : %SYS_SKU%
 echo  [*] Conectando con servidor...
 
 :: 9. Construcción del JSON
-set "PAYLOAD={\"hostname\":\"%NODE_NAME%\",\"username\":\"%USER_NAME%\",\"ip_local\":\"%IP_ADDR%\",\"caracteristicas_pc\":\"%CPU_NAME%\",\"numero_serie\":\"%SERIAL_NUM%\",\"marca_pc\":\"%MARCA%\",\"es_escritorio\":%IS_DESKTOP%,\"es_laptop\":%IS_LAPTOP%,\"memoria_ram\":\"%RAM_STR%\",\"sistema_operativo\":\"%OS_NAME%\",\"sku\":\"%SYS_SKU%\"}"
+set "PAYLOAD={\"hostname\":\"%NODE_NAME%\",\"username\":\"%USER_NAME%\",\"ip_local\":\"%IP_ADDR%\",\"caracteristicas_pc\":\"%CPU_NAME%\",\"numero_serie\":\"%SERIAL_NUM%\",\"marca_pc\":\"%MARCA%\",\"es_escritorio\":%IS_DESKTOP%,\"es_laptop\":%IS_LAPTOP%,\"memoria_ram\":\"%RAM_STR%\",\"sistema_operativo\":\"%OS_NAME%\",\"sku\":\"%SYS_SKU%\",\"modelo\":\"%SYS_MODEL%\"}"
 
 :: 10. Envío a Supabase (UPSERT)
 curl -s -X POST "%URL%" ^

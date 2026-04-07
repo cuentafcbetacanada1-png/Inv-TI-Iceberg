@@ -8,7 +8,8 @@ CREATE TABLE equipos (
     created_at TIMESTAMPTZ DEFAULT now(),
     created_by UUID REFERENCES auth.users(id),
     updated_at TIMESTAMPTZ DEFAULT now(),
-    sku TEXT
+    sku TEXT,
+    modelo TEXT
 );
 
 ALTER TABLE equipos ENABLE ROW LEVEL SECURITY;
