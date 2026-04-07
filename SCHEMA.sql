@@ -8,7 +8,7 @@ CREATE TABLE equipos (
     created_at TIMESTAMPTZ DEFAULT now(),
     created_by UUID REFERENCES auth.users(id),
     updated_at TIMESTAMPTZ DEFAULT now(),
-    sku TEXT,
+    disco TEXT,
     modelo TEXT
 );
 

@@ -195,7 +195,7 @@ const InventoryPage: React.FC = () => {
                      <td className="px-6 py-5 font-bold">
                         <div className="flex flex-col font-bold">
                            <span className="text-[11px] font-black text-zinc-500 uppercase tracking-tight">{e.numero_serie}</span>
-                           {e.sku && <span className="text-[9px] font-black text-primary-500/60 uppercase tracking-widest mt-1">SKU: {e.sku}</span>}
+                           {e.disco && <span className="text-[9px] font-black text-emerald-500/60 uppercase tracking-widest mt-1">DISCO: {e.disco}</span>}
                         </div>
                      </td>
                      <td className="px-6 py-5 font-bold">
