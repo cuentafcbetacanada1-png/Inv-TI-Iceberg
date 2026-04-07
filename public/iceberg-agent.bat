@@ -29,28 +29,25 @@ for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /r /c:"IPv4" /c:"Direcci
 )
 :ip_done
 
-:: 3. Serial Number (Método de Detección Profunda)
+:: 3. Serial Number (Detección Ultra-Precisa)
 set "SERIAL_NUM="
-for /f "tokens=2 delims==" %%a in ('wmic bios get serialnumber /value 2^>nul') do (
-    set "val=%%a"
-    set "val=!val: =!"
-    if not "!val!"=="" if /i not "!val!"=="To be filled by O.E.M." if /i not "!val!"=="System Serial Number" if /i not "!val!"=="0" set "SERIAL_NUM=!val!"
-)
+for /f "usebackq tokens=*" %%a in (`powershell -NoProfile -Command "(Get-CimInstance Win32_Bios).SerialNumber"`) do set "SERIAL_NUM=%%a"
+set "SERIAL_NUM=!SERIAL_NUM: =!"
+if /i "!SERIAL_NUM!"=="To be filled by O.E.M." set "SERIAL_NUM="
+if /i "!SERIAL_NUM!"=="System Serial Number" set "SERIAL_NUM="
+if /i "!SERIAL_NUM!"=="0" set "SERIAL_NUM="
+
 if "%SERIAL_NUM%"=="" (
-    for /f "tokens=2 delims==" %%a in ('wmic csproduct get identifyingnumber /value 2^>nul') do (
-        set "val=%%a"
-        set "val=!val: =!"
-        if not "!val!"=="" if /i not "!val!"=="To be filled by O.E.M." if /i not "!val!"=="System Serial Number" if /i not "!val!"=="0" set "SERIAL_NUM=!val!"
-    )
-)
-if "%SERIAL_NUM%"=="" (
-    for /f "tokens=2 delims==" %%a in ('wmic baseboard get serialnumber /value 2^>nul') do (
-        set "val=%%a"
-        set "val=!val: =!"
-        if not "!val!"=="" if /i not "!val!"=="To be filled by O.E.M." if /i not "!val!"=="System Serial Number" if /i not "!val!"=="0" set "SERIAL_NUM=!val!"
-    )
+    for /f "tokens=2 delims==" %%a in ('wmic csproduct get identifyingnumber /value 2^>nul') do set "SERIAL_NUM=%%a"
 )
 if "%SERIAL_NUM%"=="" set "SERIAL_NUM=GENERIC-%NODE_NAME%"
+
+:: 3.5 System SKU (Nueva Función)
+set "SYS_SKU=N/D"
+for /f "tokens=2 delims==" %%a in ('wmic computersystem get systemsku /value 2^>nul') do set "SYS_SKU=%%a"
+if "!SYS_SKU!"=="" (
+    for /f "tokens=2 delims==" %%a in ('wmic csproduct get skunumber /value 2^>nul') do set "SYS_SKU=%%a"
+)
 
 :: 4. Marca del Equipo
 for /f "tokens=2 delims==" %%a in ('wmic computersystem get manufacturer /value 2^>nul') do set "MARCA=%%a"
@@ -84,10 +81,11 @@ echo  [+] Host: %NODE_NAME%
 echo  [+] User: %USER_NAME%
 echo  [+] IP  : %IP_ADDR%
 echo  [+] S/N : %SERIAL_NUM%
+echo  [+] SKU : %SYS_SKU%
 echo  [*] Conectando con servidor...
 
 :: 9. Construcción del JSON
-set "PAYLOAD={\"hostname\":\"%NODE_NAME%\",\"username\":\"%USER_NAME%\",\"ip_local\":\"%IP_ADDR%\",\"caracteristicas_pc\":\"%CPU_NAME%\",\"numero_serie\":\"%SERIAL_NUM%\",\"marca_pc\":\"%MARCA%\",\"es_escritorio\":%IS_DESKTOP%,\"es_laptop\":%IS_LAPTOP%,\"memoria_ram\":\"%RAM_STR%\",\"sistema_operativo\":\"%OS_NAME%\"}"
+set "PAYLOAD={\"hostname\":\"%NODE_NAME%\",\"username\":\"%USER_NAME%\",\"ip_local\":\"%IP_ADDR%\",\"caracteristicas_pc\":\"%CPU_NAME%\",\"numero_serie\":\"%SERIAL_NUM%\",\"marca_pc\":\"%MARCA%\",\"es_escritorio\":%IS_DESKTOP%,\"es_laptop\":%IS_LAPTOP%,\"memoria_ram\":\"%RAM_STR%\",\"sistema_operativo\":\"%OS_NAME%\",\"sku\":\"%SYS_SKU%\"}"
 
 :: 10. Envío a Supabase (UPSERT)
 curl -s -X POST "%URL%" ^

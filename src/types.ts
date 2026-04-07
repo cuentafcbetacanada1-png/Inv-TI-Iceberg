@@ -15,6 +15,7 @@ export interface Equipo {
   es_laptop: boolean
   memoria_ram: string
   sistema_operativo: string
+  sku?: string
   validado?: boolean
   created_at: string
   updated_at: string

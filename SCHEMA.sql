@@ -7,7 +7,8 @@ CREATE TABLE equipos (
     validado BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT now(),
     created_by UUID REFERENCES auth.users(id),
-    updated_at TIMESTAMPTZ DEFAULT now()
+    updated_at TIMESTAMPTZ DEFAULT now(),
+    sku TEXT
 );
 
 ALTER TABLE equipos ENABLE ROW LEVEL SECURITY;

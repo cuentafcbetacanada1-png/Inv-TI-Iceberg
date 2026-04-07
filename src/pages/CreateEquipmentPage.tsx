@@ -29,7 +29,8 @@ const CreateEquipmentPage: React.FC = () => {
     es_escritorio: false,
     es_laptop: false,
     memoria_ram: '',
-    sistema_operativo: ''
+    sistema_operativo: '',
+    sku: ''
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -135,6 +136,10 @@ const CreateEquipmentPage: React.FC = () => {
                   <div className="space-y-2 font-bold">
                      <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">S.O.</label>
                      <input type="text" value={formData.sistema_operativo} onChange={(e) => setFormData({ ...formData, sistema_operativo: e.target.value })} className="input-v10 text-[10px] font-bold" placeholder="Windows..." />
+                  </div>
+                  <div className="space-y-2 font-bold col-span-2">
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">System SKU</label>
+                     <input type="text" value={formData.sku} onChange={(e) => setFormData({ ...formData, sku: e.target.value })} className="input-v10 text-[10px] font-bold text-primary-400" placeholder="SKU del sistema..." />
                   </div>
                </div>
 

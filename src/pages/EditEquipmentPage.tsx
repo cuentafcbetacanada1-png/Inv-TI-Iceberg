@@ -31,7 +31,8 @@ const EditEquipmentPage: React.FC = () => {
     es_escritorio: false,
     es_laptop: false,
     memoria_ram: '',
-    sistema_operativo: ''
+    sistema_operativo: '',
+    sku: ''
   })
 
   useEffect(() => {
@@ -47,7 +48,8 @@ const EditEquipmentPage: React.FC = () => {
         es_escritorio: equipo.es_escritorio || false,
         es_laptop: equipo.es_laptop || false,
         memoria_ram: equipo.memoria_ram || '',
-        sistema_operativo: equipo.sistema_operativo || ''
+        sistema_operativo: equipo.sistema_operativo || '',
+        sku: equipo.sku || ''
       })
     }
   }, [id, equipos])
@@ -164,6 +166,10 @@ const EditEquipmentPage: React.FC = () => {
                   <div className="space-y-2 font-bold">
                      <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">Sistema Operativo</label>
                      <input type="text" value={formData.sistema_operativo} onChange={(e) => setFormData({ ...formData, sistema_operativo: e.target.value })} className="input-v10 text-[10px] uppercase font-bold" />
+                  </div>
+                  <div className="space-y-2 font-bold">
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">System SKU</label>
+                     <input type="text" value={formData.sku} onChange={(e) => setFormData({ ...formData, sku: e.target.value })} className="input-v10 text-[10px] uppercase font-bold text-primary-400" placeholder="N/D" />
                   </div>
                </div>
 

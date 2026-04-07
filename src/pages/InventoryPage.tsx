@@ -192,9 +192,12 @@ const InventoryPage: React.FC = () => {
                           <code className="text-[11px] font-mono text-primary-400">{e.ip_local}</code>
                        </div>
                     </td>
-                    <td className="px-6 py-5 font-bold">
-                       <span className="text-[11px] font-black text-zinc-500 uppercase tracking-tight">{e.numero_serie}</span>
-                    </td>
+                     <td className="px-6 py-5 font-bold">
+                        <div className="flex flex-col font-bold">
+                           <span className="text-[11px] font-black text-zinc-500 uppercase tracking-tight">{e.numero_serie}</span>
+                           {e.sku && <span className="text-[9px] font-black text-primary-500/60 uppercase tracking-widest mt-1">SKU: {e.sku}</span>}
+                        </div>
+                     </td>
                     <td className="px-6 py-5 font-bold">
                        <div className="flex flex-col font-bold">
                           <span className="text-[10px] font-black text-zinc-600 uppercase">{e.es_laptop ? 'LAPTOP' : 'ESCRITORIO'}</span>
