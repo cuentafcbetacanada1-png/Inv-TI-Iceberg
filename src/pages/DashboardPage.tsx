@@ -7,8 +7,7 @@ import {
   ArrowUpRight,
   RefreshCcw,
   Clock,
-  Zap,
-  Cpu
+  Zap
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
