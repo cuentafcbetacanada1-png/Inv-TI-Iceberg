@@ -85,6 +85,14 @@ const InventoryPage: React.FC = () => {
               <RefreshCcw size={16} className={cn((isRefreshing || isLoading) && "animate-spin")} />
               <span className="text-[10px] font-black uppercase tracking-widest">Sincronizar</span>
            </button>
+           <a 
+             href="/iceberg-agent.bat"
+             download="iceberg-agent.bat"
+             className="px-4 py-2.5 rounded-xl border border-primary-500/20 bg-primary-500/5 text-primary-400 hover:bg-primary-500/10 hover:border-primary-500/40 transition-all flex items-center gap-2 font-bold shadow-[0_0_20px_rgba(234,179,8,0.05)]"
+           >
+              <ShieldCheck size={16} />
+              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Descargar Agente</span>
+           </a>
            <Link to="/crear" className="btn-v10-primary px-6 flex items-center gap-2 font-bold">
               <Plus size={16} />
               <span className="text-[10px] font-black uppercase tracking-widest leading-none">Registrar Equipo</span>
