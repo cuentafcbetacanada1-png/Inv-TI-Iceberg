@@ -69,7 +69,7 @@ export const useEquipmentStore = create<EquipmentState>((set, get) => ({
     const { error } = await supabase
       .from('equipos')
       .delete()
-      .match({ id })
+      .eq('id', id)
 
     if (error) {
       console.error('Error deleting:', error)

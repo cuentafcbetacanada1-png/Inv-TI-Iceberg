@@ -29,14 +29,26 @@ for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /r /c:"IPv4" /c:"Direcci
 )
 :ip_done
 
-:: 3. Serial Number (Método Triple Chequeo)
-set "SERIAL_NUM=N/A"
-for /f "tokens=2 delims==" %%a in ('wmic bios get serialnumber /value 2^>nul') do set "SERIAL_NUM=%%a"
-if "%SERIAL_NUM%"=="" (
-    for /f "tokens=2 delims==" %%a in ('wmic csproduct get identifyingnumber /value 2^>nul') do set "SERIAL_NUM=%%a"
+:: 3. Serial Number (Método de Detección Profunda)
+set "SERIAL_NUM="
+for /f "tokens=2 delims==" %%a in ('wmic bios get serialnumber /value 2^>nul') do (
+    set "val=%%a"
+    set "val=!val: =!"
+    if not "!val!"=="" if /i not "!val!"=="To be filled by O.E.M." if /i not "!val!"=="System Serial Number" if /i not "!val!"=="0" set "SERIAL_NUM=!val!"
 )
 if "%SERIAL_NUM%"=="" (
-    for /f "tokens=2 delims==" %%a in ('wmic baseboard get serialnumber /value 2^>nul') do set "SERIAL_NUM=%%a"
+    for /f "tokens=2 delims==" %%a in ('wmic csproduct get identifyingnumber /value 2^>nul') do (
+        set "val=%%a"
+        set "val=!val: =!"
+        if not "!val!"=="" if /i not "!val!"=="To be filled by O.E.M." if /i not "!val!"=="System Serial Number" if /i not "!val!"=="0" set "SERIAL_NUM=!val!"
+    )
+)
+if "%SERIAL_NUM%"=="" (
+    for /f "tokens=2 delims==" %%a in ('wmic baseboard get serialnumber /value 2^>nul') do (
+        set "val=%%a"
+        set "val=!val: =!"
+        if not "!val!"=="" if /i not "!val!"=="To be filled by O.E.M." if /i not "!val!"=="System Serial Number" if /i not "!val!"=="0" set "SERIAL_NUM=!val!"
+    )
 )
 if "%SERIAL_NUM%"=="" set "SERIAL_NUM=GENERIC-%NODE_NAME%"
 
