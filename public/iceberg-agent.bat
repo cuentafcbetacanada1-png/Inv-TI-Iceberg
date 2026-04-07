@@ -29,25 +29,38 @@ for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /r /c:"IPv4" /c:"Direcci
 )
 :ip_done
 
-:: 3. Serial Number (Detección Ultra-Precisa)
+:: 3. Serial Number (Detección Multi-Capa)
 set "SERIAL_NUM="
-for /f "usebackq tokens=*" %%a in (`powershell -NoProfile -Command "(Get-CimInstance Win32_Bios).SerialNumber"`) do set "SERIAL_NUM=%%a"
-set "SERIAL_NUM=!SERIAL_NUM: =!"
-if /i "!SERIAL_NUM!"=="To be filled by O.E.M." set "SERIAL_NUM="
-if /i "!SERIAL_NUM!"=="System Serial Number" set "SERIAL_NUM="
-if /i "!SERIAL_NUM!"=="0" set "SERIAL_NUM="
+:: Intento 1: PowerShell BIOS
+for /f "usebackq tokens=*" %%a in (`powershell -NoProfile -Command "(Get-CimInstance Win32_Bios).SerialNumber.Trim()"`) do set "temp=%%a"
+:: Intento 2: PowerShell ComputerSystem (IdentifyingNumber)
+if "%temp%"=="" for /f "usebackq tokens=*" %%a in (`powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystemProduct).IdentifyingNumber.Trim()"`) do set "temp=%%a"
 
+:: Filtro de Cadenas Genéricas
+set "SERIAL_NUM=%temp%"
+if /i "%SERIAL_NUM%"=="To be filled by O.E.M." set "SERIAL_NUM="
+if /i "%SERIAL_NUM%"=="System Serial Number" set "SERIAL_NUM="
+if /i "%SERIAL_NUM%"=="SystemSerialNumber" set "SERIAL_NUM="
+if /i "%SERIAL_NUM%"=="0" set "SERIAL_NUM="
+if /i "%SERIAL_NUM%"=="None" set "SERIAL_NUM="
+if /i "%SERIAL_NUM%"=="Default string" set "SERIAL_NUM="
+
+:: Fallback WMIC si PowerShell falló o devolvió genérico
 if "%SERIAL_NUM%"=="" (
-    for /f "tokens=2 delims==" %%a in ('wmic csproduct get identifyingnumber /value 2^>nul') do set "SERIAL_NUM=%%a"
+    for /f "tokens=2 delims==" %%a in ('wmic bios get serialnumber /value 2^>nul') do set "SERIAL_NUM=%%a"
 )
 if "%SERIAL_NUM%"=="" set "SERIAL_NUM=GENERIC-%NODE_NAME%"
 
-:: 3.5 System SKU (Nueva Función)
-set "SYS_SKU=N/D"
+:: 3.5 System SKU (Detección Avanzada)
+set "SYS_SKU="
+:: Intento 1: ComputerSystem SKU
 for /f "tokens=2 delims==" %%a in ('wmic computersystem get systemsku /value 2^>nul') do set "SYS_SKU=%%a"
-if "!SYS_SKU!"=="" (
-    for /f "tokens=2 delims==" %%a in ('wmic csproduct get skunumber /value 2^>nul') do set "SYS_SKU=%%a"
-)
+:: Intento 2: CSPRODUCT SKU
+if "%SYS_SKU%"=="" for /f "tokens=2 delims==" %%a in ('wmic csproduct get skunumber /value 2^>nul') do set "SYS_SKU=%%a"
+:: Intento 3: BaseBoard SKU o Model
+if "%SYS_SKU%"=="" for /f "tokens=2 delims==" %%a in ('wmic baseboard get product /value 2^>nul') do set "SYS_SKU=%%a"
+
+if "%SYS_SKU%"=="" set "SYS_SKU=N/A"
 
 :: 4. Marca del Equipo
 for /f "tokens=2 delims==" %%a in ('wmic computersystem get manufacturer /value 2^>nul') do set "MARCA=%%a"
