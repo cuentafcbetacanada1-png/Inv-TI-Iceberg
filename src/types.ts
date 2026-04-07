@@ -9,6 +9,20 @@ export interface Equipo {
   equipo: 'Computador' | 'Portátil'
   caracteristicas: string
   hostname: string
+  ip_local?: string
+  numero_inventario?: string
+  fecha_entrega?: string
+  numero_serie?: string
+  marca_modelo_cpu?: string
+  monitor?: string
+  procesador?: string
+  almacenamiento?: string
+  ram?: string
+  sistema_operativo?: string
+  ubicacion?: string
+  motivo_reemplazo?: string
+  fecha_reemplazo?: string
+  nuevo_funcionario?: string
   validado: boolean
   created_at: string
   created_by: string

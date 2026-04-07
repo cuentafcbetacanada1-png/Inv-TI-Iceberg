@@ -54,9 +54,8 @@ const InventoryPage: React.FC = () => {
   }
 
   const filteredEquipos = equipos.filter(e => {
-    const matchesSearch = 
-      e.nombre_usuario.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      e.hostname.toLowerCase().includes(searchTerm.toLowerCase())
+    const searchString = `${e.nombre_usuario} ${e.hostname} ${e.ip_local || ''} ${e.numero_serie || ''} ${e.ubicacion || ''}`.toLowerCase()
+    const matchesSearch = searchString.includes(searchTerm.toLowerCase())
     
     let matchesStatus = true
     if (filterStatus === 'Activos') matchesStatus = e.validado === true
@@ -134,11 +133,12 @@ const InventoryPage: React.FC = () => {
           <table className="w-full font-bold">
             <thead>
               <tr className="border-b border-white/5 font-bold">
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest">Activo IT</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest">Responsable</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest">Hostname</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest">Estado</th>
-                <th className="px-8 py-5 text-right text-[10px] font-black text-zinc-600 uppercase tracking-widest">Acciones</th>
+                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[200px]">Activo IT</th>
+                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[150px]">Responsable</th>
+                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[150px]">Hostname / IP</th>
+                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[200px]">Matriz Técnica (S/N & Hardware)</th>
+                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[150px]">Estado / Ubicación</th>
+                <th className="px-8 py-5 text-right text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[100px]">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 font-bold">
@@ -183,27 +183,42 @@ const InventoryPage: React.FC = () => {
                        <span className="text-sm font-bold text-zinc-300">{e.nombre_usuario}</span>
                     </td>
                     <td className="px-8 py-6 font-bold">
-                       <div className="flex items-center gap-2 font-bold">
-                          <code className="text-[11px] font-black text-primary-400 bg-primary-500/5 px-2 py-1 rounded border border-primary-500/10 uppercase italic">
+                       <div className="flex flex-col gap-1.5 font-bold">
+                          <code className="text-[11px] font-black text-primary-400 bg-primary-500/5 px-2 py-1 rounded border border-primary-500/10 uppercase italic w-fit">
                              {e.hostname}
                           </code>
+                          <span className="text-[10px] font-mono text-zinc-500 tracking-tight">{e.ip_local || 'IP NO DETECTADA'}</span>
                        </div>
                     </td>
                     <td className="px-8 py-6 font-bold">
-                       <button 
-                         onClick={() => toggleValidation(e.id, e.validado)}
-                         className={cn(
-                           "flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-500 font-bold",
-                           e.validado 
-                             ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]" 
-                             : "bg-zinc-800/50 border-white/5 text-zinc-600 hover:border-white/10 hover:text-zinc-400 font-bold"
-                         )}
-                       >
-                          {e.validado ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
-                          <span className="text-[9px] font-black uppercase tracking-widest">
-                             {e.validado ? 'Certificado' : 'Pendiente'}
-                          </span>
-                       </button>
+                       <div className="flex flex-col gap-1 font-bold">
+                          <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-tight">S/N: {e.numero_serie || 'N/A'}</span>
+                          <div className="flex items-center gap-2 font-bold">
+                             <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800 border border-white/5 text-zinc-500 font-black uppercase tracking-tighter">{e.procesador || 'CPU N/D'}</span>
+                             <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800 border border-white/5 text-zinc-500 font-black uppercase tracking-tighter">{e.ram || 'RAM N/D'}</span>
+                          </div>
+                       </div>
+                    </td>
+                    <td className="px-8 py-6 font-bold">
+                       <div className="space-y-2 font-bold">
+                          <button 
+                            onClick={() => toggleValidation(e.id, e.validado)}
+                            className={cn(
+                              "flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-500 font-bold",
+                              e.validado 
+                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]" 
+                                : "bg-zinc-800/50 border-white/5 text-zinc-600 hover:border-white/10 hover:text-zinc-400 font-bold"
+                            )}
+                          >
+                             {e.validado ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
+                             <span className="text-[9px] font-black uppercase tracking-widest">
+                                {e.validado ? 'Certificado' : 'Pendiente'}
+                             </span>
+                          </button>
+                          {e.ubicacion && (
+                            <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest block pl-2">{e.ubicacion}</span>
+                          )}
+                       </div>
                     </td>
                     <td className="px-8 py-6 text-right font-bold">
                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all font-bold">
