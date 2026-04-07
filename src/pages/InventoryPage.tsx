@@ -10,7 +10,11 @@ import {
   ShieldAlert,
   Loader2,
   RefreshCcw,
-  Plus
+  Plus,
+  Cpu,
+  RamStepBack, // Usaremos iconos genéricos premium
+  HardDrive,
+  Globe
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
@@ -18,10 +22,9 @@ import { Link } from 'react-router-dom'
 import { cn } from '../lib/utils'
 
 const InventoryPage: React.FC = () => {
-  const { equipos, fetchEquipos, deleteEquipo, toggleValidation, isLoading } = useEquipmentStore()
+  const { equipos, fetchEquipos, deleteEquipo, isLoading } = useEquipmentStore()
   const [searchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterStatus, setFilterStatus] = useState<'Todos' | 'Activos' | 'Inactivos'>('Todos')
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   useEffect(() => {
@@ -39,41 +42,35 @@ const InventoryPage: React.FC = () => {
     setIsRefreshing(true)
     await fetchEquipos()
     setIsRefreshing(false)
-    toast.success('Inventario sincronizado')
+    toast.success('Matriz sincronizada')
   }
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('¿Confirmar desmantelamiento de este activo?')) {
+    if (window.confirm('¿Eliminar este registro de la matriz?')) {
       try {
         await deleteEquipo(id)
-        toast.success('Activo eliminado de la matriz')
+        toast.success('Activo eliminado')
       } catch (error) {
-        toast.error('Fallo en la eliminación')
+        toast.error('Error al eliminar')
       }
     }
   }
 
   const filteredEquipos = equipos.filter(e => {
-    const searchString = `${e.nombre_usuario} ${e.hostname} ${e.ip_local || ''} ${e.numero_serie || ''} ${e.ubicacion || ''}`.toLowerCase()
-    const matchesSearch = searchString.includes(searchTerm.toLowerCase())
-    
-    let matchesStatus = true
-    if (filterStatus === 'Activos') matchesStatus = e.validado === true
-    if (filterStatus === 'Inactivos') matchesStatus = e.validado === false
-    
-    return matchesSearch && matchesStatus
+    const searchString = `${e.username} ${e.hostname} ${e.numero_serie || ''} ${e.marca_pc || ''}`.toLowerCase()
+    return searchString.includes(searchTerm.toLowerCase())
   })
 
   return (
-    <div className="space-y-10 animate-in font-bold">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/5 font-bold">
+    <div className="space-y-8 animate-in font-bold">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/5 font-bold">
         <div className="space-y-1 font-bold">
            <div className="flex items-center gap-2 text-primary-500 font-black text-[10px] uppercase tracking-[0.3em]">
-              <ShieldCheck size={12} />
-              <span>Listado Completo de equipos registrados</span>
+              <div className="w-1 h-1 rounded-full bg-primary-500 animate-pulse" />
+              <span>Sistema de Inventarios Iceberg</span>
            </div>
-           <h1 className="text-4xl font-black text-white tracking-tighter italic uppercase">Equipos Activos</h1>
-           <p className="text-sm text-zinc-500 max-w-md font-bold">Gestión centralizada de equipos activos e inactivos.</p>
+           <h1 className="text-4xl font-black text-white tracking-tighter italic uppercase">Panel de Control IT</h1>
+           <p className="text-sm text-zinc-500 font-bold">Monitoreo de telemetría y matriz técnica de activos.</p>
         </div>
         <div className="flex gap-3 font-bold">
            <button 
@@ -82,154 +79,111 @@ const InventoryPage: React.FC = () => {
              className="px-4 py-2.5 rounded-xl border border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2 font-bold"
            >
               <RefreshCcw size={16} className={cn((isRefreshing || isLoading) && "animate-spin")} />
-              <span className="text-[10px] font-black uppercase tracking-widest">Sincronizar</span>
+              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Actualizar</span>
            </button>
-           <a 
-             href="/iceberg-agent.bat"
-             download="iceberg-agent.bat"
-             className="px-4 py-2.5 rounded-xl border border-primary-500/20 bg-primary-500/5 text-primary-400 hover:bg-primary-500/10 hover:border-primary-500/40 transition-all flex items-center gap-2 font-bold shadow-[0_0_20px_rgba(234,179,8,0.05)]"
-           >
-              <ShieldCheck size={16} />
-              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Descargar Agente</span>
-           </a>
            <Link to="/crear" className="btn-v10-primary px-6 flex items-center gap-2 font-bold">
               <Plus size={16} />
-              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Registrar Equipo</span>
+              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Nuevo Registro</span>
            </Link>
         </div>
       </header>
 
-      <div className="card-premium p-1 border-white/5 font-bold">
+      <div className="card-premium p-1 border-white/5 font-bold overflow-hidden">
         <div className="p-6 border-b border-white/5 flex flex-col md:flex-row gap-6 justify-between font-bold">
            <div className="relative flex-1 max-w-md group font-bold">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 group-focus-within:text-primary-500 transition-colors" />
               <input
                 type="text"
-                placeholder="Filtrar por usuario o hostname..."
+                placeholder="Buscar por usuario, host o serial..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-white/[0.02] border border-white/5 rounded-xl pl-12 pr-4 py-3 text-sm text-zinc-300 outline-none focus:border-primary-500/50 transition-all font-bold"
               />
            </div>
-           <div className="flex gap-2 font-bold">
-              {(['Todos', 'Activos', 'Inactivos'] as const).map(status => (
-                <button
-                  key={status}
-                  onClick={() => setFilterStatus(status)}
-                  className={cn(
-                    "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all font-bold border",
-                    filterStatus === status 
-                      ? "bg-primary-500/10 text-primary-400 border-primary-500/20" 
-                      : "text-zinc-600 hover:text-zinc-400 border-transparent"
-                  )}
-                >
-                  {status}
-                </button>
-              ))}
-           </div>
         </div>
 
         <div className="overflow-x-auto font-bold">
-          <table className="w-full font-bold">
+          <table className="w-full font-bold border-collapse">
             <thead>
-              <tr className="border-b border-white/5 font-bold">
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[200px]">Activo IT</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[150px]">Responsable</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[150px]">Hostname / IP</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[200px]">Matriz Técnica (S/N & Hardware)</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[150px]">Estado / Ubicación</th>
-                <th className="px-8 py-5 text-right text-[10px] font-black text-zinc-600 uppercase tracking-widest min-w-[100px]">Acciones</th>
+              <tr className="bg-white/[0.02] font-bold">
+                <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Hostname</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Usuario</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">IP Local</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">S/N Equipo</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Tipo / Marca</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Características PC</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">RAM / S.O.</th>
+                <th className="px-6 py-4 text-right text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 font-bold">
               {isLoading && filteredEquipos.length === 0 ? (
                 <tr>
-                   <td colSpan={5} className="px-8 py-20 text-center font-bold">
-                      <div className="flex flex-col items-center gap-4 font-bold">
-                         <Loader2 className="w-8 h-8 text-primary-500 animate-spin" />
-                         <span className="text-xs font-black text-zinc-600 uppercase tracking-[0.3em]">Accediendo a la Matriz...</span>
-                      </div>
+                   <td colSpan={8} className="px-8 py-20 text-center font-bold">
+                      <Loader2 className="w-8 h-8 text-primary-500 animate-spin mx-auto mb-4" />
+                      <span className="text-xs font-black text-zinc-600 uppercase tracking-widest">Accediendo a la Matriz de Telemetría...</span>
                    </td>
                 </tr>
               ) : filteredEquipos.length === 0 ? (
                 <tr>
-                   <td colSpan={5} className="px-8 py-20 text-center font-bold">
-                      <div className="flex flex-col items-center gap-4 font-bold opacity-30">
-                         <Search className="w-12 h-12 text-zinc-700" />
-                         <span className="text-xs font-black text-zinc-700 uppercase tracking-[0.3em]">No se encontraron registros</span>
-                      </div>
+                   <td colSpan={8} className="px-8 py-20 text-center font-bold">
+                      <span className="text-xs font-black text-zinc-700 uppercase tracking-widest">Sin registros detectados</span>
                    </td>
                 </tr>
               ) : (
                 filteredEquipos.map((e) => (
-                  <tr key={e.id} className="group hover:bg-white/[0.01] transition-colors font-bold">
-                    <td className="px-8 py-6 font-bold">
-                      <div className="flex items-center gap-4 font-bold">
-                        <div className={cn(
-                          "w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-500",
-                          e.equipo === 'Portátil' 
-                            ? "bg-primary-500/5 border-primary-500/10 text-primary-500 group-hover:bg-primary-500/10" 
-                            : "bg-emerald-500/5 border-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500/10"
-                        )}>
-                          {e.equipo === 'Portátil' ? <Laptop size={20} /> : <Monitor size={20} />}
-                        </div>
-                        <div className="flex flex-col font-bold">
-                          <span className="text-sm font-black text-white italic uppercase tracking-tight">{e.equipo}</span>
-                          <span className="text-[10px] text-zinc-600 font-bold tracking-widest">REF: {e.id.slice(0, 8)}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-6 font-bold">
-                       <span className="text-sm font-bold text-zinc-300">{e.nombre_usuario}</span>
-                    </td>
-                    <td className="px-8 py-6 font-bold">
-                       <div className="flex flex-col gap-1.5 font-bold">
-                          <code className="text-[11px] font-black text-primary-400 bg-primary-500/5 px-2 py-1 rounded border border-primary-500/10 uppercase italic w-fit">
-                             {e.hostname}
-                          </code>
-                          <span className="text-[10px] font-mono text-zinc-500 tracking-tight">{e.ip_local || 'IP NO DETECTADA'}</span>
-                       </div>
-                    </td>
-                    <td className="px-8 py-6 font-bold">
-                       <div className="flex flex-col gap-1 font-bold">
-                          <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-tight">S/N: {e.numero_serie || 'N/A'}</span>
-                          <div className="flex items-center gap-2 font-bold">
-                             <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800 border border-white/5 text-zinc-500 font-black uppercase tracking-tighter">{e.procesador || 'CPU N/D'}</span>
-                             <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800 border border-white/5 text-zinc-500 font-black uppercase tracking-tighter">{e.ram || 'RAM N/D'}</span>
+                  <tr key={e.id} className="group hover:bg-white/[0.02] transition-all font-bold">
+                    <td className="px-6 py-5 font-bold">
+                       <div className="flex items-center gap-3 font-bold">
+                          <div className={cn(
+                            "w-8 h-8 rounded-lg flex items-center justify-center border",
+                            e.es_laptop ? "bg-amber-500/10 border-amber-500/20 text-amber-500" : "bg-blue-500/10 border-blue-500/20 text-blue-500"
+                          )}>
+                             {e.es_laptop ? <Laptop size={14} /> : <Monitor size={14} />}
                           </div>
+                          <span className="text-sm font-black text-white uppercase italic">{e.hostname}</span>
                        </div>
                     </td>
-                    <td className="px-8 py-6 font-bold">
-                       <div className="space-y-2 font-bold">
-                          <button 
-                            onClick={() => toggleValidation(e.id, e.validado)}
-                            className={cn(
-                              "flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-500 font-bold",
-                              e.validado 
-                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]" 
-                                : "bg-zinc-800/50 border-white/5 text-zinc-600 hover:border-white/10 hover:text-zinc-400 font-bold"
-                            )}
-                          >
-                             {e.validado ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
-                             <span className="text-[9px] font-black uppercase tracking-widest">
-                                {e.validado ? 'Certificado' : 'Pendiente'}
-                             </span>
-                          </button>
-                          {e.ubicacion && (
-                            <span className="text-[10px] text-zinc-600 font-black uppercase tracking-widest block pl-2">{e.ubicacion}</span>
-                          )}
+                    <td className="px-6 py-5 font-bold">
+                       <span className="text-sm text-zinc-400 font-bold">{e.username}</span>
+                    </td>
+                    <td className="px-6 py-5 font-bold">
+                       <div className="flex items-center gap-2 font-bold">
+                          <Globe size={12} className="text-zinc-600" />
+                          <code className="text-[11px] font-mono text-primary-400">{e.ip_local}</code>
                        </div>
                     </td>
-                    <td className="px-8 py-6 text-right font-bold">
-                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all font-bold">
+                    <td className="px-6 py-5 font-bold">
+                       <span className="text-[11px] font-black text-zinc-500 uppercase tracking-tight">{e.numero_serie}</span>
+                    </td>
+                    <td className="px-6 py-5 font-bold">
+                       <div className="flex flex-col font-bold">
+                          <span className="text-[10px] font-black text-zinc-600 uppercase">{e.es_laptop ? 'LAPTOP' : 'ESCRITORIO'}</span>
+                          <span className="text-xs font-bold text-zinc-300 uppercase">{e.marca_pc}</span>
+                       </div>
+                    </td>
+                    <td className="px-6 py-5 font-bold">
+                       <div className="flex items-center gap-2 font-bold">
+                          <Cpu size={12} className="text-zinc-600" />
+                          <span className="text-[11px] text-zinc-400 font-bold truncate max-w-[150px]">{e.caracteristicas_pc}</span>
+                       </div>
+                    </td>
+                    <td className="px-6 py-5 font-bold">
+                       <div className="flex flex-col gap-1 font-bold">
+                          <span className="text-[10px] font-black text-emerald-500/80 bg-emerald-500/5 px-1.5 py-0.5 rounded border border-emerald-500/10 w-fit">{e.memoria_ram} RAM</span>
+                          <span className="text-[10px] text-zinc-500 font-bold uppercase truncate max-w-[120px]">{e.sistema_operativo}</span>
+                       </div>
+                    </td>
+                    <td className="px-6 py-5 text-right font-bold">
+                       <div className="flex items-center justify-end gap-2 font-bold">
                           <Link to={`/editar/${e.id}`} className="p-2 text-zinc-500 hover:text-white hover:bg-white/5 rounded-lg transition-all font-bold">
-                             <Edit2 size={16} />
+                             <Edit2 size={14} />
                           </Link>
                           <button 
                             onClick={() => handleDelete(e.id)}
                             className="p-2 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/5 rounded-lg transition-all font-bold"
                           >
-                             <Trash2 size={16} />
+                             <Trash2 size={14} />
                           </button>
                        </div>
                     </td>
