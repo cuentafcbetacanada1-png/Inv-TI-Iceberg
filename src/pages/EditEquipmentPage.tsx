@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { 
   User, 
-  Hash, 
   ChevronLeft,
   Terminal,
   ArrowRight,
@@ -10,7 +9,6 @@ import {
   Laptop,
   Cpu,
   RefreshCw,
-  HardDrive,
   Info
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'

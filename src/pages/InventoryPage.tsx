@@ -6,14 +6,10 @@ import {
   Trash2, 
   Monitor, 
   Laptop,
-  ShieldCheck,
-  ShieldAlert,
   Loader2,
   RefreshCcw,
   Plus,
   Cpu,
-  RamStepBack, // Usaremos iconos genéricos premium
-  HardDrive,
   Globe
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
