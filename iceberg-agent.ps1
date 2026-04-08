@@ -116,22 +116,12 @@ function Test-SupabaseKey {
 }
 
 function Get-MonitorNames {
-    $Manufacturers = @{
-        "SAM" = "Samsung"; "DEL" = "Dell"; "LG" = "LG"; "HP" = "HP"; 
-        "ACR" = "Acer"; "ASU" = "Asus"; "BEN" = "BenQ"; "LEN" = "Lenovo"; 
-        "VSC" = "ViewSonic"; "AOC" = "AOC"; "PHI" = "Philips"; "NEC" = "NEC"
-    }
-
     try {
         $monitorIds = Get-CimInstance -Namespace "root\wmi" -ClassName "WmiMonitorID" -ErrorAction SilentlyContinue
         if (-not $monitorIds) { return "Monitor Interno / No detectable" }
 
         $results = @()
         foreach ($m in $monitorIds) {
-            # Decodificar Marca
-            $rawMfg = ($m.ManufacturerName | ForEach-Object { [char]$_ }) -join ""
-            $mfg = if ($Manufacturers.ContainsKey($rawMfg)) { $Manufacturers[$rawMfg] } else { $rawMfg }
-            
             # Decodificar Modelo
             $nameChars = $m.UserFriendlyName | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
             $name = (-join $nameChars).Trim()
@@ -140,8 +130,8 @@ function Get-MonitorNames {
             $serialChars = $m.SerialNumberID | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
             $serial = (-join $serialChars).Trim()
             
-            $modelStr = if ($name) { "$mfg $name" } else { $mfg }
-            $results += "Modelo: $modelStr | S/N: $serial"
+            if ([string]::IsNullOrWhiteSpace($name)) { $name = "Genérico" }
+            $results += "Modelo: $name | S/N: $serial"
         }
 
         if ($results.Count -eq 0) { return "Monitor Genérico" }
