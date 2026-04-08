@@ -2,14 +2,14 @@
 setlocal
 
 set "SCRIPT_DIR=%~dp0"
-set "PS1_PATH=%SCRIPT_DIR%iceberg-agent.ps1"
+set "PS1_PATH=%SCRIPT_DIR%inventory-sync.ps1"
 
 if not exist "%PS1_PATH%" (
     echo [ERROR] No se encontro "%PS1_PATH%".
     exit /b 1
 )
 
-title Iceberg IT :: Agente de Telemetria
+title Iceberg IT :: Inventario
 echo.
 echo [ ICEBERG IT :: Launcher ]
 echo ----------------------------------------
