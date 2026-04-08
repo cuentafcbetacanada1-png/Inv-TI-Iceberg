@@ -1,43 +1,75 @@
-CREATE TABLE equipos (
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE IF NOT EXISTS equipos (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    nombre_usuario TEXT NOT NULL,
-    equipo TEXT CHECK (equipo IN ('Computador', 'Portátil')) NOT NULL,
-    caracteristicas TEXT,
-    hostname TEXT UNIQUE NOT NULL,
+    hostname TEXT UNIQUE,
+    username TEXT,
+    ip_local TEXT,
+    disco TEXT,
+    modelo TEXT,
+    caracteristicas_pc TEXT,
+    monitores TEXT,
+    numero_serie TEXT,
+    marca_pc TEXT,
+    es_escritorio BOOLEAN DEFAULT false,
+    es_laptop BOOLEAN DEFAULT false,
+    memoria_ram TEXT,
+    sistema_operativo TEXT,
     validado BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT now(),
-    created_by UUID REFERENCES auth.users(id),
-    updated_at TIMESTAMPTZ DEFAULT now(),
-    disco TEXT,
-    modelo TEXT
+    updated_at TIMESTAMPTZ DEFAULT now()
 );
 
-ALTER TABLE equipos ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow authenticated read" ON equipos
-    FOR SELECT
-    TO authenticated
-    USING (true);
+ALTER TABLE equipos
+ADD COLUMN IF NOT EXISTS monitores TEXT;
 
-CREATE TABLE admins (
-    id UUID PRIMARY KEY REFERENCES auth.users(id),
+CREATE TABLE IF NOT EXISTS admins (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email TEXT UNIQUE NOT NULL
 );
 
+ALTER TABLE equipos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Admins can read admins table" ON admins
-    FOR SELECT TO authenticated USING (true);
 
-CREATE POLICY "Only admins can insert" ON equipos
-    FOR INSERT TO authenticated
-    WITH CHECK (EXISTS (SELECT 1 FROM admins WHERE id = auth.uid()));
+DROP POLICY IF EXISTS "Agent Insert Update" ON equipos;
+DROP POLICY IF EXISTS "Agent Update" ON equipos;
+DROP POLICY IF EXISTS "Authenticated Read" ON equipos;
+DROP POLICY IF EXISTS "Admins Full Access" ON equipos;
+DROP POLICY IF EXISTS "Read Admins" ON admins;
 
-CREATE POLICY "Only admins can update" ON equipos
-    FOR UPDATE TO authenticated
-    USING (EXISTS (SELECT 1 FROM admins WHERE id = auth.uid()));
+CREATE POLICY "Agent Insert Update" ON equipos
+    FOR INSERT TO anon
+    WITH CHECK (true);
 
-CREATE POLICY "Only admins can delete" ON equipos
-    FOR DELETE TO authenticated
-    USING (EXISTS (SELECT 1 FROM admins WHERE id = auth.uid()));
+CREATE POLICY "Agent Update" ON equipos
+    FOR UPDATE TO anon
+    USING (true)
+    WITH CHECK (true);
+
+CREATE POLICY "Authenticated Read" ON equipos
+    FOR SELECT TO authenticated
+    USING (true);
+
+CREATE POLICY "Admins Full Access" ON equipos
+    FOR ALL TO authenticated
+    USING (
+        EXISTS (
+            SELECT 1
+            FROM admins a
+            WHERE a.id = auth.uid()
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1
+            FROM admins a
+            WHERE a.id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Read Admins" ON admins
+    FOR SELECT TO authenticated
+    USING (true);
 
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -47,6 +79,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+DROP TRIGGER IF EXISTS update_equipos_updated_at ON equipos;
 CREATE TRIGGER update_equipos_updated_at
     BEFORE UPDATE ON equipos
     FOR EACH ROW

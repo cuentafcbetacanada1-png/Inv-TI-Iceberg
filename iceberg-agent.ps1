@@ -69,6 +69,28 @@ function Normalize-SupabaseUrl {
     return "$clean/rest/v1/equipos"
 }
 
+function Get-MonitorNames {
+    try {
+        $monitorIds = Get-CimInstance -Namespace "root\wmi" -ClassName "WmiMonitorID" -ErrorAction SilentlyContinue
+        if (-not $monitorIds) { return "N/A" }
+
+        $names = @()
+        foreach ($m in $monitorIds) {
+            $chars = $m.UserFriendlyName | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
+            $name = (-join $chars).Trim()
+            if (-not [string]::IsNullOrWhiteSpace($name) -and $name -ne "0") {
+                $names += $name
+            }
+        }
+
+        $names = $names | Select-Object -Unique
+        if (-not $names -or $names.Count -eq 0) { return "N/A" }
+        return ($names -join ", ")
+    } catch {
+        return "N/A"
+    }
+}
+
 $ScriptDir = Split-Path -Parent $PSCommandPath
 $DotEnvPath = Join-Path $ScriptDir ".env"
 $LogPath = Join-Path $ScriptDir "iceberg-agent.log"
@@ -114,6 +136,7 @@ try {
     $DiskGB = if ($Disk.Size) { "$([math]::round($Disk.Size / 1GB)) GB" } else { "N/A" }
     $RamGB = if ($SysInfo.TotalPhysicalMemory) { "$([math]::round($SysInfo.TotalPhysicalMemory / 1GB)) GB" } else { "N/A" }
     $IsLaptop = [bool](Get-CimInstance Win32_Battery -ErrorAction SilentlyContinue)
+    $MonitorNames = Get-MonitorNames
     if ([string]::IsNullOrWhiteSpace($IP)) { $IP = "0.0.0.0" }
 
     $PayloadObj = @{
@@ -121,6 +144,7 @@ try {
         username = $Username
         ip_local = $IP
         caracteristicas_pc = $CPU.Name
+        monitores = $MonitorNames
         numero_serie = $Serial
         marca_pc = $SysInfo.Manufacturer
         es_escritorio = -not $IsLaptop
@@ -143,9 +167,22 @@ try {
     }
 
     Write-Log "Enviando inventario de $Hostname a Supabase."
-    Invoke-WithRetry -Action {
-        Invoke-RestMethod -Uri $UpsertUrl -Method Post -Headers $headers -Body $PayloadJson -ContentType "application/json; charset=utf-8" -ErrorAction Stop | Out-Null
-    } -MaxRetries 3 -DelaySeconds 2
+    try {
+        Invoke-WithRetry -Action {
+            Invoke-RestMethod -Uri $UpsertUrl -Method Post -Headers $headers -Body $PayloadJson -ContentType "application/json; charset=utf-8" -ErrorAction Stop | Out-Null
+        } -MaxRetries 3 -DelaySeconds 2
+    } catch {
+        if ($_.Exception.Message -like "*(400)*") {
+            Write-Log "Fallback: columna 'monitores' no disponible, enviando payload base." "WARN"
+            $PayloadObj.Remove("monitores") | Out-Null
+            $PayloadJson = $PayloadObj | ConvertTo-Json -Compress
+            Invoke-WithRetry -Action {
+                Invoke-RestMethod -Uri $UpsertUrl -Method Post -Headers $headers -Body $PayloadJson -ContentType "application/json; charset=utf-8" -ErrorAction Stop | Out-Null
+            } -MaxRetries 2 -DelaySeconds 2
+        } else {
+            throw
+        }
+    }
 
     Write-Log "Sincronizacion completada correctamente."
     exit 0
