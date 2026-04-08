@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS equipos (
     es_laptop BOOLEAN DEFAULT false,
     memoria_ram TEXT,
     sistema_operativo TEXT,
-    validado BOOLEAN DEFAULT false,
+    validado BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
@@ -89,3 +89,11 @@ CREATE TRIGGER update_equipos_updated_at
     BEFORE UPDATE ON equipos
     FOR EACH ROW
     EXECUTE PROCEDURE update_updated_at_column();
+
+-- Administradores Autorizados
+INSERT INTO public.admins (id, email)
+VALUES
+  ('2a7aa50b-883d-4122-ad6d-c7f7f7287da6', 'admin@empresa.com'),
+  ('f31b6c29-8d5d-4471-b973-f5e05d4689ba', 'sistemas@iceberg.com.co')
+ON CONFLICT (id) DO UPDATE 
+SET email = EXCLUDED.email;

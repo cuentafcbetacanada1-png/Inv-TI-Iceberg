@@ -209,6 +209,7 @@ try {
         sistema_operativo = $OS.Caption
         disco = $DiskGB
         modelo = $Model
+        validado = $true
     }
 
     $PayloadJson = $PayloadObj | ConvertTo-Json -Compress

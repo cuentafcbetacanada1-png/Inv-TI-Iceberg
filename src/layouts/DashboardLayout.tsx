@@ -53,7 +53,7 @@ const DashboardLayout: React.FC = () => {
       if (!navigator.onLine) return
       const start = Date.now()
       try {
-        await fetch('https://xgvovzjgulphckcsalex.supabase.co/rest/v1/', { method: 'HEAD', mode: 'no-cors' })
+        await fetch('https://xgyovzjguphckcsalxex.supabase.co/rest/v1/', { method: 'HEAD', mode: 'no-cors' })
         setLatency(Date.now() - start)
       } catch {
         setLatency(null)
