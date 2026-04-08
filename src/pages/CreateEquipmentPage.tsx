@@ -30,7 +30,9 @@ const CreateEquipmentPage: React.FC = () => {
     es_laptop: false,
     memoria_ram: '',
     sistema_operativo: '',
-    disco: ''
+    disco: '',
+    modelo: '',
+    monitores: ''
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -140,6 +142,14 @@ const CreateEquipmentPage: React.FC = () => {
                   <div className="space-y-2 font-bold col-span-2">
                      <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">Capacidad de Disco</label>
                      <input type="text" value={formData.disco} onChange={(e) => setFormData({ ...formData, disco: e.target.value })} className="input-v10 text-[10px] font-bold text-emerald-400" placeholder="Ej: 500 GB" />
+                  </div>
+                  <div className="space-y-2 font-bold col-span-2">
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">Modelo del Sistema</label>
+                     <input type="text" value={formData.modelo} onChange={(e) => setFormData({ ...formData, modelo: e.target.value })} className="input-v10 text-[10px] font-bold" placeholder="Ej: Latitude 7490" />
+                  </div>
+                  <div className="space-y-2 font-bold col-span-2">
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">Monitores</label>
+                     <input type="text" value={formData.monitores} onChange={(e) => setFormData({ ...formData, monitores: e.target.value })} className="input-v10 text-[10px] font-bold text-primary-400" placeholder="Marca y modelo..." />
                   </div>
                </div>
 

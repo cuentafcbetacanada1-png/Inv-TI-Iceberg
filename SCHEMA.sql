@@ -90,7 +90,6 @@ CREATE TRIGGER update_equipos_updated_at
     FOR EACH ROW
     EXECUTE PROCEDURE update_updated_at_column();
 
--- Administradores Autorizados
 INSERT INTO public.admins (id, email)
 VALUES
   ('2a7aa50b-883d-4122-ad6d-c7f7f7287da6', 'admin@empresa.com'),

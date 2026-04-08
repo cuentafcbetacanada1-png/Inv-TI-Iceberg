@@ -33,7 +33,8 @@ const EditEquipmentPage: React.FC = () => {
     memoria_ram: '',
     sistema_operativo: '',
     disco: '',
-    modelo: ''
+    modelo: '',
+    monitores: ''
   })
 
   useEffect(() => {
@@ -51,7 +52,8 @@ const EditEquipmentPage: React.FC = () => {
         memoria_ram: equipo.memoria_ram || '',
         sistema_operativo: equipo.sistema_operativo || '',
         disco: equipo.disco || '',
-        modelo: equipo.modelo || ''
+        modelo: equipo.modelo || '',
+        monitores: equipo.monitores || ''
       })
     }
   }, [id, equipos])
@@ -176,6 +178,10 @@ const EditEquipmentPage: React.FC = () => {
                   <div className="space-y-2 font-bold col-span-2">
                      <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">Modelo del Sistema</label>
                      <input type="text" value={formData.modelo} onChange={(e) => setFormData({ ...formData, modelo: e.target.value })} className="input-v10 text-[10px] uppercase font-bold" placeholder="Ej: EliteBook 840 G5" />
+                  </div>
+                  <div className="space-y-2 font-bold col-span-2">
+                     <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">Monitores Detectados</label>
+                     <input type="text" value={formData.monitores} onChange={(e) => setFormData({ ...formData, monitores: e.target.value })} className="input-v10 text-[10px] uppercase font-bold text-primary-400" placeholder="Marca / Modelo de pantallas" />
                   </div>
                </div>
 
