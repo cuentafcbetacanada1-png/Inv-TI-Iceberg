@@ -178,11 +178,11 @@ try {
     $Hostname = $env:COMPUTERNAME
     $Username = $env:USERNAME
     
-    # Priorizar IPv4 de Ethernet/LAN
+    # Priorizar IPv4 de Ethernet/LAN (Buscando coincidencia exacta de nombre de adaptador)
     $IP = Get-NetIPAddress -ErrorAction SilentlyContinue |
         Where-Object { 
             $_.AddressFamily -eq 'IPv4' -and 
-            ($_.InterfaceAlias -like '*Ethernet*' -or $_.InterfaceAlias -like '*LAN*' -or $_.InterfaceAlias -like '*Cable*') -and 
+            ($_.InterfaceAlias -match "Ethernet|LAN|Conexi.n de .rea local") -and 
             $_.IPAddress -notlike '169.254*' 
         } |
         Select-Object -ExpandProperty IPAddress -First 1
