@@ -149,7 +149,12 @@ const CreateEquipmentPage: React.FC = () => {
                   </div>
                   <div className="space-y-2 font-bold col-span-2">
                      <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest block">Monitores</label>
-                     <input type="text" value={formData.monitores} onChange={(e) => setFormData({ ...formData, monitores: e.target.value })} className="input-v10 text-[10px] font-bold text-primary-400" placeholder="Marca y modelo..." />
+                     <textarea 
+                        value={formData.monitores} 
+                        onChange={(e) => setFormData({ ...formData, monitores: e.target.value })} 
+                        className="input-v10 min-h-[60px] text-[10px] uppercase font-bold text-primary-400 font-mono" 
+                        placeholder="Marca y modelo de monitores..." 
+                     />
                   </div>
                </div>
 

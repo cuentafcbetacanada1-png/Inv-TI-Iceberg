@@ -135,7 +135,7 @@ function Get-MonitorNames {
         }
 
         if ($results.Count -eq 0) { return "Monitor Genérico" }
-        return ($results -join " // ")
+        return ($results -join "`n")
     } catch {
         return "No detectable"
     }

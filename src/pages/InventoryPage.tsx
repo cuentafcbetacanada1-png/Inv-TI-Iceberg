@@ -220,8 +220,8 @@ const InventoryPage: React.FC = () => {
                     </td>
                      <td className="px-6 py-5 font-bold">
                         <div className="flex items-center gap-2 font-bold">
-                           <Monitor size={12} className="text-zinc-600" />
-                           <span className="text-[11px] text-zinc-400 font-bold truncate max-w-[150px]">{e.monitores || 'N/A'}</span>
+                           <Monitor size={12} className="text-zinc-600 shrink-0" />
+                           <span className="text-[10px] text-zinc-400 font-bold whitespace-pre-line leading-tight">{e.monitores || 'N/A'}</span>
                         </div>
                      </td>
                     <td className="px-6 py-5 text-right font-bold">
