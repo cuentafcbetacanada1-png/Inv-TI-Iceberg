@@ -17,6 +17,7 @@ export interface Equipo {
   sistema_operativo: string
   disco?: string
   modelo?: string
+  monitores?: string
   validado?: boolean
   created_at: string
   updated_at: string

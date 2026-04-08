@@ -152,6 +152,7 @@ const InventoryPage: React.FC = () => {
                 <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Tipo / Marca</th>
                 <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Características PC</th>
                 <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">RAM / S.O.</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Monitores</th>
                 <th className="px-6 py-4 text-right text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5">Acciones</th>
               </tr>
             </thead>
@@ -217,6 +218,12 @@ const InventoryPage: React.FC = () => {
                           <span className="text-[10px] text-zinc-500 font-bold uppercase truncate max-w-[120px]">{e.sistema_operativo}</span>
                        </div>
                     </td>
+                     <td className="px-6 py-5 font-bold">
+                        <div className="flex items-center gap-2 font-bold">
+                           <Monitor size={12} className="text-zinc-600" />
+                           <span className="text-[11px] text-zinc-400 font-bold truncate max-w-[150px]">{e.monitores || 'N/A'}</span>
+                        </div>
+                     </td>
                     <td className="px-6 py-5 text-right font-bold">
                        <div className="flex items-center justify-end gap-2 font-bold">
                           <Link to={`/editar/${e.id}`} className="p-2 text-zinc-500 hover:text-white hover:bg-white/5 rounded-lg transition-all font-bold">
