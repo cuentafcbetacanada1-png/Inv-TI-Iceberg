@@ -177,9 +177,22 @@ try {
 
     $Hostname = $env:COMPUTERNAME
     $Username = $env:USERNAME
+    
+    # Priorizar IPv4 de Ethernet/LAN
     $IP = Get-NetIPAddress -ErrorAction SilentlyContinue |
-        Where-Object { $_.AddressFamily -eq 'IPv4' -and $_.InterfaceAlias -notlike '*Loopback*' -and $_.IPAddress -notlike '169.254*' } |
+        Where-Object { 
+            $_.AddressFamily -eq 'IPv4' -and 
+            ($_.InterfaceAlias -like '*Ethernet*' -or $_.InterfaceAlias -like '*LAN*' -or $_.InterfaceAlias -like '*Cable*') -and 
+            $_.IPAddress -notlike '169.254*' 
+        } |
         Select-Object -ExpandProperty IPAddress -First 1
+
+    # Fallback a cualquier IPv4 activa si no hay Ethernet
+    if ([string]::IsNullOrWhiteSpace($IP)) {
+        $IP = Get-NetIPAddress -ErrorAction SilentlyContinue |
+            Where-Object { $_.AddressFamily -eq 'IPv4' -and $_.InterfaceAlias -notlike '*Loopback*' -and $_.IPAddress -notlike '169.254*' } |
+            Select-Object -ExpandProperty IPAddress -First 1
+    }
 
     $Bios = Get-CimInstance Win32_Bios -ErrorAction SilentlyContinue
     $SysInfo = Get-CimInstance Win32_ComputerSystem -ErrorAction SilentlyContinue
