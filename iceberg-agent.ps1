@@ -126,26 +126,26 @@ function Get-MonitorNames {
         $monitorIds = Get-CimInstance -Namespace "root\wmi" -ClassName "WmiMonitorID" -ErrorAction SilentlyContinue
         if (-not $monitorIds) { return "Monitor Interno / No detectable" }
 
-        $names = @()
+        $results = @()
         foreach ($m in $monitorIds) {
             # Decodificar Marca
             $rawMfg = ($m.ManufacturerName | ForEach-Object { [char]$_ }) -join ""
             $mfg = if ($Manufacturers.ContainsKey($rawMfg)) { $Manufacturers[$rawMfg] } else { $rawMfg }
             
             # Decodificar Modelo
-            $chars = $m.UserFriendlyName | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
-            $name = (-join $chars).Trim()
+            $nameChars = $m.UserFriendlyName | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
+            $name = (-join $nameChars).Trim()
             
-            if (-not [string]::IsNullOrWhiteSpace($name)) {
-                $names += "$mfg $name"
-            } else {
-                $names += $mfg
-            }
+            # Decodificar Serial
+            $serialChars = $m.SerialNumberID | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
+            $serial = (-join $serialChars).Trim()
+            
+            $modelStr = if ($name) { "$mfg $name" } else { $mfg }
+            $results += "Modelo: $modelStr | S/N: $serial"
         }
 
-        $names = $names | Select-Object -Unique
-        if ($names.Count -eq 0) { return "Monitor Genérico" }
-        return ($names -join ", ")
+        if ($results.Count -eq 0) { return "Monitor Genérico" }
+        return ($results -join " // ")
     } catch {
         return "No detectable"
     }
