@@ -36,6 +36,7 @@ DROP POLICY IF EXISTS "Agent Update" ON equipos;
 DROP POLICY IF EXISTS "Authenticated Read" ON equipos;
 DROP POLICY IF EXISTS "Admins Full Access" ON equipos;
 DROP POLICY IF EXISTS "Read Admins" ON admins;
+DROP POLICY IF EXISTS "Anon Read" ON equipos;
 
 CREATE POLICY "Agent Insert Update" ON equipos
     FOR INSERT TO anon
@@ -48,6 +49,10 @@ CREATE POLICY "Agent Update" ON equipos
 
 CREATE POLICY "Authenticated Read" ON equipos
     FOR SELECT TO authenticated
+    USING (true);
+
+CREATE POLICY "Anon Read" ON equipos
+    FOR SELECT TO anon
     USING (true);
 
 CREATE POLICY "Admins Full Access" ON equipos

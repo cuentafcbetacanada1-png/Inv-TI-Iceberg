@@ -62,7 +62,7 @@ try {
     [Environment]::SetEnvironmentVariable("ICEBERG_SUPABASE_KEY", $SupabaseKey, "Machine")
 
     Write-Step "Preparando tarea programada ($TaskName)."
-    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoLogo -NoProfile -File `"$agentScript`" -Silent"
+    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$agentScript`" -Silent"
     $trigger = New-ScheduledTaskTrigger -Daily -At $RunAt
     $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
     $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -RunLevel Highest -LogonType ServiceAccount

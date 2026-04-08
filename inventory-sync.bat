@@ -2,7 +2,7 @@
 setlocal
 
 set "SCRIPT_DIR=%~dp0"
-set "PS1_PATH=%SCRIPT_DIR%inventory-sync.ps1"
+set "PS1_PATH=%SCRIPT_DIR%iceberg-agent.ps1"
 
 if not exist "%PS1_PATH%" (
     echo [ERROR] No se encontro "%PS1_PATH%".
@@ -16,9 +16,9 @@ echo ----------------------------------------
 echo [*] Ejecutando agente PowerShell...
 
 if /i "%~1"=="silent" (
-    powershell.exe -NoLogo -NoProfile -File "%PS1_PATH%" -Silent
+    powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%PS1_PATH%" -Silent
 ) else (
-    powershell.exe -NoLogo -NoProfile -File "%PS1_PATH%"
+    powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%PS1_PATH%"
 )
 
 set "EXIT_CODE=%ERRORLEVEL%"
