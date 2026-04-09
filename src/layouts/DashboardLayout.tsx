@@ -51,7 +51,7 @@ const DashboardLayout: React.FC = () => {
         <nav className="flex-1">
           <SidebarItem to="/" icon={LayoutDashboard} label="Panel General" active={location.pathname === '/'} />
           <SidebarItem to="/inventario" icon={Database} label="Inventario" active={location.pathname === '/inventario'} />
-          <SidebarItem to="/crear" icon={PlusCircle} label="Alta Equipo" active={location.pathname === '/crear'} />
+          <SidebarItem to="/crear" icon={PlusCircle} label="Registrar Equipo" active={location.pathname === '/crear'} />
           <SidebarItem to="/logs" icon={Activity} label="Registros" active={location.pathname === '/logs'} />
           <SidebarItem to="#" icon={Settings} label="Ajustes" />
         </nav>

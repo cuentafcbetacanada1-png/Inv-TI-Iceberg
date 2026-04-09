@@ -45,12 +45,21 @@ const CreateEquipmentPage: React.FC = () => {
         {Icon && <Icon size={12} className="text-[#00ff88] opacity-60" />}
         {label}
       </label>
-      <input
-        className="w-full bg-[#090a09] border border-[#0e312a] text-sm text-white px-5 py-4 rounded-2xl outline-none focus:border-[#00ff88] transition-all font-black placeholder:text-[#0e312a]/50 shadow-inner"
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-      />
+      {label === 'Monitores' ? (
+        <textarea
+          className="w-full bg-[#090a09] border border-[#0e312a] text-sm text-white px-5 py-4 rounded-2xl outline-none focus:border-[#00ff88] transition-all font-black placeholder:text-[#0e312a]/50 shadow-inner min-h-[100px] resize-none"
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+        />
+      ) : (
+        <input
+          className="w-full bg-[#090a09] border border-[#0e312a] text-sm text-white px-5 py-4 rounded-2xl outline-none focus:border-[#00ff88] transition-all font-black placeholder:text-[#0e312a]/50 shadow-inner"
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+        />
+      )}
     </div>
   )
 

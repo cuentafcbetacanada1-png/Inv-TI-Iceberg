@@ -191,7 +191,7 @@ const InventoryPage: React.FC = () => {
                       </div>
                       <div className="col-span-1 pt-2 border-t border-[#0e312a]/50">
                          <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Monitores</p>
-                         <p className="text-[10px] font-bold text-white/70 truncate uppercase">{e.monitores || 'Standar'}</p>
+                         <p className="text-[10px] font-bold text-white/70 uppercase whitespace-pre-line">{e.monitores || 'Standard'}</p>
                       </div>
                    </div>
 
