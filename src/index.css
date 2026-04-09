@@ -1,32 +1,22 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary-400: #00d2ff;
-  --color-primary-500: #0081ff;
-  --color-primary-600: #0045ff;
-  
-  --color-magenta: #ff007a;
-  --color-cyan: #00f2ff;
-  --color-violet: #7000ff;
-
-  --bg-deep: #0f1021;
-  --bg-card: rgba(25, 26, 46, 0.6);
-}
-
 :root {
   --primary: #0081ff;
   --primary-glow: rgba(0, 129, 255, 0.3);
   --magenta: #ff007a;
   --cyan: #00f2ff;
+  --violet: #7000ff;
   --background: #0f1021;
 }
 
 body {
-  background: radial-gradient(circle at 50% 50%, #1a1b3a 0%, #0f1021 100%);
+  background-color: #0f1021;
+  background-image: radial-gradient(circle at 50% 50%, #1a1b3a 0%, #0f1021 100%);
   color: #ffffff;
   min-height: 100vh;
-  font-family: 'Outfit', 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
+  margin: 0;
 }
 
 /* El fondo brillante de la imagen */
@@ -44,57 +34,30 @@ body {
 .card-quantum {
   background: rgba(30, 31, 58, 0.4);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 1.5rem;
-  box-shadow: 
-    0 4px 30px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 255, 255, 0.02);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s ease;
 }
 
 .card-quantum:hover {
   background: rgba(35, 36, 65, 0.6);
-  border-color: rgba(0, 242, 255, 0.1);
+  border-color: rgba(0, 242, 255, 0.2);
   transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 255, 0.05);
 }
 
 .glow-cyan { text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); }
 .glow-magenta { text-shadow: 0 0 10px rgba(255, 0, 122, 0.5); }
 
-.input-quantum {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 1rem;
-  padding: 0.8rem 1.2rem;
-  color: white;
-  transition: all 0.3s;
+/* Animaciones */
+.animate-in {
+  animation: fadeInDown 0.8s ease forwards;
 }
 
-.input-quantum:focus {
-  outline: none;
-  border-color: #00f2ff;
-  box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
-}
-
-.btn-quantum {
-  background: linear-gradient(135deg, #0081ff 0%, #00f2ff 100%);
-  color: white;
-  font-weight: 700;
-  padding: 0.8rem 1.5rem;
-  border-radius: 1rem;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-quantum:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Custom Scrollbar */

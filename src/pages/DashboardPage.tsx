@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
   Database,
   Activity,
@@ -9,7 +9,10 @@ import { cn } from '../lib/utils'
 import { 
   ResponsiveContainer, 
   AreaChart, 
-  Area
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip
 } from 'recharts'
 
 const chartData = [
@@ -46,7 +49,7 @@ const StatGauge: React.FC<{ percent: number, label: string, colorClass: string, 
 const MetricCard: React.FC<{ label: string, value: string | number, sub: string, icon: any }> = ({ label, value, sub, icon: Icon }) => (
    <div className="card-quantum p-6 flex items-center justify-between group">
       <div className="flex items-center gap-4">
-         <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-cyan shadow-[inset_0_0_15px_rgba(0,242,255,0.1)] group-hover:bg-cyan/10 transition-all">
+         <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-[#00f2ff] shadow-[inset_0_0_15px_rgba(0,242,255,0.1)] group-hover:bg-[#00f2ff]/10 transition-all">
             <Icon size={20} />
          </div>
          <div className="flex flex-col">
@@ -54,7 +57,7 @@ const MetricCard: React.FC<{ label: string, value: string | number, sub: string,
             <span className="text-sm font-bold text-white uppercase">{sub}</span>
          </div>
       </div>
-      <div className="bg-[#00f2ff]/10 text-cyan px-4 py-1.5 rounded-xl text-xs font-black shadow-[0_0_15px_rgba(0,242,255,0.15)]">
+      <div className="bg-[#00f2ff]/10 text-[#00f2ff] px-4 py-1.5 rounded-xl text-xs font-black shadow-[0_0_15px_rgba(0,242,255,0.15)]">
          {value}
       </div>
    </div>
@@ -75,17 +78,17 @@ const DashboardPage: React.FC = () => {
     <div className="space-y-8 animate-in pb-20">
       {/* Top Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-         <MetricCard label="Dolor sit amet" value="3,709" sub="Lorem ipsum" icon={Database} />
-         <MetricCard label="Dolor sit amet" value="2,367" sub="Lorem ipsum" icon={Activity} />
-         <MetricCard label="Dolor sit amet" value="6,897" sub="Lorem ipsum" icon={Settings} />
+         <MetricCard label="Nodos Activos" value={totalEquipos} sub="Telemetría" icon={Database} />
+         <MetricCard label="Eventos Red" value="2,367" sub="Monitoreo" icon={Activity} />
+         <MetricCard label="Salud Global" value={`${salud}%`} sub="Estado" icon={Settings} />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        {/* Left Side: Half-pie charts + Small area charts */}
+        {/* Left Side */}
         <div className="xl:col-span-8 space-y-8">
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <StatGauge percent={salud} label="Salud del Sistema" sublabel="Nodos verificados en tiempo real" colorClass="shadow-[0_0_20px_rgba(255,0,122,0.3)]" strokeColor="#ff007a" />
-              <StatGauge percent={28} label="Dolor sit amet" sublabel="Lorem ipsum carga detectada" colorClass="shadow-[0_0_20px_rgba(112,0,255,0.3)]" strokeColor="#7000ff" />
+              <StatGauge percent={28} label="Carga de CPU" sublabel="Lorem ipsum carga detectada" colorClass="shadow-[0_0_20px_rgba(112,0,255,0.3)]" strokeColor="#7000ff" />
            </div>
 
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -106,6 +109,9 @@ const DashboardPage: React.FC = () => {
                              </linearGradient>
                           </defs>
                           <Area type="monotone" dataKey="load" stroke="#00f2ff" strokeWidth={4} fill="url(#cyanGradient)" animationDuration={2000} />
+                          <XAxis dataKey="time" hide />
+                          <YAxis hide />
+                          <Tooltip hide />
                        </AreaChart>
                     </ResponsiveContainer>
                  </div>
@@ -127,6 +133,8 @@ const DashboardPage: React.FC = () => {
                              </linearGradient>
                           </defs>
                           <Area type="monotone" dataKey="load" stroke="#ff007b" strokeWidth={4} fill="url(#magentaGradient)" animationDuration={2500} />
+                          <XAxis dataKey="time" hide />
+                          <YAxis hide />
                        </AreaChart>
                     </ResponsiveContainer>
                  </div>
@@ -134,7 +142,7 @@ const DashboardPage: React.FC = () => {
            </div>
         </div>
 
-        {/* Right Side: Toggle lists and Bar charts */}
+        {/* Right Side */}
         <div className="xl:col-span-4 space-y-8">
            <div className="card-quantum p-8 space-y-8">
               {[
@@ -147,7 +155,7 @@ const DashboardPage: React.FC = () => {
                       <span className="text-[11px] font-black text-white uppercase tracking-wider">{item.l}</span>
                       <span className="text-[9px] text-zinc-500 font-bold uppercase mt-1">Status: Stable connection</span>
                    </div>
-                   <div className={cn("w-12 h-6 rounded-full relative transition-all duration-300", item.c ? "bg-cyan" : "bg-white/10")}>
+                   <div className={cn("w-12 h-6 rounded-full relative transition-all duration-300", item.c ? "bg-[#00f2ff]" : "bg-white/10")}>
                       <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300", item.c ? "right-1" : "left-1")} />
                    </div>
                 </div>
@@ -163,9 +171,9 @@ const DashboardPage: React.FC = () => {
               </div>
               <div className="space-y-4">
                  {[
-                   { l: 'Lorem sit', v: '+$385', c: 'text-cyan' },
-                   { l: 'Lorem sit', v: '+$485', c: 'text-magenta' },
-                   { l: 'Lorem sit', v: '-$78', c: 'text-violet' }
+                   { l: 'Lorem sit', v: '+$385', c: 'text-[#00f2ff]' },
+                   { l: 'Lorem sit', v: '+$485', c: 'text-[#ff007a]' },
+                   { l: 'Lorem sit', v: '-$78', c: 'text-[#7000ff]' }
                  ].map((item, i) => (
                    <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
                       <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">{item.l}</span>
