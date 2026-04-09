@@ -19,6 +19,14 @@ export interface Equipo {
   modelo?: string
   monitores?: string
   validado?: boolean
+  // Campos de Red e Infraestructura
+  ip_switch?: string
+  puerto_switch?: string
+  vlan?: string
+  // Campos de Gestión de Activos
+  ubicacion_fisica?: string
+  codigo_activo?: string
+  estado_garantia?: string
   created_at: string
   updated_at: string
 }
