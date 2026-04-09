@@ -68,17 +68,60 @@ const InventoryPage: React.FC = () => {
 
   const exportToCSV = () => {
     if (equipos.length === 0) return toast.error('No hay datos para exportar')
-    const headers = ['Hostname', 'Usuario', 'IP Local', 'Serie', 'Marca', 'Modelo', 'RAM', 'Disco', 'SO', 'Características', 'Implementado']
-    const rows = equipos.map(e => [
-      e.hostname, e.username, e.ip_local, e.numero_serie, e.marca_pc, e.modelo, e.memoria_ram, e.disco, e.sistema_operativo, e.caracteristicas_pc?.replace(/,/g, ';'), new Date(e.created_at).toLocaleDateString()
-    ])
-    const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n')
+    
+    // Encabezados profesionales
+    const headers = [
+      'HOSTNAME', 'USUARIO', 'IP LOCAL', 'SISTEMA OPERATIVO', 
+      'PROCESADOR', 'RAM', 'ALMACENAMIENTO', 
+      'MARCA EQUIPO', 'MODELO EQUIPO', 'S/N EQUIPO',
+      'MONITOR 1 MODELO', 'MONITOR 1 SERIAL',
+      'MONITOR 2 MODELO', 'MONITOR 2 SERIAL',
+      'FECHA REGISTRO'
+    ]
+
+    const rows = equipos.map(e => {
+      // Parsear información de monitores
+      const monitorList = (e.monitores || '').split('\n')
+      const parseMonitor = (str: string) => {
+        const parts = str.split('|')
+        const model = parts[0]?.replace('Modelo:', '').trim() || ''
+        const serial = parts[1]?.replace('S/N:', '').trim() || ''
+        return { model, serial }
+      }
+
+      const m1 = monitorList[0] ? parseMonitor(monitorList[0]) : { model: '', serial: '' }
+      const m2 = monitorList[1] ? parseMonitor(monitorList[1]) : { model: '', serial: '' }
+
+      return [
+        e.hostname,
+        e.username,
+        e.ip_local,
+        e.sistema_operativo,
+        e.caracteristicas_pc?.replace(/,/g, ' '),
+        e.memoria_ram,
+        e.disco,
+        e.marca_pc,
+        e.modelo,
+        e.numero_serie,
+        m1.model,
+        m1.serial,
+        m2.model,
+        m2.serial,
+        new Date(e.created_at).toLocaleString()
+      ]
+    })
+
+    const csvContent = "\uFEFF" + [headers, ...rows].map(r => r.map(c => `"${c || ''}"`).join(',')).join('\n')
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = `inventario_it_iceberg_${new Date().toISOString().split('T')[0]}.csv`
+    link.setAttribute('href', url)
+    link.setAttribute('download', `REPORTE_INVENTARIO_ICEBERG_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
     link.click()
-    toast.success('Reporte CSV generado')
+    document.body.removeChild(link)
+    toast.success('Reporte Excel (CSV) generado con éxito')
   }
 
   const filteredEquipos = equipos.filter(e => {

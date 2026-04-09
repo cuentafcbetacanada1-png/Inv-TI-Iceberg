@@ -16,7 +16,6 @@ function Write-Log {
 function Clean-String {
     param([string]$InputString)
     if (-not $InputString) { return "" }
-    # Elimina caracteres nulos (\x00) y caracteres no imprimibles
     return ($InputString -replace "\x00", "").Trim()
 }
 
