@@ -53,7 +53,6 @@ const DashboardLayout: React.FC = () => {
           <SidebarItem to="/inventario" icon={Database} label="Inventario" active={location.pathname === '/inventario'} />
           <SidebarItem to="/crear" icon={PlusCircle} label="Registrar Equipo" active={location.pathname === '/crear'} />
           <SidebarItem to="/logs" icon={Activity} label="Registros" active={location.pathname === '/logs'} />
-          <SidebarItem to="#" icon={Settings} label="Ajustes" />
         </nav>
         
         <div className="mt-auto space-y-6">
@@ -98,14 +97,9 @@ const DashboardLayout: React.FC = () => {
                 <div className="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse shadow-[0_0_10px_#00ff88]" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#00ff88]">Servicio Online</span>
              </div>
-             <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#0e312a] to-[#00ff88] p-0.5 cursor-pointer shadow-xl shadow-[#00ff88]/10 rotate-3 hover:rotate-0 transition-all">
-                <div className="w-full h-full rounded-2xl bg-[#090a09] flex items-center justify-center overflow-hidden">
-                   <User size={20} className="text-[#00ff88]" />
-                </div>
-             </div>
-             <button className="text-[#4e564e] hover:text-white transition-colors">
-                <Menu size={24} />
-             </button>
+             <div className="p-3 bg-zinc-900/50 rounded-2xl border border-white/5">
+              <User size={20} className="text-[#00ff88]" />
+            </div>
           </div>
         </header>
 
