@@ -16,6 +16,14 @@ CREATE TABLE IF NOT EXISTS equipos (
     memoria_ram TEXT,
     sistema_operativo TEXT,
     validado BOOLEAN DEFAULT true,
+    -- Campos de Red e Infraestructura
+    ip_switch TEXT,
+    puerto_switch TEXT,
+    vlan TEXT,
+    -- Campos de Gestión de Activos
+    ubicacion_fisica TEXT,
+    codigo_activo TEXT,
+    estado_garantia TEXT,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
