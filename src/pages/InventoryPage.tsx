@@ -176,7 +176,7 @@ const InventoryPage: React.FC = () => {
                    </div>
 
                    {/* Datos de Hardware */}
-                   <div className="lg:col-span-3 grid grid-cols-2 gap-4 border-l border-r border-[#0e312a] px-8 py-1">
+                   <div className="lg:col-span-4 grid grid-cols-2 gap-4 border-l border-r border-[#0e312a] px-8 py-1">
                       <div className="space-y-1">
                          <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest">Hardware</p>
                          <p className="text-[10px] font-bold text-white/90 truncate">{e.caracteristicas_pc}</p>
@@ -192,7 +192,7 @@ const InventoryPage: React.FC = () => {
                    </div>
 
                    {/* Infraestructura Red (SWITCH & VLAN) */}
-                   <div className="lg:col-span-4 bg-[#0c0d0c] rounded-2xl p-5 border border-[#1a1c1a] grid grid-cols-2 gap-6 relative group-hover:border-indigo-500/30 transition-all shadow-inner">
+                   <div className="lg:col-span-3 bg-[#0c0d0c] rounded-2xl p-5 border border-[#1a1c1a] grid grid-cols-2 gap-6 relative group-hover:border-indigo-500/30 transition-all shadow-inner">
                       <div className="space-y-2">
                          <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
                             <Server size={10} /> IP Switch

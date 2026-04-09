@@ -66,29 +66,31 @@ const CreateEquipmentPage: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         
-        {/* Hardware y Red */}
-        <div className="space-y-10">
-           <div className="card-matrix p-8 border-[#1a1c1a]">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-[#00ff88] mb-8">Identificación de Red</h3>
-              <div className="grid grid-cols-2 gap-6">
-                 <InputField label="Nombre Equipo" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />
-                 <InputField label="IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
-                 <InputField icon={User} label="Responsable" value={formData.username} onChange={(e: any) => setFormData({...formData, username: e.target.value})} />
-              </div>
-           </div>
-           <div className="card-matrix p-8 border-[#1a1c1a]">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-[#00ff88] mb-8">Especificaciones Técnicas</h3>
-              <div className="grid grid-cols-2 gap-6">
-                 <InputField icon={Cpu} label="Memoria RAM" value={formData.memoria_ram} onChange={(e: any) => setFormData({...formData, memoria_ram: e.target.value})} />
-                 <InputField icon={HardDrive} label="Almacenamiento" value={formData.disco} onChange={(e: any) => setFormData({...formData, disco: e.target.value})} />
-                 <InputField label="CPU / Procesador" value={formData.caracteristicas_pc} onChange={(e: any) => setFormData({...formData, caracteristicas_pc: e.target.value})} colSpan="col-span-2" />
-              </div>
-           </div>
-        </div>
+         {/* LADO IZQUIERDO: Red */}
+         <div className="card-matrix p-8 border-[#1a1c1a]">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-[#00ff88] mb-8">Identificación de Red</h3>
+            <div className="grid grid-cols-2 gap-6">
+               <InputField label="Nombre Equipo" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />
+               <InputField label="IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
+               <InputField icon={User} label="Responsable" value={formData.username} onChange={(e: any) => setFormData({...formData, username: e.target.value})} />
+            </div>
+         </div>
 
-         <button type="submit" className="w-full btn-matrix flex items-center justify-center gap-3 py-5 text-[11px] font-black italic tracking-widest shadow-[0_10px_30px_rgba(0,255,136,0.3)] col-span-1 lg:col-span-2">
+         {/* LADO DERECHO: Hardware */}
+         <div className="card-matrix p-8 border-[#1a1c1a]">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-[#00ff88] mb-8">Especificaciones Técnicas</h3>
+            <div className="grid grid-cols-2 gap-6">
+               <InputField icon={Cpu} label="Memoria RAM" value={formData.memoria_ram} onChange={(e: any) => setFormData({...formData, memoria_ram: e.target.value})} />
+               <InputField icon={HardDrive} label="Almacenamiento" value={formData.disco} onChange={(e: any) => setFormData({...formData, disco: e.target.value})} />
+               <InputField label="CPU / Procesador" value={formData.caracteristicas_pc} onChange={(e: any) => setFormData({...formData, caracteristicas_pc: e.target.value})} colSpan="col-span-2" />
+            </div>
+         </div>
+
+         {/* BOTÓN DE ACCIÓN (A toda anchura) */}
+         <button type="submit" className="w-full btn-matrix flex items-center justify-center gap-3 py-5 text-[11px] font-black italic tracking-widest shadow-[0_10px_30px_rgba(0,255,136,0.3)] col-span-1 lg:col-span-2 mt-4">
             <Save size={20} /> Inyectar Activo IT
          </button>
+
       </form>
     </div>
   )

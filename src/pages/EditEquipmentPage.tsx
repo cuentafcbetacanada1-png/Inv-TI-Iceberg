@@ -94,7 +94,7 @@ const EditEquipmentPage: React.FC = () => {
            className="flex items-center gap-2 text-[10px] font-bold text-[#4e564e] uppercase tracking-[0.2em] hover:text-[#00ff88] transition-all group"
          >
             <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            Vovler al Inventario IT
+            Volver al Inventario IT
          </button>
          <h1 className="text-5xl font-black tracking-tighter italic uppercase">
             Editar <span className="text-[#00ff88]">{formData.hostname}</span>
@@ -104,32 +104,32 @@ const EditEquipmentPage: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         
-        {/* Hardware y Red Local */}
-        <div className="space-y-10">
-           <div className="card-matrix p-8 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                 <Network size={80} />
-              </div>
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-[#00ff88] mb-8">Conectividad Primaria</h3>
-              <div className="grid grid-cols-2 gap-6">
-                 <InputField label="Nombre de Red" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />
-                 <InputField label="IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
-                 <InputField icon={UserIcon} label="Usuario" value={formData.username} onChange={(e: any) => setFormData({...formData, username: e.target.value})} />
-              </div>
-           </div>
+         {/* LADO IZQUIERDO: Red */}
+         <div className="card-matrix p-8 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-5">
+               <Network size={80} />
+            </div>
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-[#00ff88] mb-8">Conectividad Primaria</h3>
+            <div className="grid grid-cols-2 gap-6">
+               <InputField label="Nombre de Red" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />
+               <InputField label="IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
+               <InputField icon={UserIcon} label="Usuario" value={formData.username} onChange={(e: any) => setFormData({...formData, username: e.target.value})} />
+            </div>
+         </div>
 
-           <div className="card-matrix p-8 relative overflow-hidden group border-[#1a1c1a]">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-[#00ff88] mb-8">Componentes Internos</h3>
-              <div className="grid grid-cols-2 gap-6">
-                 <InputField icon={Cpu} label="Memoria RAM" value={formData.memoria_ram} onChange={(e: any) => setFormData({...formData, memoria_ram: e.target.value})} />
-                 <InputField icon={HardDrive} label="Almacenamiento" value={formData.disco} onChange={(e: any) => setFormData({...formData, disco: e.target.value})} />
-                 <InputField label="Potencia CPU" value={formData.caracteristicas_pc} onChange={(e: any) => setFormData({...formData, caracteristicas_pc: e.target.value})} colSpan="col-span-2" />
-                 <InputField label="Sist. Operativo" value={formData.sistema_operativo} onChange={(e: any) => setFormData({...formData, sistema_operativo: e.target.value})} colSpan="col-span-2" />
-              </div>
-           </div>
-        </div>
+         {/* LADO DERECHO: Hardware */}
+         <div className="card-matrix p-8 relative overflow-hidden group border-[#1a1c1a]">
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-[#00ff88] mb-8">Componentes Internos</h3>
+            <div className="grid grid-cols-2 gap-6">
+               <InputField icon={Cpu} label="Memoria RAM" value={formData.memoria_ram} onChange={(e: any) => setFormData({...formData, memoria_ram: e.target.value})} />
+               <InputField icon={HardDrive} label="Almacenamiento" value={formData.disco} onChange={(e: any) => setFormData({...formData, disco: e.target.value})} />
+               <InputField label="Potencia CPU" value={formData.caracteristicas_pc} onChange={(e: any) => setFormData({...formData, caracteristicas_pc: e.target.value})} colSpan="col-span-2" />
+               <InputField label="Sist. Operativo" value={formData.sistema_operativo} onChange={(e: any) => setFormData({...formData, sistema_operativo: e.target.value})} colSpan="col-span-2" />
+            </div>
+         </div>
 
-         <div className="flex gap-4 col-span-1 lg:col-span-2">
+         {/* BOTONES DE ACCIÓN (A toda anchura) */}
+         <div className="flex gap-4 col-span-1 lg:col-span-2 mt-4">
             <div className="flex bg-[#0e312a]/20 p-1.5 rounded-2xl border border-[#0e312a] flex-1">
                <button 
                  type="button"
@@ -144,7 +144,7 @@ const EditEquipmentPage: React.FC = () => {
             </div>
             <button 
               type="submit" 
-              className="flex-[1.5] btn-matrix flex items-center justify-center gap-3 py-4 text-[11px] font-black italic tracking-widest shadow-[0_10px_30_rgba(0,255,136,0.3)]"
+              className="flex-[1.5] btn-matrix flex items-center justify-center gap-3 py-4 text-[11px] font-black italic tracking-widest shadow-[0_10px_30px_rgba(0,255,136,0.2)]"
             >
                <Save size={20} /> Guardar Cambios
             </button>
