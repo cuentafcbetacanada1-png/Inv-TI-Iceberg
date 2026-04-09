@@ -73,7 +73,6 @@ try {
 
     Write-Log "PC: $env:COMPUTERNAME | Analizando red..."
 
-    # 1. INTENTO DE PRECISIÓN: Buscar exactamente "Ethernet" (Literal)
     try {
         $EthIP = Get-NetIPAddress -InterfaceAlias "Ethernet" -AddressFamily IPv4 -ErrorAction SilentlyContinue | 
                  Where-Object { $_.IPAddress -notlike '169.254*' } | Select-Object -ExpandProperty IPAddress -First 1
@@ -85,7 +84,6 @@ try {
         }
     } catch {}
 
-    # 2. SEGUNDO INTENTO: Basado en Gateway (Si el primero falló)
     if (-not $IP) {
         try {
             $PrimaryInterfaceIndex = Get-NetRoute -DestinationPrefix "0.0.0.0/0" | Sort-Object RouteMetric | Select-Object -ExpandProperty InterfaceIndex -First 1
@@ -97,7 +95,6 @@ try {
         } catch {}
     }
 
-    # 3. FALLBACK FINAL: Cualquier adaptador activo con IP válida
     if (-not $IP) {
         $IPAddressObj = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { 
             $_.IPAddress -notlike '169.254*' -and 
