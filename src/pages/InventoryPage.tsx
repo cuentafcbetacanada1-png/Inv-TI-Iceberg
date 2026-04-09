@@ -13,8 +13,7 @@ import {
   Zap,
   AlertCircle,
   Server,
-  ShieldAlert,
-  MapPin
+  ShieldAlert
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
@@ -90,8 +89,7 @@ const InventoryPage: React.FC = () => {
         (e.ip_local?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
         (e.vlan?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
         (e.ip_switch?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-        (e.codigo_activo?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-        (e.ubicacion_fisica?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+        (e.codigo_activo?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     if (filterTech === 'laptops') return matchesSearch && e.es_laptop
     if (filterTech === 'desktops') return matchesSearch && e.es_escritorio
     return matchesSearch
@@ -147,7 +145,7 @@ const InventoryPage: React.FC = () => {
               <p className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em] animate-pulse">Sincronizando Matriz...</p>
            </div>
          ) : filteredEquipos.length > 0 ? (
-           filteredEquipos.map((e) => (
+           filteredEquipos.map((e: any) => (
              <div 
                key={e.id}
                onClick={() => navigate(`/editar/${e.id}`)}
@@ -193,48 +191,30 @@ const InventoryPage: React.FC = () => {
                       </div>
                    </div>
 
-                   {/* Gestión de Activo (UBICACIÓN & GARANTÍA) */}
-                   <div className="lg:col-span-2 border-l border-[#0e312a] px-6 space-y-4">
-                      <div>
-                         <p className="text-[9px] font-black text-amber-500/70 uppercase tracking-widest flex items-center gap-1.5 mb-1">
-                            <MapPin size={10} /> Ubicación
-                         </p>
-                         <p className="text-[10px] font-bold text-white uppercase italic">
-                            {e.ubicacion_fisica || 'No Definida'}
-                         </p>
-                      </div>
-                      <div>
-                         <p className="text-[9px] font-black text-red-400/70 uppercase tracking-widest flex items-center gap-1.5 mb-1">
-                            <ShieldAlert size={10} /> Garantía
-                         </p>
-                         <p className="text-[10px] font-bold text-zinc-400 uppercase">
-                            {e.estado_garantia || 'S/D'}
-                         </p>
-                      </div>
-                   </div>
-
                    {/* Infraestructura Red (SWITCH & VLAN) */}
-                   <div className="lg:col-span-2 bg-[#0c0d0c] rounded-2xl p-4 border border-[#1a1c1a] space-y-3 relative group-hover:border-indigo-500/30 transition-all shadow-inner">
-                      <div className="space-y-1">
-                         <p className="text-[8px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1">
-                            <Server size={9} /> IP Switch
+                   <div className="lg:col-span-4 bg-[#0c0d0c] rounded-2xl p-5 border border-[#1a1c1a] grid grid-cols-2 gap-6 relative group-hover:border-indigo-500/30 transition-all shadow-inner">
+                      <div className="space-y-2">
+                         <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+                            <Server size={10} /> IP Switch
                          </p>
-                         <p className="text-[11px] font-black text-white/90 font-mono tracking-tight">
-                            {e.ip_switch || 'N/A'}
+                         <p className="text-sm font-black text-white/95 font-mono tracking-tighter">
+                            {e.ip_switch || 'No Asignada'}
                          </p>
-                         <p className="text-[8px] font-bold text-[#4e564e] uppercase flex justify-between">
-                            PTO: <span className="text-indigo-400">{e.puerto_switch || 'N/A'}</span>
-                         </p>
+                         <p className="text-[9px] font-bold text-[#4e564e] uppercase">Pto: <span className="text-white">{e.puerto_switch || 'N/A'}</span></p>
                       </div>
-                      <div className="pt-2 border-t border-white/5">
-                         <p className="text-[8px] font-black text-amber-500 uppercase tracking-widest">
-                            VLAN: <span className="text-white ml-1 font-mono">{e.vlan || '--'}</span>
+                      <div className="space-y-2 border-l border-white/5 pl-6">
+                         <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-1.5">
+                            VLAN ID
                          </p>
+                         <p className="text-2xl font-black text-amber-500 leading-none py-1 italic tracking-tighter">
+                            {e.vlan || '--'}
+                         </p>
+                         <p className="text-[9px] font-bold text-[#4e564e] uppercase">RED SEGURA</p>
                       </div>
                    </div>
 
                    {/* Acciones Rápidas */}
-                   <div className="lg:col-span-2 flex items-center justify-end gap-2 px-2">
+                   <div className="lg:col-span-2 flex items-center justify-end gap-3 px-4">
                       <button 
                         onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }}
                         className="p-4 bg-[#1a1c1a] hover:bg-[#00ff88] text-[#4e564e] hover:text-black rounded-2xl transition-all border border-[#0e312a] hover:border-[#00ff88] shadow-lg"
