@@ -17,7 +17,6 @@ function Write-Log {
     try {
         Add-Content -Path $script:LogPath -Value $line -ErrorAction Stop
     } catch {
-        # Fallback si el share es de solo lectura o no hay permisos
         $tempDir = [System.IO.Path]::GetTempPath()
         $fallbackLog = Join-Path $tempDir "iceberg-agent-error.log"
         try { Add-Content -Path $fallbackLog -Value $line -ErrorAction SilentlyContinue } catch {}
@@ -60,7 +59,6 @@ function Get-EnvValueFromFile {
 
     if (-not (Test-Path $FilePath)) { return $null }
     try {
-        # Leer todo el texto y limpiar caracteres nulos o raros de codificacion
         $rawContent = Get-Content $FilePath -Raw -ErrorAction SilentlyContinue
         if ($null -eq $rawContent) { return $null }
         $content = $rawContent -replace "`0", "" -split "`r?`n"
@@ -68,11 +66,9 @@ function Get-EnvValueFromFile {
         foreach ($line in $content) {
             if ($line -match "^\s*$KeyName\s*=\s*(.*)$") {
                 $raw = $matches[1].Trim()
-                # Quitar comillas si existen
                 if ($raw -match '^["''](.*)["'']$') {
                     $raw = $matches[1]
                 }
-                # Limpiar cualquier caracter no imprimible al final
                 return $raw.Trim().Trim("`t").Trim("`r").Trim("`n")
             }
         }
@@ -122,11 +118,9 @@ function Get-MonitorNames {
 
         $results = @()
         foreach ($m in $monitorIds) {
-            # Decodificar Modelo
             $nameChars = $m.UserFriendlyName | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
             $name = (-join $nameChars).Trim()
             
-            # Decodificar Serial
             $serialChars = $m.SerialNumberID | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
             $serial = (-join $serialChars).Trim()
             
@@ -177,8 +171,6 @@ try {
 
     $Hostname = $env:COMPUTERNAME
     $Username = $env:USERNAME
-    
-    # Priorizar IPv4 de Ethernet/LAN (Buscando coincidencia exacta de nombre de adaptador)
     $IP = Get-NetIPAddress -ErrorAction SilentlyContinue |
         Where-Object { 
             $_.AddressFamily -eq 'IPv4' -and 
@@ -187,7 +179,6 @@ try {
         } |
         Select-Object -ExpandProperty IPAddress -First 1
 
-    # Fallback a cualquier IPv4 activa si no hay Ethernet
     if ([string]::IsNullOrWhiteSpace($IP)) {
         $IP = Get-NetIPAddress -ErrorAction SilentlyContinue |
             Where-Object { $_.AddressFamily -eq 'IPv4' -and $_.InterfaceAlias -notlike '*Loopback*' -and $_.IPAddress -notlike '169.254*' } |

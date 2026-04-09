@@ -23,7 +23,10 @@
 }
 
 body {
-  @apply bg-[#09090b] text-zinc-100 antialiased overflow-x-hidden;
+  background-color: #09090b;
+  color: #f4f4f5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
@@ -48,7 +51,11 @@ body {
 
 /* Componentes Premium */
 .card-premium {
-  @apply bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-[2rem] transition-all duration-500;
+  background-color: rgba(24, 24, 27, 0.4);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 2rem;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -88,33 +95,41 @@ body {
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  color: #f4f4f5;
-  outline: none;
-  transition: all 0.2s;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  color: white;
+  transition: all 0.3s;
 }
 
 .input-v10:focus {
-  border-color: var(--color-primary-500);
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-  background-color: rgba(39, 39, 42, 0.8);
 }
 
 .btn-v10-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  position: relative;
+  overflow: hidden;
+  background-color: #2563eb;
   color: white;
-  font-weight: 600;
-  border-radius: 0.75rem;
-  transition: all 0.2s;
-  @apply relative overflow-hidden bg-primary-600 hover:bg-primary-500 text-white font-black py-4 px-8 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 group;
+  font-weight: 900;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
   box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
 }
 
 .btn-v10-primary:hover {
-  @apply scale-[1.02];
+  background-color: #3b82f6;
+  transform: scale(1.02);
   box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.6);
 }
 
@@ -129,16 +144,35 @@ body {
 }
 
 .status-online {
-  @apply relative flex h-2 w-2;
+  position: relative;
+  display: flex;
+  height: 0.5rem;
+  width: 0.5rem;
 }
 
 .status-online::after {
   content: '';
-  @apply absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75;
+  position: absolute;
+  display: inline-flex;
+  height: 100%;
+  width: 100%;
+  border-radius: 9999px;
+  background-color: #34d399;
+  opacity: 0.75;
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(3); opacity: 0; }
 }
 
 .status-online span {
-  @apply relative inline-flex h-2 w-2 rounded-full bg-emerald-500;
+  position: relative;
+  display: inline-flex;
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 9999px;
+  background-color: #10b981;
 }
 
 /* Scrollbar Custom */
@@ -146,8 +180,13 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full hover:bg-white/20 transition-all;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  transition: all 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
