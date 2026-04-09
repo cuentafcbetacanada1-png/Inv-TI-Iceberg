@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { 
-  History, 
   ShieldCheck, 
-  Cpu,
-  Monitor,
   Zap,
   Network,
+  Edit2,
+  Trash2,
   MoreHorizontal
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { cn } from '../lib/utils'
 import { 
@@ -19,6 +19,7 @@ import {
   Tooltip,
   CartesianGrid
 } from 'recharts'
+import { toast } from 'react-hot-toast'
 
 const chartData = [
   { time: 'Dec 21', val: 320 },
@@ -59,11 +60,22 @@ const ProgressRing: React.FC<{ percent: number }> = ({ percent }) => (
 )
 
 const DashboardPage: React.FC = () => {
-  const { equipos, fetchEquipos } = useEquipmentStore()
+  const { equipos, fetchEquipos, deleteEquipo } = useEquipmentStore()
 
   useEffect(() => {
     fetchEquipos()
-  }, [])
+  }, [fetchEquipos])
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('¿Eliminar registro de la Matriz?')) {
+      try {
+        await deleteEquipo(id)
+        toast.success('Nodo desconectado')
+      } catch {
+        toast.error('Error en la purga del nodo')
+      }
+    }
+  }
 
   const total = equipos.length
   const validados = equipos.filter(e => e.validado).length
@@ -71,7 +83,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-10">
-      {/* Metrics Row Estilo Imagen */}
+      {/* Metrics Row */}
       <div className="card-matrix flex flex-wrap divide-x divide-[#0e312a] overflow-hidden">
          <StatMetric label="Total Node Count" value={total.toLocaleString()} trend="+12.45%" up />
          <StatMetric label="Encryption Rate" value={validados.toLocaleString()} trend="-2.65%" />
@@ -128,7 +140,7 @@ const DashboardPage: React.FC = () => {
             </div>
          </div>
 
-         {/* Satisfaction / Health Ring Section */}
+         {/* Integrity Status */}
          <div className="card-matrix p-10 flex flex-col items-center justify-between text-center min-h-[500px]">
             <div className="flex w-full items-center justify-between mb-10">
                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e]">Integrity Status</h4>
@@ -154,26 +166,32 @@ const DashboardPage: React.FC = () => {
          </div>
       </div>
 
-      {/* Row of Detailed Logs */}
+      {/* Row of Detailed Logs & Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-10">
-         {[
-           { l: 'BETA_SRV_32', t: 'Live Broadcast', v: '1.58m', c: 'text-[#00ff88]' },
-           { l: 'ALPHA_NODE_01', t: 'Encrypted Data', v: '1.02m', c: 'text-[#00ff88]' },
-           { l: 'OMEGA_RELAY', t: 'Matrix Sync', v: '1.98m', c: 'text-[#00ff88]' }
-         ].map((item, i) => (
-           <div key={i} className="card-matrix p-4 flex items-center justify-between group hover:border-[#00ff88]/40">
+         {equipos.slice(0, 3).map((e, i) => (
+           <div key={e.id} className="card-matrix p-5 flex items-center justify-between group hover:border-[#00ff88]/40">
               <div className="flex items-center gap-4">
                  <div className="w-10 h-10 rounded-xl bg-[#00ff88]/10 flex items-center justify-center text-[#00ff88]">
                     <Network size={18} />
                  </div>
                  <div>
-                    <h5 className="text-[11px] font-black text-white italic">{item.l}</h5>
-                    <p className="text-[9px] font-black text-[#4e564e] uppercase">{item.t}</p>
+                    <h5 className="text-[11px] font-black text-white italic truncate max-w-[120px]">{e.hostname}</h5>
+                    <p className="text-[9px] font-black text-[#4e564e] uppercase">{e.ip_local}</p>
                  </div>
               </div>
-              <div className="text-right">
-                 <div className="text-[10px] font-black text-white">{item.v}</div>
-                 <div className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">Live</div>
+              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                 <Link 
+                   to={`/editar/${e.id}`}
+                   className="p-2.5 bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-xl text-[#00ff88] hover:bg-[#00ff88] hover:text-black transition-all"
+                 >
+                    <Edit2 size={14} />
+                 </Link>
+                 <button 
+                   onClick={() => handleDelete(e.id)}
+                   className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                 >
+                    <Trash2 size={14} />
+                 </button>
               </div>
            </div>
          ))}
