@@ -4,14 +4,16 @@ import {
   Search, 
   Edit2, 
   Trash2, 
-  Monitor, 
+  Monitor as DesktopIcon, 
   Laptop,
   Loader2,
   RefreshCcw,
   Plus,
   FileSpreadsheet,
   Zap,
-  AlertCircle
+  AlertCircle,
+  Server,
+  ShieldAlert
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
