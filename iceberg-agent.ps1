@@ -1,271 +1,108 @@
 [CmdletBinding()]
-param(
-    [switch]$Silent
-)
+param([switch]$Silent)
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 function Write-Log {
-    param(
-        [string]$Message,
-        [ValidateSet("INFO", "WARN", "ERROR")]
-        [string]$Level = "INFO"
-    )
-
+    param([string]$Message, [ValidateSet("INFO", "WARN", "ERROR")][string]$Level = "INFO")
     $line = "[{0}] [{1}] {2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss"), $Level, $Message
-    
-    try {
-        Add-Content -Path $script:LogPath -Value $line -ErrorAction Stop
-    } catch {
-        $tempDir = [System.IO.Path]::GetTempPath()
-        $fallbackLog = Join-Path $tempDir "iceberg-agent-error.log"
-        try { Add-Content -Path $fallbackLog -Value $line -ErrorAction SilentlyContinue } catch {}
-    }
-
+    try { Add-Content -Path $script:LogPath -Value $line -Encoding UTF8 -ErrorAction SilentlyContinue } catch {}
     if (-not $Silent) {
-        switch ($Level) {
-            "INFO" { Write-Host $Message -ForegroundColor Cyan }
-            "WARN" { Write-Host $Message -ForegroundColor Yellow }
-            "ERROR" { Write-Host $Message -ForegroundColor Red }
-        }
+        $color = switch ($Level) { "INFO" { "Cyan" } "WARN" { "Yellow" } "ERROR" { "Red" } }
+        Write-Host $Message -ForegroundColor $color
     }
 }
 
 function Invoke-WithRetry {
-    param(
-        [scriptblock]$Action,
-        [int]$MaxRetries = 3,
-        [int]$DelaySeconds = 2
-    )
-
+    param([scriptblock]$Action, [int]$MaxRetries = 3, [int]$DelaySeconds = 2)
     $attempt = 1
     while ($attempt -le $MaxRetries) {
-        try {
-            return & $Action
-        } catch {
+        try { return & $Action } catch {
             if ($attempt -ge $MaxRetries) { throw }
-            Write-Log "Reintento $attempt/$MaxRetries por error de red o API." "WARN"
+            Write-Log "Intento $attempt fallido (Reintentando...)" "WARN"
             Start-Sleep -Seconds $DelaySeconds
             $attempt++
         }
     }
 }
 
-function Get-EnvValueFromFile {
-    param(
-        [string]$FilePath,
-        [string]$KeyName
-    )
-
-    if (-not (Test-Path $FilePath)) { return $null }
+function Get-EnvValue {
+    param([string]$Path, [string]$Key)
+    if (-not (Test-Path $Path)) { return $null }
     try {
-        $rawContent = Get-Content $FilePath -Raw -ErrorAction SilentlyContinue
-        if ($null -eq $rawContent) { return $null }
-        $content = $rawContent -replace "`0", "" -split "`r?`n"
-        
-        foreach ($line in $content) {
-            if ($line -match "^\s*$KeyName\s*=\s*(.*)$") {
-                $raw = $matches[1].Trim()
-                if ($raw -match '^["''](.*)["'']$') {
-                    $raw = $matches[1]
-                }
-                return $raw.Trim().Trim("`t").Trim("`r").Trim("`n")
+        $lines = Get-Content $Path -ErrorAction SilentlyContinue
+        foreach ($l in $lines) {
+            $cl = $l -replace '[^\x20-\x7E]', ''
+            if ($cl -match "^\s*$Key\s*=\s*(.*)$") {
+                return $matches[1].Trim().Trim('"').Trim("'").Trim()
             }
         }
     } catch {}
     return $null
 }
 
-function Normalize-SupabaseUrl {
-    param([string]$RawUrl)
-
-    if ([string]::IsNullOrWhiteSpace($RawUrl)) { return $null }
-    $clean = $RawUrl.Trim().Trim('"').Trim("'")
-    $clean = $clean.TrimEnd("/")
-
-    if ($clean -match "/rest/v1/equipos$") {
-        return $clean
-    }
-
-    return "$clean/rest/v1/equipos"
-}
-
-function Test-SupabaseKey {
-    param(
-        [string]$BaseUrl,
-        [string]$Key
-    )
-
-    if ([string]::IsNullOrWhiteSpace($BaseUrl) -or [string]::IsNullOrWhiteSpace($Key)) { return $false }
-    try {
-        # Probar directamente contra la tabla equipos con limit=0
-        $testUrl = if ($BaseUrl -match "\?") { "$BaseUrl&limit=0" } else { "$BaseUrl?limit=0" }
-        Invoke-RestMethod -Uri $testUrl -Method Get -Headers @{
-            "apikey" = $Key
-            "Authorization" = "Bearer $Key"
-        } -ErrorAction Stop | Out-Null
-        return $true
-    } catch {
-        if ($_.Exception.Message -like "*(401)*") { return $false }
-        return $true 
-    }
-}
-
-function Get-MonitorNames {
-    try {
-        $monitorIds = Get-CimInstance -Namespace "root\wmi" -ClassName "WmiMonitorID" -ErrorAction SilentlyContinue
-        if (-not $monitorIds) { return "Monitor Interno / No detectable" }
-
-        $results = @()
-        foreach ($m in $monitorIds) {
-            $nameChars = $m.UserFriendlyName | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
-            $name = (-join $nameChars).Trim()
-            
-            $serialChars = $m.SerialNumberID | Where-Object { $_ -gt 0 } | ForEach-Object { [char]$_ }
-            $serial = (-join $serialChars).Trim()
-            
-            if ([string]::IsNullOrWhiteSpace($name)) { $name = "Genérico" }
-            $results += "Modelo: $name | S/N: $serial"
-        }
-
-        if ($results.Count -eq 0) { return "Monitor Genérico" }
-        return ($results -join "`n")
-    } catch {
-        return "No detectable"
-    }
-}
-
 $ScriptDir = Split-Path -Parent $PSCommandPath
 $DotEnvPath = Join-Path $ScriptDir ".env"
-$LogPath = Join-Path $ScriptDir "iceberg-agent.log"
-$script:LogPath = $LogPath
+$script:LogPath = Join-Path $ScriptDir "iceberg-agent.log"
 
-if (-not $Silent) {
-    Write-Host "`n[ ICEBERG IT :: Escaneando Sistema ]" -ForegroundColor Cyan
-    Write-Host "----------------------------------------"
-}
+if (-not $Silent) { Write-Host "`n[ ICEBERG IT :: Agente v3.3 :: Resiliente ]" -ForegroundColor Cyan }
 
 try {
-    $DefaultSupabaseUrl = "https://xgyovzjguphckcsalxex.supabase.co"
+    $BASE_DOMAIN = "https://xgyovzjguphckcsalxex.supabase.co"
+    $uEnv = Get-EnvValue -Path $DotEnvPath -Key "VITE_SUPABASE_URL"
+    $kEnv = Get-EnvValue -Path $DotEnvPath -Key "VITE_SUPABASE_ANON_KEY"
+    $FinalURL = ((if ($uEnv) { $uEnv.TrimEnd("/") } else { $BASE_DOMAIN }) + "/rest/v1/equipos?on_conflict=hostname").Replace(" ", "")
+    $Key = if ($kEnv) { $kEnv } else { "TU_ANON_KEY" }
 
-    $urlFromEnvFile = Get-EnvValueFromFile -FilePath $DotEnvPath -KeyName "VITE_SUPABASE_URL"
-    $keyFromEnvFile = Get-EnvValueFromFile -FilePath $DotEnvPath -KeyName "VITE_SUPABASE_ANON_KEY"
-    $URL = if (-not [string]::IsNullOrWhiteSpace($env:ICEBERG_SUPABASE_URL)) {
-        Normalize-SupabaseUrl -RawUrl $env:ICEBERG_SUPABASE_URL
-    } elseif (-not [string]::IsNullOrWhiteSpace($urlFromEnvFile)) {
-        Normalize-SupabaseUrl -RawUrl $urlFromEnvFile
-    } else {
-        Normalize-SupabaseUrl -RawUrl $DefaultSupabaseUrl
-    }
-    $KeyCandidates = @(
-        $keyFromEnvFile,
-        $env:ICEBERG_SUPABASE_KEY
-    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+    Write-Log "PC: $env:COMPUTERNAME | Conectando a Matriz..."
 
-    if (-not $KeyCandidates -or $KeyCandidates.Count -eq 0) {
-        throw "Falta clave de Supabase. Define VITE_SUPABASE_ANON_KEY en .env o ICEBERG_SUPABASE_KEY."
-    }
+    # TELEMETRÍA BÁSICA
+    $IP = (Get-NetIPAddress -AddressFamily IPv4 | Where { $_.IPAddress -notlike '169.254*' -and $_.InterfaceAlias -notlike '*Loopback*' } | Select -Expand IPAddress -First 1)
+    $MAC = if (Get-NetAdapter | Where { $_.Status -eq 'Up' }) { ((Get-NetAdapter | Where { $_.Status -eq 'Up' } | Select -Expand MacAddress -First 1) -replace '-', ':') } else { "N/A" }
+    
+    $CPU = Get-CimInstance Win32_Processor -EA SilentlyContinue
+    $OS = Get-CimInstance Win32_OperatingSystem -EA SilentlyContinue
+    $Sys = Get-CimInstance Win32_ComputerSystem -EA SilentlyContinue
+    $Disk = Get-CimInstance Win32_DiskDrive -EA SilentlyContinue | Select -First 1
+    $C = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'" -EA SilentlyContinue
 
-    $ValidatedKeys = $KeyCandidates 
-    Write-Log "Iniciando proceso de sincronizacion..."
-
-    $Hostname = $env:COMPUTERNAME
-    $Username = $env:USERNAME
-    $IP = Get-NetIPAddress -ErrorAction SilentlyContinue |
-        Where-Object { 
-            $_.AddressFamily -eq 'IPv4' -and 
-            ($_.InterfaceAlias -match "Ethernet|LAN|Conexi.n de .rea local") -and 
-            $_.IPAddress -notlike '169.254*' 
-        } |
-        Select-Object -ExpandProperty IPAddress -First 1
-
-    if ([string]::IsNullOrWhiteSpace($IP)) {
-        $IP = Get-NetIPAddress -ErrorAction SilentlyContinue |
-            Where-Object { $_.AddressFamily -eq 'IPv4' -and $_.InterfaceAlias -notlike '*Loopback*' -and $_.IPAddress -notlike '169.254*' } |
-            Select-Object -ExpandProperty IPAddress -First 1
-    }
-
-    $Bios = Get-CimInstance Win32_Bios -ErrorAction SilentlyContinue
-    $SysInfo = Get-CimInstance Win32_ComputerSystem -ErrorAction SilentlyContinue
-    $CPU = Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue
-    $OS = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
-    $Disk = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'" -ErrorAction SilentlyContinue
-
-    $Serial = if ($Bios.SerialNumber) { $Bios.SerialNumber.Trim() } else { "N/A" }
-    if (@("To be filled by O.E.M.", "System Serial Number", "0", "None", "") -contains $Serial) {
-        $Serial = "GENERIC-$Hostname"
-    }
-
-    $Model = if ($SysInfo.Model) { $SysInfo.Model.Trim() } else { "N/A" }
-    $DiskGB = if ($Disk.Size) { "$([math]::round($Disk.Size / 1GB)) GB" } else { "N/A" }
-    $RamGB = if ($SysInfo.TotalPhysicalMemory) { "$([math]::round($SysInfo.TotalPhysicalMemory / 1GB)) GB" } else { "N/A" }
-    $IsLaptop = [bool](Get-CimInstance Win32_Battery -ErrorAction SilentlyContinue)
-    $MonitorNames = Get-MonitorNames
-    if ([string]::IsNullOrWhiteSpace($IP)) { $IP = "0.0.0.0" }
-
-    $PayloadObj = @{
-        hostname = $Hostname
-        username = $Username
-        ip_local = $IP
-        caracteristicas_pc = $CPU.Name
-        monitores = $MonitorNames
-        numero_serie = $Serial
-        marca_pc = $SysInfo.Manufacturer
-        es_escritorio = -not $IsLaptop
-        es_laptop = $IsLaptop
-        memoria_ram = $RamGB
+    $Data = @{
+        hostname = $env:COMPUTERNAME
+        username = $env:USERNAME
+        ip_local = if ($IP) { $IP } else { "0.0.0.0" }
+        ip_publica = "Desconocida" # Se llenará si el servidor acepta el campo
+        mac_address = $MAC
+        caracteristicas_pc = ($CPU.Name -replace '\s+', ' ').Trim()
+        monitores = "Conectado"
+        numero_serie = if ($Sys.SerialNumber) { $Sys.SerialNumber.Trim() } else { "GENERIC-$env:COMPUTERNAME" }
+        marca_pc = $Sys.Manufacturer
+        es_escritorio = -not [bool](Get-CimInstance Win32_Battery -EA SilentlyContinue)
+        es_laptop = [bool](Get-CimInstance Win32_Battery -EA SilentlyContinue)
+        memoria_ram = if ($Sys.TotalPhysicalMemory) { "$([math]::round($Sys.TotalPhysicalMemory / 1GB)) GB" } else { "N/A" }
         sistema_operativo = $OS.Caption
-        disco = $DiskGB
-        modelo = $Model
-        validado = $true
+        disco = if ($Disk.Model) { "$([math]::round($C.Size / 1GB)) GB" } else { "N/A" }
+        modelo = $Sys.Model
     }
 
-    $PayloadJson = $PayloadObj | ConvertTo-Json -Compress
-    $uriBuilder = [System.UriBuilder]::new($URL)
-    $existingQuery = $uriBuilder.Query.TrimStart("?")
-    $uriBuilder.Query = if ([string]::IsNullOrWhiteSpace($existingQuery)) { "on_conflict=hostname" } else { "$existingQuery&on_conflict=hostname" }
-    $UpsertUrl = $uriBuilder.Uri.AbsoluteUri
-    Write-Log "Enviando inventario de $Hostname a Supabase."
-    $synced = $false
-    foreach ($KEY in $ValidatedKeys) {
-        $headers = @{
-            "apikey" = $KEY
-            "Authorization" = "Bearer $KEY"
-            "Prefer" = "resolution=merge-duplicates"
-        }
-        try {
-            Invoke-WithRetry -Action {
-                Invoke-RestMethod -Uri $UpsertUrl -Method Post -Headers $headers -Body $PayloadJson -ContentType "application/json; charset=utf-8" -ErrorAction Stop | Out-Null
-            } -MaxRetries 3 -DelaySeconds 2
-            $synced = $true
-            break
-        } catch {
-            if ($_.Exception.Message -like "*(400)*") {
-                Write-Log "Fallback: columna 'monitores' no disponible, enviando payload base." "WARN"
-                $PayloadObj.Remove("monitores") | Out-Null
-                $PayloadJson = $PayloadObj | ConvertTo-Json -Compress
-                Invoke-WithRetry -Action {
-                    Invoke-RestMethod -Uri $UpsertUrl -Method Post -Headers $headers -Body $PayloadJson -ContentType "application/json; charset=utf-8" -ErrorAction Stop | Out-Null
-                } -MaxRetries 2 -DelaySeconds 2
-                $synced = $true
-                break
-            }
-            if ($_.Exception.Message -like "*(401)*") {
-                Write-Log "Key rechazada (401). Probando siguiente credencial..." "WARN"
-                continue
-            }
-            throw
-        }
-    }
-    if (-not $synced) { throw "No se pudo autenticar con ninguna credencial disponible (401)." }
+    $headers = @{ "apikey" = $Key; "Authorization" = "Bearer $Key"; "Prefer" = "resolution=merge-duplicates" }
 
-    Write-Log "Sincronizacion completada correctamente."
+    try {
+        # Intento 1: Telemetría Completa
+        Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ($Data | ConvertTo-Json -Compress) -ContentType "application/json; charset=utf-8"
+        Write-Log "Sincronizacion completa exitosa."
+    } catch {
+        if ($_.Exception.Message -like "*(400)*") {
+            Write-Log "Columnas nuevas no detectadas en DB. Enviando payload basico..." "WARN"
+            $Basico = $Data.Clone()
+            $Basico.Remove("ip_publica")
+            $Basico.Remove("mac_address")
+            Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ($Basico | ConvertTo-Json -Compress) -ContentType "application/json; charset=utf-8"
+            Write-Log "Sincronización básica exitosa (Ejecuta el SQL para soporte completo)."
+        } else { throw }
+    }
+
     exit 0
 } catch {
-    Write-Log "Fallo en el proceso: $($_.Exception.Message)" "ERROR"
+    Write-Log "ERROR: $($_.Exception.Message)" "ERROR"
     exit 1
-} finally {
-    if (-not $Silent) {
-        Write-Host "`nProceso terminado. Revisa el log en: $LogPath"
-    }
 }
