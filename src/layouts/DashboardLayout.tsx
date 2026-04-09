@@ -7,120 +7,98 @@ import {
   Activity,
   Settings,
   Bell,
-  ChevronLeft,
-  ChevronRight,
+  Search,
   User,
-  Menu,
-  LogOut
+  LogOut,
+  ChevronRight
 } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { cn } from '../lib/utils'
 
-const SidebarItem: React.FC<{ to: string, icon: React.ElementType, label: string, active?: boolean, collapsed?: boolean }> = ({ to, icon: Icon, label, active, collapsed }) => (
-  <Link to={to} className="block group">
+const SidebarItem: React.FC<{ to: string, icon: React.ElementType, label: string, active?: boolean }> = ({ to, icon: Icon, label, active }) => (
+  <Link to={to} className="block group mb-2">
     <div className={cn(
-      "flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300",
+      "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300",
       active
-        ? "text-cyan bg-white/5 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)] border border-white/5"
-        : "text-zinc-500 hover:text-zinc-200 hover:bg-white/5"
+        ? "bg-white text-[#4318ff] shadow-sm font-bold"
+        : "text-[#a3aed0] hover:text-[#4318ff] hover:bg-white/50"
     )}>
-      <Icon className={cn("w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110", active && "text-cyan")} />
-      {!collapsed && <span className="text-sm font-bold tracking-tight">{label}</span>}
+      <Icon className={cn("w-5 h-5", active && "text-[#4318ff]")} />
+      <span className="text-sm tracking-tight">{label}</span>
+      {active && <div className="ml-auto w-1 h-5 bg-[#4318ff] rounded-full" />}
     </div>
   </Link>
 )
 
 const DashboardLayout: React.FC = () => {
-  const { signOut } = useAuthStore()
+  const { signOut, user } = useAuthStore()
   const location = useLocation()
-  const [collapsed, setCollapsed] = useState(false)
 
   return (
-    <div className="flex h-screen bg-[#0f1021] font-sans text-white overflow-hidden selection:bg-cyan/30">
-      {/* Fondo de Viñeta */}
-      <div className="bg-vignette" />
+    <div className="flex h-screen bg-[#f4f7fe] font-sans text-[#1b2559] overflow-hidden">
+      {/* Sidebar al estilo SMMPlanner */}
+      <aside className="w-72 bg-[#f4f7fe] border-r border-gray-100 flex flex-col p-6 z-30">
+        <div className="flex flex-col items-center mb-10 px-4">
+           <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#4318ff] to-[#b454ff] p-1 mb-3 shadow-lg">
+              <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                 <User size={30} className="text-[#4318ff]" />
+              </div>
+           </div>
+           <span className="text-lg font-bold text-[#1b2559]">Admin Panel</span>
+           <span className="text-xs font-medium text-[#a3aed0] uppercase tracking-widest">{user?.email?.split('@')[0] || 'System Admin'}</span>
+        </div>
 
-      {/* Sidebar Profesional */}
-      <aside className={cn(
-        "relative flex flex-col bg-[#14152b]/80 backdrop-blur-md transition-all duration-500 ease-in-out z-30 border-r border-white/5",
-        collapsed ? "w-20" : "w-64"
-      )}>
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-10 w-6 h-6 bg-[#1a1b3a] border border-white/10 rounded-full flex items-center justify-center text-zinc-500 hover:text-cyan transition-all z-40 shadow-xl"
-        >
-          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-        </button>
-
-        <div className="p-6 flex flex-col h-full">
-          <div className={cn("flex items-center gap-4 mb-12", collapsed && "justify-center")}>
-            <div className="w-10 h-10 bg-magenta rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,0,122,0.4)] shrink-0">
-               <span className="text-white font-black italic">IB</span>
-            </div>
-            {!collapsed && (
-               <div className="flex flex-col">
-                  <span className="text-sm font-black tracking-widest text-zinc-200 uppercase italic">Iceberg</span>
-                  <span className="text-[9px] font-bold text-magenta uppercase tracking-widest -mt-1">Inventory</span>
-               </div>
-            )}
-          </div>
-
-          <nav className="flex-1 space-y-4">
-            <SidebarItem to="/" icon={LayoutDashboard} label="Panel General" active={location.pathname === '/'} collapsed={collapsed} />
-            <SidebarItem to="/inventario" icon={Database} label="Inventario" active={location.pathname === '/inventario'} collapsed={collapsed} />
-            <SidebarItem to="/crear" icon={PlusCircle} label="Alta de Activo" active={location.pathname === '/crear'} collapsed={collapsed} />
-            <SidebarItem to="/logs" icon={Activity} label="Histórico" active={location.pathname === '/logs'} collapsed={collapsed} />
-            <SidebarItem to="#" icon={Settings} label="Ajustes" collapsed={collapsed} />
-          </nav>
-          
-          <div className="mt-auto pt-6 border-t border-white/5">
-             <button 
-               onClick={() => signOut()}
-               className={cn("flex items-center gap-4 px-4 py-3 rounded-2xl text-zinc-500 hover:text-magenta transition-colors w-full group", collapsed && "justify-center")}
-             >
-                <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
-                {!collapsed && <span className="text-sm font-bold">Cerrar Sesión</span>}
-             </button>
-          </div>
+        <nav className="flex-1">
+          <SidebarItem to="/" icon={LayoutDashboard} label="Dashboard" active={location.pathname === '/'} />
+          <SidebarItem to="/inventario" icon={Database} label="Inventory" active={location.pathname === '/inventario'} />
+          <SidebarItem to="/crear" icon={PlusCircle} label="Add Asset" active={location.pathname === '/crear'} />
+          <SidebarItem to="/logs" icon={Activity} label="Event Viewer" active={location.pathname === '/logs'} />
+          <SidebarItem to="#" icon={Settings} label="Settings" />
+        </nav>
+        
+        <div className="mt-auto space-y-4">
+           <div className="bg-[#4318ff] p-4 rounded-2xl text-white shadow-xl shadow-[#4318ff]/20 flex flex-col gap-2 relative overflow-hidden">
+              <div className="absolute -right-4 -top-4 w-12 h-12 bg-white/10 rounded-full" />
+              <Bell size={18} />
+              <span className="text-sm font-bold">New Requests</span>
+              <span className="text-[10px] opacity-80">Check your new registration requests</span>
+           </div>
+           <button 
+             onClick={() => signOut()}
+             className="flex items-center gap-3 px-4 py-3 text-[#a3aed0] hover:text-red-500 transition-colors w-full font-bold text-sm"
+           >
+              <LogOut size={20} />
+              <span>Sign Out</span>
+           </button>
         </div>
       </aside>
 
       {/* Main Viewport */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        <header className="h-16 flex items-center justify-between px-8 z-20 border-b border-white/5">
-          <div className="flex items-center gap-8">
-            {!collapsed && (
-              <div className="flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-zinc-500">
-                <span className="text-white border-b-2 border-cyan pb-1 cursor-pointer transition-all">Sistemas Activos</span>
-                <span className="hover:text-white transition-colors cursor-pointer">Búsqueda Global</span>
-                <span className="hover:text-white transition-colors cursor-pointer">Seguridad</span>
-              </div>
-            )}
+        <header className="h-20 flex items-center justify-between px-8 bg-[#f4f7fe]/80 backdrop-blur-md z-20">
+          <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-2xl shadow-sm w-96 max-w-full">
+            <Search size={18} className="text-[#1b2559]" />
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              className="bg-transparent border-none outline-none text-sm w-full placeholder:text-[#a3aed0] font-medium"
+            />
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5 group group-hover:border-cyan/30 transition-all cursor-pointer">
-               <span className="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse shadow-[0_0_10px_#00f2ff]" />
-               <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 group-hover:text-cyan transition-colors">Server: Stable</span>
+          <div className="flex items-center gap-4 bg-white p-2 rounded-2xl shadow-sm border border-gray-50">
+            <div className="flex items-center gap-3 px-2">
+               <div className="w-8 h-8 rounded-full bg-[#f4f7fe] flex items-center justify-center text-[#a3aed0]">
+                  <Bell size={16} />
+               </div>
+               <div className="w-8 h-8 rounded-full bg-[#4318ff] flex items-center justify-center text-white shadow-md shadow-[#4318ff]/20">
+                  <User size={16} />
+               </div>
             </div>
-            <div className="relative cursor-pointer group">
-              <Bell className="w-5 h-5 text-zinc-400 group-hover:text-magenta transition-colors" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-magenta rounded-full text-[8px] flex items-center justify-center font-black border-2 border-[#0f1021]">3</span>
-            </div>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet to-magenta p-0.5 cursor-pointer transform hover:scale-110 transition-transform shadow-lg">
-              <div className="w-full h-full rounded-full bg-[#1a1b3a] flex items-center justify-center overflow-hidden">
-                <User size={16} className="text-white/80" />
-              </div>
-            </div>
-            <div className="w-px h-4 bg-white/10 mx-2" />
-            <button className="text-white/60 hover:text-white transition-colors">
-              <Menu size={20} />
-            </button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10">
-          <div className="max-w-[1600px] mx-auto">
+        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <div className="max-w-[1400px] mx-auto animate-fade-in">
             <Outlet />
           </div>
         </main>

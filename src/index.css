@@ -1,69 +1,68 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #0081ff;
-  --primary-glow: rgba(0, 129, 255, 0.3);
-  --magenta: #ff007a;
-  --cyan: #00f2ff;
-  --violet: #7000ff;
-  --background: #0f1021;
+  --primary: #4318ff;
+  --secondary: #a3aed0;
+  --bg-main: #f4f7fe;
+  --bg-card: #ffffff;
+  --text-main: #1b2559;
+  --text-sub: #a3aed0;
 }
 
 body {
-  background-color: #0f1021;
-  background-image: radial-gradient(circle at 50% 50%, #1a1b3a 0%, #0f1021 100%);
-  color: #ffffff;
-  min-height: 100vh;
+  background-color: var(--bg-main);
+  color: var(--text-main);
   font-family: 'Inter', system-ui, sans-serif;
-  overflow-x: hidden;
   margin: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* El fondo brillante de la imagen */
-.bg-vignette {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 242, 255, 0.05) 100%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.card-quantum {
-  background: rgba(30, 31, 58, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.card-soft {
+  background: var(--bg-card);
   border-radius: 1.5rem;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  transition: all 0.4s ease;
+  box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
+  border: 1px solid rgba(112, 144, 176, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.card-quantum:hover {
-  background: rgba(35, 36, 65, 0.6);
-  border-color: rgba(0, 242, 255, 0.2);
-  transform: translateY(-5px);
+.card-soft:hover {
+  box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.15);
+  transform: translateY(-2px);
 }
 
-.glow-cyan { text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); }
-.glow-magenta { text-shadow: 0 0 10px rgba(255, 0, 122, 0.5); }
-
-/* Animaciones */
-.animate-in {
-  animation: fadeInDown 0.8s ease forwards;
+.sidebar-link-active {
+  background: white;
+  color: var(--primary);
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+.btn-soft-primary {
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-soft-primary:hover {
+  background: #3311cc;
+  box-shadow: 0px 4px 20px rgba(67, 24, 255, 0.3);
 }
 
 /* Custom Scrollbar */
-::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: #d1d5db;
   border-radius: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
 }
