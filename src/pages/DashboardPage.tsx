@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { 
   Database,
   Activity,
@@ -11,8 +11,7 @@ import {
   AreaChart, 
   Area,
   XAxis,
-  YAxis,
-  Tooltip
+  YAxis
 } from 'recharts'
 
 const chartData = [
@@ -111,7 +110,6 @@ const DashboardPage: React.FC = () => {
                           <Area type="monotone" dataKey="load" stroke="#00f2ff" strokeWidth={4} fill="url(#cyanGradient)" animationDuration={2000} />
                           <XAxis dataKey="time" hide />
                           <YAxis hide />
-                          <Tooltip hide />
                        </AreaChart>
                     </ResponsiveContainer>
                  </div>
