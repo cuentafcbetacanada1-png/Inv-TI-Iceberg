@@ -73,19 +73,31 @@ try {
 
     Write-Log "PC: $env:COMPUTERNAME | Analizando red..."
 
-    # Captura definitiva basada en la Puerta de Enlace ( Gateway )
+    # 1. INTENTO DE PRECISIÓN: Buscar exactamente "Ethernet" (Literal)
     try {
-        $PrimaryInterfaceIndex = Get-NetRoute -DestinationPrefix "0.0.0.0/0" | Sort-Object RouteMetric | Select-Object -ExpandProperty InterfaceIndex -First 1
-        if ($PrimaryInterfaceIndex) {
-            $IP = (Get-NetIPAddress -InterfaceIndex $PrimaryInterfaceIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty IPAddress -First 1)
-            $NetAdapter = Get-NetAdapter -InterfaceIndex $PrimaryInterfaceIndex -ErrorAction SilentlyContinue
+        $EthIP = Get-NetIPAddress -InterfaceAlias "Ethernet" -AddressFamily IPv4 -ErrorAction SilentlyContinue | 
+                 Where-Object { $_.IPAddress -notlike '169.254*' } | Select-Object -ExpandProperty IPAddress -First 1
+        if ($EthIP) {
+            $IP = $EthIP
+            $NetAdapter = Get-NetAdapter -Name "Ethernet" -ErrorAction SilentlyContinue
             $MAC = if ($NetAdapter) { ($NetAdapter.MacAddress -replace '-', ':') } else { "N/A" }
+            Write-Log "Detectado adaptador Ethernet literal: $IP"
         }
-    } catch {
-        Write-Log "Fallo en deteccion por Gateway, usando fallback..." "WARN"
+    } catch {}
+
+    # 2. SEGUNDO INTENTO: Basado en Gateway (Si el primero falló)
+    if (-not $IP) {
+        try {
+            $PrimaryInterfaceIndex = Get-NetRoute -DestinationPrefix "0.0.0.0/0" | Sort-Object RouteMetric | Select-Object -ExpandProperty InterfaceIndex -First 1
+            if ($PrimaryInterfaceIndex) {
+                $IP = (Get-NetIPAddress -InterfaceIndex $PrimaryInterfaceIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty IPAddress -First 1)
+                $NetAdapter = Get-NetAdapter -InterfaceIndex $PrimaryInterfaceIndex -ErrorAction SilentlyContinue
+                $MAC = if ($NetAdapter) { ($NetAdapter.MacAddress -replace '-', ':') } else { "N/A" }
+            }
+        } catch {}
     }
 
-    # Fallback si el metodo de Gateway falla
+    # 3. FALLBACK FINAL: Cualquier adaptador activo con IP válida
     if (-not $IP) {
         $IPAddressObj = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { 
             $_.IPAddress -notlike '169.254*' -and 

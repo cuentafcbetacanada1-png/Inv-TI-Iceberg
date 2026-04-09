@@ -142,7 +142,6 @@ const InventoryPage: React.FC = () => {
       })
     })
 
-    // Generar archivo
     const buffer = await workbook.xlsx.writeBuffer()
     const data = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
     saveAs(data, `REPORTE_INVENTARIO_ICEBERG_${new Date().toISOString().split('T')[0]}.xlsx`)
