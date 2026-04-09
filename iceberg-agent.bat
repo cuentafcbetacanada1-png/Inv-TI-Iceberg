@@ -1,7 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: --- VERIFICACION DE ADMINISTRADOR ---
 net session >nul 2>&1
 if %errorLevel% neq 0 (
     echo [ERROR] Se requieren privilegios de ADMINISTRADOR.

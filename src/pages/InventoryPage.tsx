@@ -136,121 +136,168 @@ const InventoryPage: React.FC = () => {
     return matchesSearch
   })
 
-  return (
-    <div className="space-y-8 animate-in pb-10 font-sans text-white">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-[#0e312a]">
-        <div className="space-y-2">
-           <div className="flex items-center gap-2 text-[#00ff88] font-black text-[10px] uppercase tracking-[0.4em]">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] shadow-[0_0_10px_#00ff88] animate-pulse" />
-              <span>Gestión de Activos IT</span>
+  r    <div className="space-y-12 animate-in pb-20 font-sans text-white">
+      {/* Header Sección Principal */}
+      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-[#00ff88]/10 relative">
+        <div className="space-y-4">
+           <div className="flex items-center gap-3 text-[#00ff88] font-black text-[11px] uppercase tracking-[0.5em]">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#00ff88] shadow-[0_0_15px_#00ff88] animate-pulse" />
+              <span>Sistemas de Control Iceberg</span>
            </div>
-           <h1 className="text-4xl md:text-5xl font-black tracking-tighter italic uppercase">Inventario <span className="text-[#00ff88]">Iceberg IT</span></h1>
+           <h1 className="text-5xl md:text-7xl font-black tracking-tighter italic uppercase leading-none">
+              Nodos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff88] to-emerald-400">Red</span>
+           </h1>
+           <p className="text-[#4e564e] text-xs font-bold uppercase tracking-[0.2em]">Visualización en tiempo real de la infraestructura tecnológica.</p>
         </div>
-        <div className="flex flex-wrap gap-3">
-           <button onClick={exportToCSV} className="px-6 py-4 rounded-2xl bg-[#121412] border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest">
-              <FileSpreadsheet size={16} /> Exportar CSV
+        <div className="flex flex-wrap gap-4">
+           <button onClick={exportToCSV} className="px-8 py-5 rounded-2xl bg-[#121412]/50 border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] hover:border-[#00ff88]/30 transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest backdrop-blur-xl group">
+              <FileSpreadsheet size={18} className="group-hover:scale-110 transition-transform" /> Exportar Reporte
            </button>
-           <button onClick={handleRefresh} disabled={isRefreshing} className="px-6 py-4 rounded-2xl bg-[#121412] border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest">
-              <RefreshCcw size={16} className={isRefreshing ? "animate-spin" : ""} /> Actualizar
+           <button onClick={handleRefresh} disabled={isRefreshing} className="px-8 py-5 rounded-2xl bg-[#121412]/50 border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest backdrop-blur-xl">
+              <RefreshCcw size={18} className={isRefreshing ? "animate-spin" : "hover:rotate-180 transition-transform duration-500"} /> Sincronizar
            </button>
-           <Link to="/crear" className="btn-matrix flex items-center gap-3 px-8 text-[10px] font-black uppercase tracking-widest">
-              <Plus size={18} /> Añadir Equipo
+           <Link to="/crear" className="btn-matrix flex items-center gap-3 px-10 py-5 text-[10px] font-bold uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(0,255,136,0.15)]">
+              <Plus size={20} /> Nuevo Activo
            </Link>
         </div>
       </header>
 
-      <div className="flex flex-col md:flex-row gap-6 items-center">
-         <div className="relative flex-1 group">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-[#4e564e]" />
+      {/* Barra de Búsqueda y Filtros con más aire */}
+      <div className="flex flex-col lg:flex-row gap-8 items-center bg-[#0d0f0d] p-3 rounded-[2.5rem] border border-[#0e312a]/50">
+         <div className="relative flex-1 w-full group">
+            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4e564e] group-focus-within:text-[#00ff88] transition-colors" />
             <input
-              placeholder="Buscar..."
+              placeholder="ESCANEAR BASE DE DATOS (HOSTNAME, USUARIO, SERIE...)"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#121412] border border-[#0e312a] rounded-2xl pl-14 pr-4 py-5 text-sm outline-none focus:border-[#00ff88]/40 transition-all font-bold uppercase tracking-widest shadow-inner"
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearchTerm(val);
+                const params = new URLSearchParams(window.location.search);
+                if (val) params.set('search', val);
+                else params.delete('search');
+                navigate({ search: params.toString() }, { replace: true });
+              }}
+              className="w-full bg-[#121412]/30 border-none rounded-[2rem] pl-16 pr-8 py-6 text-xs outline-none focus:ring-1 ring-[#00ff88]/20 transition-all font-black uppercase tracking-[0.15em] text-[#00ff88] placeholder:text-[#2a2f2a]"
             />
          </div>
-         <div className="flex items-center gap-2 p-1 bg-[#121412] border border-[#0e312a] rounded-2xl">
+         <div className="flex items-center gap-3 p-2 bg-black/40 rounded-[1.8rem] border border-white/5">
             {['todos', 'laptops', 'desktops'].map(f => (
               <button 
                 key={f} onClick={() => setFilterTech(f as any)}
-                className={cn("px-6 py-4 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all", filterTech === f ? "bg-[#00ff88] text-black" : "text-[#4e564e]")}
+                className={cn(
+                  "px-8 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest transition-all duration-300", 
+                  filterTech === f ? "bg-[#00ff88] text-black shadow-[0_0_20px_rgba(0,255,136,0.2)]" : "text-[#4e564e] hover:text-white"
+                )}
               > {f} </button>
             ))}
          </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
+      {/* Grilla de Equipos con Estilo Mejorado */}
+      <div className="grid grid-cols-1 gap-10">
          {isLoading && equipos.length === 0 ? (
-           <div className="col-span-full flex flex-col items-center justify-center py-20 space-y-4">
-              <Loader2 size={48} className="text-[#00ff88] animate-spin" />
-              <p className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em] animate-pulse">Sincronizando Matriz...</p>
+           <div className="col-span-full flex flex-col items-center justify-center py-40 space-y-6">
+              <div className="relative">
+                <Loader2 size={64} className="text-[#00ff88] animate-spin opacity-20" />
+                <Zap size={24} className="text-[#00ff88] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+              </div>
+              <p className="text-[11px] font-black text-[#00ff88] uppercase tracking-[0.5em] animate-pulse">Iniciando Sincronización...</p>
            </div>
          ) : filteredEquipos.length > 0 ? (
            filteredEquipos.map((e: any) => (
              <div 
                key={e.id}
                onClick={() => navigate(`/editar/${e.id}`)}
-               className="card-matrix group cursor-pointer hover:border-[#00ff88]/30 transition-all p-8 relative overflow-hidden"
+               className="group relative"
              >
-                {/* Background Glow */}
-                <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#00ff88]/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* Glow de fondo dinámico */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00ff88]/0 via-[#00ff88]/10 to-[#00ff88]/0 rounded-[2.5rem] blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
                 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                   
-                   {/* Equipo y ID */}
-                   <div className="lg:col-span-4 flex items-center gap-6">
-                      <div className={cn(
-                        "w-16 h-16 rounded-2xl flex items-center justify-center border transition-all",
-                        e.es_laptop ? "bg-amber-500/5 border-amber-500/10 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.05)]" : "bg-[#00ff88]/5 border-[#00ff88]/10 text-[#00ff88] shadow-[0_0_20px_rgba(0,255,136,0.05)]"
-                      )}>
-                         {e.es_laptop ? <Laptop size={28} strokeWidth={2.5} /> : <DesktopIcon size={28} strokeWidth={2.5} />}
-                      </div>
-                      <div>
-                         <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-xl font-black italic uppercase tracking-tighter line-clamp-1 group-hover:text-[#00ff88] transition-colors">{e.hostname}</h3>
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] shadow-[0_0_5px_#00ff88]" />
+                <div className="card-matrix relative bg-[#090a09]/80 backdrop-blur-2xl border border-[#0e312a] hover:border-[#00ff88]/40 transition-all duration-500 p-10 rounded-[2.5rem] overflow-hidden">
+                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                      
+                      {/* Cabecera de la Tarjeta */}
+                      <div className="lg:col-span-4 flex items-center gap-8">
+                         <div className={cn(
+                           "w-24 h-24 rounded-3xl flex items-center justify-center border-2 transition-all duration-500 group-hover:scale-110",
+                           e.es_laptop 
+                            ? "bg-amber-500/5 border-amber-500/10 text-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.1)]" 
+                            : "bg-[#00ff88]/5 border-[#00ff88]/10 text-[#00ff88] shadow-[0_0_30px_rgba(0,255,136,0.1)]"
+                         )}>
+                            {e.es_laptop ? <Laptop size={44} strokeWidth={1.5} /> : <DesktopIcon size={44} strokeWidth={1.5} />}
                          </div>
-                         <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.2em] flex items-center gap-2">
-                           ACTIVO: <span className="text-white font-mono">{e.codigo_activo || 'PENDIENTE'}</span>
-                         </p>
+                         <div className="space-y-3">
+                            <div className="flex flex-col">
+                               <span className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.3em] mb-1">Identificador Host</span>
+                               <h3 className="text-3xl font-black italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-none">
+                                 {e.hostname}
+                               </h3>
+                            </div>
+                            <div className="flex items-center gap-3">
+                               <div className="px-3 py-1 bg-[#121412] border border-[#0e312a] rounded-lg">
+                                  <span className="text-[9px] font-bold text-white uppercase tracking-widest">{e.codigo_activo || 'S/N ACTIVO'}</span>
+                               </div>
+                               <div className="flex items-center gap-1.5 px-3 py-1 bg-[#00ff88]/10 rounded-lg">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] shadow-[0_0_5px_#00ff88]" />
+                                  <span className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">ONLINE</span>
+                               </div>
+                            </div>
+                         </div>
                       </div>
+
+                      {/* Bloque Central de Hardware */}
+                      <div className="lg:col-span-6 grid grid-cols-2 gap-x-12 gap-y-6 lg:border-l lg:border-[#0e312a] lg:pl-12 lg:py-4">
+                         <div className="space-y-2">
+                            <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.2em] flex items-center gap-2">
+                               <Zap size={10} className="text-[#00ff88]" /> Arquitectura
+                            </p>
+                            <p className="text-xs font-bold text-white/90 truncate uppercase leading-relaxed">{e.caracteristicas_pc || 'CPU GENÉRICO'}</p>
+                         </div>
+                         <div className="space-y-2">
+                            <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.2em]">Memoria / Almacén</p>
+                            <p className="text-xs font-bold text-zinc-400 uppercase tracking-wide">{e.memoria_ram || 'N/A'} RAM • {e.disco || 'N/A'}</p>
+                         </div>
+                         <div className="space-y-2">
+                            <p className="text-[9px] font-black text-[#00ff88] uppercase tracking-[0.2em]">Entorno O.S.</p>
+                            <p className="text-xs font-bold text-white/70 truncate uppercase">{e.sistema_operativo}</p>
+                         </div>
+                         <div className="space-y-2">
+                            <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                               <Server size={10} className="text-indigo-400" /> Periféricos Visuales
+                            </p>
+                            <p className="text-[10px] font-bold text-white/60 uppercase whitespace-pre-line leading-tight">
+                              {e.monitores || 'Pantalla Integrada'}
+                            </p>
+                         </div>
+                      </div>
+
+                      {/* Botones de Acción */}
+                      <div className="lg:col-span-2 flex items-center justify-end gap-4">
+                         <button 
+                           onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }}
+                           className="w-14 h-14 bg-[#1a1c1a] hover:bg-[#00ff88] text-[#4e564e] hover:text-black rounded-2xl transition-all border border-[#0e312a] hover:border-[#00ff88] flex items-center justify-center group/btn"
+                         > <Edit2 size={20} className="group-hover/btn:scale-110 transition-transform" /> </button>
+                         <button 
+                           onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }}
+                           className="w-14 h-14 bg-[#1a1c1a] hover:bg-red-500 text-[#4e564e] hover:text-white rounded-2xl transition-all border border-[#0e312a] hover:border-red-500 flex items-center justify-center group/btn"
+                         > <Trash2 size={20} className="group-hover/btn:scale-110 transition-transform" /> </button>
+                      </div>
+
                    </div>
-
-                   {/* Datos de Hardware */}
-                   <div className="lg:col-span-6 grid grid-cols-2 gap-4 border-l border-r border-[#0e312a] px-8 py-1">
-                      <div className="space-y-1">
-                         <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest">Hardware</p>
-                         <p className="text-[10px] font-bold text-white/90 truncate">{e.caracteristicas_pc}</p>
-                      </div>
-                      <div className="space-y-1">
-                         <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest">RAM / Disco</p>
-                         <p className="text-[10px] font-bold text-zinc-400">{e.memoria_ram || 'N/A'} - {e.disco || 'N/A'}</p>
-                      </div>
-                      <div className="col-span-1 pt-2 border-t border-[#0e312a]/50">
-                         <p className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">S.O.</p>
-                         <p className="text-[10px] font-bold text-white/70 truncate uppercase">{e.sistema_operativo}</p>
-                      </div>
-                      <div className="col-span-1 pt-2 border-t border-[#0e312a]/50">
-                         <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Monitores</p>
-                         <p className="text-[10px] font-bold text-white/70 uppercase whitespace-pre-line">{e.monitores || 'Standard'}</p>
-                      </div>
-                   </div>
-
-
-                   {/* Acciones Rápidas */}
-                   <div className="lg:col-span-2 flex items-center justify-end gap-3 px-4">
-                      <button 
-                        onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }}
-                        className="p-4 bg-[#1a1c1a] hover:bg-[#00ff88] text-[#4e564e] hover:text-black rounded-2xl transition-all border border-[#0e312a] hover:border-[#00ff88] shadow-lg"
-                      > <Edit2 size={18} /> </button>
-                      <button 
-                        onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }}
-                        className="p-4 bg-[#1a1c1a] hover:bg-red-500 text-[#4e564e] hover:text-white rounded-2xl transition-all border border-[#0e312a] hover:border-red-500 shadow-lg"
-                      > <Trash2 size={18} /> </button>
-                   </div>
-
                 </div>
              </div>
+           ))
+         ) : (
+           <div className="flex flex-col items-center justify-center py-40 border-2 border-dashed border-[#0e312a] rounded-[3rem] space-y-6 bg-[#090a09]/50">
+              <div className="p-8 bg-zinc-900/50 rounded-full border border-white/5">
+                 <ShieldAlert size={60} className="text-[#0e312a]" />
+              </div>
+              <p className="text-[12px] font-black text-[#4e564e] uppercase tracking-[0.5em]">No se detectan activos en este sector</p>
+           </div>
+         )}
+      </div>
+    </div>
+    </div>
            ))
          ) : (
            <div className="flex flex-col items-center justify-center p-20 border-2 border-dashed border-[#0e312a] rounded-[2.5rem] space-y-4">
