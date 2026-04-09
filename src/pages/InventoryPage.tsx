@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import ExcelJS from 'exceljs'
+import { saveAs } from 'file-saver'
 import { 
   Search, 
   Edit2, 
@@ -55,18 +57,55 @@ const InventoryPage: React.FC = () => {
     }
   }
 
-  const exportToCSV = () => {
+  const exportToExcel = async () => {
     if (equipos.length === 0) return toast.error('No hay datos para exportar')
-    const headers = [
-      'HOSTNAME', 'USUARIO', 'IP LOCAL', 'SISTEMA OPERATIVO', 
-      'PROCESADOR', 'RAM', 'ALMACENAMIENTO', 
-      'MARCA EQUIPO', 'MODELO EQUIPO', 'S/N EQUIPO',
-      'MONITOR 1 MODELO', 'MONITOR 1 SERIAL',
-      'MONITOR 2 MODELO', 'MONITOR 2 SERIAL',
-      'FECHA REGISTRO'
+    
+    const workbook = new ExcelJS.Workbook()
+    const worksheet = workbook.addWorksheet('Inventario IT')
+
+    // Estilo de Encabezados (Negrita, Cursiva, Fondo Gris)
+    const headerStyle = {
+      font: { bold: true, italic: true, size: 11, name: 'Segoe UI' },
+      fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE9E9E9' } },
+      alignment: { vertical: 'middle', horizontal: 'center' },
+      border: {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      }
+    }
+
+    // Definición de Columnas
+    const columns = [
+      { header: 'HOSTNAME', key: 'hostname', width: 22 },
+      { header: 'USUARIO', key: 'username', width: 18 },
+      { header: 'IP LOCAL', key: 'ip_local', width: 18 },
+      { header: 'SISTEMA OPERATIVO', key: 'sistema_operativo', width: 35 },
+      { header: 'PROCESADOR', key: 'caracteristicas_pc', width: 45 },
+      { header: 'RAM', key: 'memoria_ram', width: 12 },
+      { header: 'ALMACENAMIENTO', key: 'disco', width: 28 },
+      { header: 'MARCA EQUIPO', key: 'marca_pc', width: 18 },
+      { header: 'MODELO EQUIPO', key: 'modelo', width: 22 },
+      { header: 'S/N EQUIPO', key: 'numero_serie', width: 20 },
+      { header: 'MONITOR 1 MODELO', key: 'm1_model', width: 25 },
+      { header: 'MONITOR 1 SERIAL', key: 'm1_serial', width: 22 },
+      { header: 'MONITOR 2 MODELO', key: 'm2_model', width: 25 },
+      { header: 'MONITOR 2 SERIAL', key: 'm2_serial', width: 22 },
+      { header: 'FECHA REGISTRO', key: 'created_at', width: 22 }
     ]
 
-    const rows = equipos.map(e => {
+    worksheet.columns = columns
+
+    // Aplicar estilo a los encabezados
+    const headerRow = worksheet.getRow(1);
+    headerRow.height = 25;
+    headerRow.eachCell((cell) => {
+      cell.style = headerStyle as any;
+    })
+
+    // Agregar Datos
+    equipos.forEach(e => {
       const monitorList = (e.monitores || '').split('\n')
       const parseMonitor = (str: string) => {
         const parts = str.split('|')
@@ -77,26 +116,43 @@ const InventoryPage: React.FC = () => {
       const m1 = monitorList[0] ? parseMonitor(monitorList[0]) : { model: '', serial: '' }
       const m2 = monitorList[1] ? parseMonitor(monitorList[1]) : { model: '', serial: '' }
 
-      return [
-        e.hostname, e.username, e.ip_local, e.sistema_operativo,
-        e.caracteristicas_pc?.replace(/,/g, ' '), e.memoria_ram, e.disco,
-        e.marca_pc, e.modelo, e.numero_serie,
-        m1.model, m1.serial, m2.model, m2.serial,
-        new Date(e.created_at).toLocaleString()
-      ]
+      const row = worksheet.addRow({
+        hostname: e.hostname,
+        username: e.username,
+        ip_local: e.ip_local,
+        sistema_operativo: e.sistema_operativo,
+        caracteristicas_pc: e.caracteristicas_pc,
+        memoria_ram: e.memoria_ram,
+        disco: e.disco,
+        marca_pc: e.marca_pc,
+        modelo: e.modelo,
+        numero_serie: e.numero_serie,
+        m1_model: m1.model,
+        m1_serial: m1.serial,
+        m2_model: m2.model,
+        m2_serial: m2.serial,
+        created_at: new Date(e.created_at).toLocaleString()
+      })
+
+      // Alineación de datos y bordes
+      row.eachCell((cell) => {
+        cell.alignment = { vertical: 'middle', horizontal: 'left' }
+        cell.font = { size: 10, name: 'Segoe UI' }
+        cell.border = {
+            top: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
+        }
+      })
     })
 
-    const csvContent = "\uFEFF" + [headers, ...rows].map(r => r.map(c => `"${c || ''}"`).join(',')).join('\n')
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.setAttribute('href', url)
-    link.setAttribute('download', `REPORTE_INVENTARIO_ICEBERG_${new Date().toISOString().split('T')[0]}.csv`)
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    toast.success('Reporte Excel (CSV) generado con éxito')
+    // Generar archivo
+    const buffer = await workbook.xlsx.writeBuffer()
+    const data = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    saveAs(data, `REPORTE_INVENTARIO_ICEBERG_${new Date().toISOString().split('T')[0]}.xlsx`)
+    
+    toast.success('Excel Ejecutivo generado con éxito')
   }
 
   const filteredEquipos = equipos.filter(e => {
@@ -126,8 +182,8 @@ const InventoryPage: React.FC = () => {
            <p className="text-[#4e564e] text-xs font-bold uppercase tracking-[0.2em]">Visualización en tiempo real de la infraestructura tecnológica.</p>
         </div>
         <div className="flex flex-wrap gap-4">
-           <button onClick={exportToCSV} className="px-8 py-5 rounded-2xl bg-[#121412]/50 border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] hover:border-[#00ff88]/30 transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest backdrop-blur-xl group">
-              <FileSpreadsheet size={18} className="group-hover:scale-110 transition-transform" /> Exportar Reporte
+           <button onClick={exportToExcel} className="px-8 py-5 rounded-2xl bg-[#121412]/50 border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] hover:border-[#00ff88]/30 transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest backdrop-blur-xl group">
+              <FileSpreadsheet size={18} className="group-hover:scale-110 transition-transform" /> Exportar Excel
            </button>
            <button onClick={handleRefresh} disabled={isRefreshing} className="px-8 py-5 rounded-2xl bg-[#121412]/50 border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest backdrop-blur-xl">
               <RefreshCcw size={18} className={isRefreshing ? "animate-spin" : "hover:rotate-180 transition-transform duration-500"} /> Sincronizar
@@ -181,7 +237,7 @@ const InventoryPage: React.FC = () => {
            </div>
          ) : filteredEquipos.length > 0 ? (
            filteredEquipos.map((e: any) => (
-             <div key={e.id} onClick={() => navigate(`/editar/${e.id}`)} className="group relative" >
+             <div key={e.id} onClick={() => navigate(`/editar/${e.id}`)} className="group relative">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00ff88]/0 via-[#00ff88]/10 to-[#00ff88]/0 rounded-[2.5rem] blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
                 <div className="card-matrix relative bg-[#090a09]/80 backdrop-blur-2xl border border-[#0e312a] hover:border-[#00ff88]/40 transition-all duration-500 p-10 rounded-[2.5rem] overflow-hidden">
                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
