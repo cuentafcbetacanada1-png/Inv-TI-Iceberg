@@ -13,15 +13,22 @@ function Write-Log {
     }
 }
 
+function Clean-String {
+    param([string]$InputString)
+    if (-not $InputString) { return "" }
+    # Elimina caracteres nulos (\x00) y caracteres no imprimibles
+    return ($InputString -replace "\x00", "").Trim()
+}
+
 function Get-EnvValue {
     param([string]$Path, [string]$Key)
     if (-not (Test-Path $Path)) { return $null }
     try {
         $lines = Get-Content $Path -ErrorAction SilentlyContinue
         foreach ($l in $lines) {
-            $cl = $l -replace '[^\x20-\x7E]', ''
+            $cl = Clean-String ($l -replace '[^\x20-\x7E]', '')
             if ($cl -match "^\s*$Key\s*=\s*(.*)$") {
-                return $matches[1].Trim().Trim('"').Trim("'").Trim()
+                return Clean-String $matches[1].Trim('"').Trim("'")
             }
         }
     } catch {}
@@ -31,13 +38,15 @@ function Get-EnvValue {
 function Get-MonitorDetails {
     try {
         $monitors = Get-CimInstance -Namespace root\wmi -ClassName WmiMonitorID -ErrorAction SilentlyContinue
-        if (-not $monitors) { return "Monitor Standar" }
+        if (-not $monitors) { return "Monitor Standard" }
         $results = foreach ($m in $monitors) {
-            $name = (($m.UserFriendlyName | ForEach-Object { [char]$_ }) -join "").Trim()
-            $serial = (($m.SerialNumberID | ForEach-Object { [char]$_ }) -join "").Trim()
-            $modelStr = if ($name) { $name } else { "Generic Monitor" }
-            $serialStr = if ($serial) { $serial } else { "N/A" }
-            "Modelo: $modelStr | S/N: $serialStr"
+            $nameChars = $m.UserFriendlyName | Where-Object { $_ -ne 0 }
+            $serialChars = $m.SerialNumberID | Where-Object { $_ -ne 0 }
+            
+            $name = if ($nameChars) { Clean-String (([char[]]$nameChars) -join "") } else { "Generic Monitor" }
+            $serial = if ($serialChars) { Clean-String (([char[]]$serialChars) -join "") } else { "N/A" }
+            
+            "Modelo: $name | S/N: $serial"
         }
         return ($results -join "`n")
     } catch { return "Conectado" }
@@ -48,7 +57,7 @@ $DotEnvPath = Join-Path $ScriptDir ".env"
 $script:LogPath = Join-Path $ScriptDir "iceberg-agent.log"
 
 if (-not $Silent) {
-    Write-Host "`n[ ICEBERG IT :: Agente v4.6 :: Bugfix ]" -ForegroundColor Cyan
+    Write-Host "`n[ ICEBERG IT :: Agente v4.7 :: UTF8 Fix ]" -ForegroundColor Cyan
     Write-Host "------------------------------------------"
 }
 
@@ -63,7 +72,7 @@ try {
         throw "La API Key no es valida. Revisa el archivo .env en la ruta de red."
     }
 
-    Write-Log "PC: $env:COMPUTERNAME | Analizando hardware..."
+    Write-Log "PC: $env:COMPUTERNAME | Limpiando y analizando hardware..."
 
     $IP = (Get-NetIPAddress -AddressFamily IPv4 | Where { $_.IPAddress -notlike '169.254*' -and $_.InterfaceAlias -notlike '*Loopback*' } | Select -Expand IPAddress -First 1)
     $MAC = if (Get-NetAdapter | Where { $_.Status -eq 'Up' }) { ((Get-NetAdapter | Where { $_.Status -eq 'Up' } | Select -Expand MacAddress -First 1) -replace '-', ':') } else { "N/A" }
@@ -75,25 +84,25 @@ try {
     $Disk = Get-CimInstance Win32_DiskDrive -EA SilentlyContinue | Select -First 1
     $C = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'" -EA SilentlyContinue
 
-    $RawSerial = if ($Bios.SerialNumber) { $Bios.SerialNumber.Trim() } else { "N/A" }
-    $Serial = if (@("System Serial Number", "0", "None", "").Contains($RawSerial)) { "GENERIC-$env:COMPUTERNAME" } else { $RawSerial }
+    $RawSerial = Clean-String $Bios.SerialNumber
+    $Serial = if (@("System Serial Number", "0", "None", "", "N/A").Contains($RawSerial)) { "GENERIC-$env:COMPUTERNAME" } else { $RawSerial }
 
     $Data = @{
-        hostname = $env:COMPUTERNAME
-        username = $env:USERNAME
-        ip_local = if ($IP) { $IP } else { "0.0.0.0" }
+        hostname = Clean-String $env:COMPUTERNAME
+        username = Clean-String $env:USERNAME
+        ip_local = if ($IP) { Clean-String $IP } else { "0.0.0.0" }
         ip_publica = "Local"
-        mac_address = $MAC
-        caracteristicas_pc = ($CPU.Name -replace '\s+', ' ').Trim()
-        monitores = Get-MonitorDetails
-        numero_serie = $Serial
-        marca_pc = $Sys.Manufacturer
+        mac_address = Clean-String $MAC
+        caracteristicas_pc = Clean-String ($CPU.Name -replace '\s+', ' ')
+        monitores = Clean-String (Get-MonitorDetails)
+        numero_serie = Clean-String $Serial
+        marca_pc = Clean-String $Sys.Manufacturer
         es_escritorio = -not [bool](Get-CimInstance Win32_Battery -EA SilentlyContinue)
         es_laptop = [bool](Get-CimInstance Win32_Battery -EA SilentlyContinue)
         memoria_ram = if ($Sys.TotalPhysicalMemory) { "$([math]::round($Sys.TotalPhysicalMemory / 1GB)) GB" } else { "N/A" }
-        sistema_operativo = $OS.Caption
+        sistema_operativo = Clean-String $OS.Caption
         disco = if ($Disk.Model) { "$([math]::round($C.Size / 1GB)) GB ($($Disk.Model.Trim()))" } else { "N/A" }
-        modelo = $Sys.Model
+        modelo = Clean-String $Sys.Model
     }
 
     $headers = @{ 
@@ -106,10 +115,9 @@ try {
     $Payload = $Data | ConvertTo-Json -Compress
     
     try {
-        Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body $Payload -ErrorAction Stop
+        Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($Payload)) -ErrorAction Stop
         Write-Log "Sincronizacion Exitosa."
     } catch {
-        # CAPTURA EL ERROR REAL DE SUPABASE
         $stream = $_.Exception.Response.GetResponseStream()
         $reader = New-Object System.IO.StreamReader($stream)
         $errorResponse = $reader.ReadToEnd()
