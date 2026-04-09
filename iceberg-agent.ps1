@@ -71,32 +71,33 @@ try {
         throw "La API Key no es valida. Revisa el archivo .env en la ruta de red."
     }
 
-    Write-Log "PC: $env:COMPUTERNAME | Limpiando y analizando hardware..."
+    Write-Log "PC: $env:COMPUTERNAME | Analizando red..."
 
-    # Captura inteligente de IP Priorizando Ethernet
-    $IPAddressObj = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { 
-        $_.IPAddress -notlike '169.254*' -and 
-        ($_.InterfaceAlias -like '*Ethernet*' -or $_.InterfaceAlias -like '*Área local*')
-    } | Select-Object -First 1
+    # Captura definitiva basada en la Puerta de Enlace ( Gateway )
+    try {
+        $PrimaryInterfaceIndex = Get-NetRoute -DestinationPrefix "0.0.0.0/0" | Sort-Object RouteMetric | Select-Object -ExpandProperty InterfaceIndex -First 1
+        if ($PrimaryInterfaceIndex) {
+            $IP = (Get-NetIPAddress -InterfaceIndex $PrimaryInterfaceIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty IPAddress -First 1)
+            $NetAdapter = Get-NetAdapter -InterfaceIndex $PrimaryInterfaceIndex -ErrorAction SilentlyContinue
+            $MAC = if ($NetAdapter) { ($NetAdapter.MacAddress -replace '-', ':') } else { "N/A" }
+        }
+    } catch {
+        Write-Log "Fallo en deteccion por Gateway, usando fallback..." "WARN"
+    }
 
-    if ($null -eq $IPAddressObj) {
-        # Fallback si no hay Ethernet activo
+    # Fallback si el metodo de Gateway falla
+    if (-not $IP) {
         $IPAddressObj = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { 
-            $_.IPAddress -notlike '169.254*' -and $_.InterfaceAlias -notlike '*Loopback*' 
+            $_.IPAddress -notlike '169.254*' -and 
+            ($_.InterfaceAlias -like '*Ethernet*' -or $_.InterfaceAlias -like '*Área local*' -or $_.InterfaceAlias -like '*Wi-Fi*')
         } | Select-Object -First 1
+        $IP = if ($IPAddressObj) { $IPAddressObj.IPAddress } else { "0.0.0.0" }
+        
+        if (-not $MAC -or $MAC -eq "N/A") {
+            $NetAdapter = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' } | Sort-Object InterfaceMetric | Select-Object -First 1
+            $MAC = if ($NetAdapter) { ($NetAdapter.MacAddress -replace '-', ':') } else { "N/A" }
+        }
     }
-    $IP = $IPAddressObj.IPAddress
-
-    # Captura de MAC Priorizando Ethernet
-    $NetAdapter = Get-NetAdapter | Where-Object { 
-        $_.Status -eq 'Up' -and ($_.Name -like '*Ethernet*' -or $_.Name -like '*Área local*')
-    } | Select-Object -First 1
-
-    if ($null -eq $NetAdapter) {
-        # Fallback MAC
-        $NetAdapter = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
-    }
-    $MAC = if ($NetAdapter) { ($NetAdapter.MacAddress -replace '-', ':') } else { "N/A" }
     
     $CPU = Get-CimInstance Win32_Processor -EA SilentlyContinue
     $OS = Get-CimInstance Win32_OperatingSystem -EA SilentlyContinue
