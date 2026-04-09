@@ -84,7 +84,10 @@ const InventoryPage: React.FC = () => {
   const filteredEquipos = equipos.filter(e => {
     const searchString = `${e.username || ''} ${e.hostname || ''} ${e.numero_serie || ''} ${e.marca_pc || ''}`.toLowerCase()
     const matchesSearch = searchString.includes(searchTerm.toLowerCase()) ||
-        (e.ip_local?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+        (e.ip_local?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (e.vlan?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (e.ip_switch?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (e.codigo_activo?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     if (filterTech === 'laptops') return matchesSearch && e.es_laptop
     if (filterTech === 'desktops') return matchesSearch && e.es_escritorio
     return matchesSearch
@@ -133,48 +136,102 @@ const InventoryPage: React.FC = () => {
          </div>
       </div>
 
-      <div className="card-matrix overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-[#121412] text-[10px] font-black text-[#4e564e] uppercase tracking-widest border-b border-[#0e312a]">
-                <th className="px-6 py-5 text-left">Equipo</th>
-                <th className="px-6 py-5 text-left">Usuario</th>
-                <th className="px-6 py-5 text-left">IP Local</th>
-                <th className="px-6 py-5 text-left">Hardware</th>
-                <th className="px-6 py-5 text-left">S.O.</th>
-                <th className="px-6 py-5 text-right">Mando</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#0e312a]">
-              {isLoading && equipos.length === 0 ? (
-                <tr><td colSpan={6} className="py-20 text-center animate-pulse tracking-widest font-black text-[#4e564e]">Sincronizando Sistema...</td></tr>
-              ) : filteredEquipos.length === 0 ? (
-                <tr><td colSpan={6} className="py-20 text-center italic font-black text-red-500/50">Sin registros (Verifica Supabase)</td></tr>
-              ) : (
-                filteredEquipos.map((e) => (
-                  <tr key={e.id} className="group hover:bg-[#00ff88]/5 transition-all">
-                    <td className="px-6 py-6 font-black italic uppercase tracking-tighter">{e.hostname}</td>
-                    <td className="px-6 py-6 text-xs font-bold uppercase text-[#4e564e]">{e.username}</td>
-                    <td className="px-6 py-6 font-mono text-[10px] text-[#00ff88]">{e.ip_local}</td>
-                    <td className="px-6 py-6 text-[10px] font-bold truncate max-w-[200px]">{e.caracteristicas_pc}</td>
-                    <td className="px-6 py-6 text-[9px] uppercase font-black text-[#4e564e]">{e.sistema_operativo}</td>
-                    <td className="px-6 py-6 text-right">
-                       <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => navigate(`/editar/${e.id}`)} className="p-3 bg-[#121412] border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] rounded-xl transition-all">
-                             <Edit2 size={16} />
-                          </button>
-                          <button onClick={() => handleActionDelete(e.id, e.hostname)} className="p-3 bg-[#121412] border border-[#0e312a] text-[#4e564e] hover:text-red-500 rounded-xl transition-all">
-                             <Trash2 size={16} />
-                          </button>
-                       </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      <div className="grid grid-cols-1 gap-6">
+         {isLoading && equipos.length === 0 ? (
+           <div className="col-span-full flex flex-col items-center justify-center py-20 space-y-4">
+              <Loader2 size={48} className="text-[#00ff88] animate-spin" />
+              <p className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em] animate-pulse">Sincronizando Matriz...</p>
+           </div>
+         ) : filteredEquipos.length > 0 ? (
+           filteredEquipos.map((e) => (
+             <div 
+               key={e.id}
+               onClick={() => navigate(`/editar/${e.id}`)}
+               className="card-matrix group cursor-pointer hover:border-[#00ff88]/30 transition-all p-8 relative overflow-hidden"
+             >
+                {/* Background Glow */}
+                <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#00ff88]/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                   
+                   {/* Equipo y ID */}
+                   <div className="lg:col-span-3 flex items-center gap-6">
+                      <div className={cn(
+                        "w-16 h-16 rounded-2xl flex items-center justify-center border transition-all",
+                        e.es_laptop ? "bg-amber-500/5 border-amber-500/10 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.05)]" : "bg-[#00ff88]/5 border-[#00ff88]/10 text-[#00ff88] shadow-[0_0_20px_rgba(0,255,136,0.05)]"
+                      )}>
+                         {e.es_laptop ? <Laptop size={28} strokeWidth={2.5} /> : <DesktopIcon size={28} strokeWidth={2.5} />}
+                      </div>
+                      <div>
+                         <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-xl font-black italic uppercase tracking-tighter line-clamp-1 group-hover:text-[#00ff88] transition-colors">{e.hostname}</h3>
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] shadow-[0_0_5px_#00ff88]" />
+                         </div>
+                         <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.2em] flex items-center gap-2">
+                           ACTIVO: <span className="text-white font-mono">{e.codigo_activo || 'PENDIENTE'}</span>
+                         </p>
+                      </div>
+                   </div>
+
+                   {/* Datos de Hardware */}
+                   <div className="lg:col-span-3 grid grid-cols-2 gap-4 border-l border-r border-[#0e312a] px-8 py-1">
+                      <div className="space-y-1">
+                         <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest">Hardware</p>
+                         <p className="text-[10px] font-bold text-white/90 truncate">{e.caracteristicas_pc}</p>
+                      </div>
+                      <div className="space-y-1">
+                         <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest">RAM / Disco</p>
+                         <p className="text-[10px] font-bold text-zinc-400">{e.memoria_ram || 'N/A'} - {e.disco || 'N/A'}</p>
+                      </div>
+                      <div className="col-span-2 pt-2 border-t border-[#0e312a]/50">
+                         <p className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">S.O. Actual</p>
+                         <p className="text-[10px] font-bold text-white/70 truncate uppercase">{e.sistema_operativo}</p>
+                      </div>
+                   </div>
+
+                   {/* Infraestructura Red (SWITCH & VLAN) */}
+                   <div className="lg:col-span-4 bg-[#0c0d0c] rounded-2xl p-5 border border-[#1a1c1a] grid grid-cols-2 gap-6 relative group-hover:border-indigo-500/30 transition-all shadow-inner">
+                      <div className="space-y-2">
+                         <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+                            <Server size={10} /> IP Switch
+                         </p>
+                         <p className="text-sm font-black text-white/95 font-mono tracking-tighter">
+                            {e.ip_switch || 'No Asignada'}
+                         </p>
+                         <p className="text-[9px] font-bold text-[#4e564e] uppercase">Pto: <span className="text-white">{e.puerto_switch || 'N/A'}</span></p>
+                      </div>
+                      <div className="space-y-2 border-l border-white/5 pl-6">
+                         <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-1.5">
+                            VLAN ID
+                         </p>
+                         <p className="text-2xl font-black text-amber-500 leading-none py-1 italic tracking-tighter">
+                            {e.vlan || '--'}
+                         </p>
+                         <p className="text-[9px] font-bold text-[#4e564e] uppercase">RED SEGURA</p>
+                      </div>
+                   </div>
+
+                   {/* Acciones Rápidas */}
+                   <div className="lg:col-span-2 flex items-center justify-end gap-3 px-4">
+                      <button 
+                        onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }}
+                        className="p-4 bg-[#1a1c1a] hover:bg-[#00ff88] text-[#4e564e] hover:text-black rounded-2xl transition-all border border-[#0e312a] hover:border-[#00ff88] shadow-lg"
+                      > <Edit2 size={18} /> </button>
+                      <button 
+                        onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }}
+                        className="p-4 bg-[#1a1c1a] hover:bg-red-500 text-[#4e564e] hover:text-white rounded-2xl transition-all border border-[#0e312a] hover:border-red-500 shadow-lg"
+                      > <Trash2 size={18} /> </button>
+                   </div>
+
+                </div>
+             </div>
+           ))
+         ) : (
+           <div className="flex flex-col items-center justify-center p-20 border-2 border-dashed border-[#0e312a] rounded-[2.5rem] space-y-4">
+              <ShieldAlert size={48} className="text-[#0e312a]" />
+              <p className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em]">Sin nodos en el sector</p>
+           </div>
+         )}
       </div>
     </div>
   )
