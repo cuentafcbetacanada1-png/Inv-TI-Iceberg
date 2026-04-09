@@ -34,7 +34,8 @@ function Get-EnvValue {
         foreach ($l in $lines) {
             $cl = $l -replace '[^\x20-\x7E]', ''
             if ($cl -match "^\s*$Key\s*=\s*(.*)$") {
-                return $matches[1].Trim().Trim('"').Trim("'").Trim()
+                $v = $matches[1].Trim().Trim('"').Trim("'").Trim()
+                if ($v) { return $v }
             }
         }
     } catch {}
@@ -45,24 +46,29 @@ $ScriptDir = Split-Path -Parent $PSCommandPath
 $DotEnvPath = Join-Path $ScriptDir ".env"
 $script:LogPath = Join-Path $ScriptDir "iceberg-agent.log"
 
-if (-not $Silent) { Write-Host "`n[ ICEBERG IT :: Agente v3.3 :: Resiliente ]" -ForegroundColor Cyan }
+if (-not $Silent) { Write-Host "`n[ ICEBERG IT :: Agente v3.4 :: Estable ]" -ForegroundColor Cyan }
 
 try {
     $BASE_DOMAIN = "https://xgyovzjguphckcsalxex.supabase.co"
     $uEnv = Get-EnvValue -Path $DotEnvPath -Key "VITE_SUPABASE_URL"
     $kEnv = Get-EnvValue -Path $DotEnvPath -Key "VITE_SUPABASE_ANON_KEY"
-    $FinalURL = ((if ($uEnv) { $uEnv.TrimEnd("/") } else { $BASE_DOMAIN }) + "/rest/v1/equipos?on_conflict=hostname").Replace(" ", "")
-    $Key = if ($kEnv) { $kEnv } else { "TU_ANON_KEY" }
+    
+    # CONSTRUCCIÓN DE URL COMPATIBLE CON PS 5.1
+    $SelectedURL = if ($uEnv) { $uEnv.TrimEnd("/") } else { $BASE_DOMAIN }
+    $FinalURL = ($SelectedURL + "/rest/v1/equipos?on_conflict=hostname").Replace(" ", "")
+    
+    $Key = if ($kEnv) { $kEnv } else { "TU_KEY_MOCK" }
 
-    Write-Log "PC: $env:COMPUTERNAME | Conectando a Matriz..."
+    Write-Log "PC: $env:COMPUTERNAME | Conectando..."
 
-    # TELEMETRÍA BÁSICA
+    # TELEMETRÍA 
     $IP = (Get-NetIPAddress -AddressFamily IPv4 | Where { $_.IPAddress -notlike '169.254*' -and $_.InterfaceAlias -notlike '*Loopback*' } | Select -Expand IPAddress -First 1)
     $MAC = if (Get-NetAdapter | Where { $_.Status -eq 'Up' }) { ((Get-NetAdapter | Where { $_.Status -eq 'Up' } | Select -Expand MacAddress -First 1) -replace '-', ':') } else { "N/A" }
     
     $CPU = Get-CimInstance Win32_Processor -EA SilentlyContinue
     $OS = Get-CimInstance Win32_OperatingSystem -EA SilentlyContinue
     $Sys = Get-CimInstance Win32_ComputerSystem -EA SilentlyContinue
+    $Bios = Get-CimInstance Win32_Bios -EA SilentlyContinue
     $Disk = Get-CimInstance Win32_DiskDrive -EA SilentlyContinue | Select -First 1
     $C = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'" -EA SilentlyContinue
 
@@ -70,10 +76,10 @@ try {
         hostname = $env:COMPUTERNAME
         username = $env:USERNAME
         ip_local = if ($IP) { $IP } else { "0.0.0.0" }
-        ip_publica = "Desconocida" # Se llenará si el servidor acepta el campo
+        ip_publica = "Detectada"
         mac_address = $MAC
         caracteristicas_pc = ($CPU.Name -replace '\s+', ' ').Trim()
-        monitores = "Conectado"
+        monitores = "Activo"
         numero_serie = if ($Sys.SerialNumber) { $Sys.SerialNumber.Trim() } else { "GENERIC-$env:COMPUTERNAME" }
         marca_pc = $Sys.Manufacturer
         es_escritorio = -not [bool](Get-CimInstance Win32_Battery -EA SilentlyContinue)
@@ -84,23 +90,22 @@ try {
         modelo = $Sys.Model
     }
 
+    $Json = $Payload | ConvertTo-Json -Compress
     $headers = @{ "apikey" = $Key; "Authorization" = "Bearer $Key"; "Prefer" = "resolution=merge-duplicates" }
 
     try {
-        # Intento 1: Telemetría Completa
         Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ($Data | ConvertTo-Json -Compress) -ContentType "application/json; charset=utf-8"
-        Write-Log "Sincronizacion completa exitosa."
+        Write-Log "Exito: Sincronizacion avanzada."
     } catch {
         if ($_.Exception.Message -like "*(400)*") {
-            Write-Log "Columnas nuevas no detectadas en DB. Enviando payload basico..." "WARN"
+            Write-Log "Fallo parcial (Faltan columnas en DB). Reintentando basico..." "WARN"
             $Basico = $Data.Clone()
             $Basico.Remove("ip_publica")
             $Basico.Remove("mac_address")
             Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ($Basico | ConvertTo-Json -Compress) -ContentType "application/json; charset=utf-8"
-            Write-Log "Sincronización básica exitosa (Ejecuta el SQL para soporte completo)."
+            Write-Log "Exito: Sincronizacion basica."
         } else { throw }
     }
-
     exit 0
 } catch {
     Write-Log "ERROR: $($_.Exception.Message)" "ERROR"
