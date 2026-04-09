@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { 
   Zap, 
@@ -18,7 +19,15 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isFocused, setIsFocused] = useState<string | null>(null)
   
-  const { signIn } = useAuthStore()
+  const { signIn, user } = useAuthStore()
+  const navigate = useNavigate()
+
+  // Si el usuario ya está autenticado, lo mandamos al dashboard directamente
+  useEffect(() => {
+    if (user) {
+      navigate('/')
+    }
+  }, [user, navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,8 +35,11 @@ const LoginPage: React.FC = () => {
     try {
       await signIn(email, password)
       toast.success('Acceso Autorizado')
-    } catch {
-      toast.error('Credenciales Inválidas')
+      // Redirección inmediata tras éxito
+      navigate('/')
+    } catch (err: any) {
+      const msg = err.message === 'Invalid login credentials' ? 'Credenciales Inválidas' : 'Error de Conexión'
+      toast.error(msg)
     } finally {
       setIsLoading(false)
     }
@@ -52,11 +64,10 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="card-matrix p-10 border-[#0e312a] shadow-2xl relative overflow-hidden group">
-          {/* Internal Glow */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff88]/5 rounded-full blur-2xl group-hover:bg-[#00ff88]/10 transition-all" />
           
-          <div className="mb-10 text-center">
-            <h2 className="text-xs font-black text-white uppercase tracking-[0.3em] italic mb-2">Autenticación Requerida</h2>
+          <div className="mb-10 text-center text-white">
+            <h2 className="text-xs font-black uppercase tracking-[0.3em] italic mb-2">Autenticación Requerida</h2>
             <p className="text-[10px] font-bold text-[#4e564e] uppercase tracking-widest leading-relaxed">Sincronice sus credenciales corporativas para acceder al panel de control.</p>
           </div>
 
@@ -116,7 +127,7 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full group/btn relative py-5 bg-[#00ff88] hover:bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all duration-500 shadow-[0_0_20px_rgba(0,255,136,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-[1.02] flex items-center justify-center gap-3 active:scale-95"
+              className="w-full group/btn relative py-5 bg-[#00ff88] hover:bg-[#00ff88]/80 text-black rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all duration-500 shadow-[0_0_20px_rgba(0,255,136,0.3)] hover:scale-[1.02] flex items-center justify-center gap-3 active:scale-95"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
@@ -129,7 +140,6 @@ const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          {/* Security Footer inside card */}
           <div className="mt-10 pt-8 border-t border-[#0e312a] flex items-center justify-center gap-6 opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700">
              <ShieldCheck size={18} className="text-[#00ff88]" />
              <Cpu size={18} className="text-[#00ff88]" />
