@@ -157,7 +157,7 @@ const InventoryPage: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                    
                    {/* Equipo y ID */}
-                   <div className="lg:col-span-3 flex items-center gap-6">
+                   <div className="lg:col-span-4 flex items-center gap-6">
                       <div className={cn(
                         "w-16 h-16 rounded-2xl flex items-center justify-center border transition-all",
                         e.es_laptop ? "bg-amber-500/5 border-amber-500/10 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.05)]" : "bg-[#00ff88]/5 border-[#00ff88]/10 text-[#00ff88] shadow-[0_0_20px_rgba(0,255,136,0.05)]"
@@ -176,7 +176,7 @@ const InventoryPage: React.FC = () => {
                    </div>
 
                    {/* Datos de Hardware */}
-                   <div className="lg:col-span-4 grid grid-cols-2 gap-4 border-l border-r border-[#0e312a] px-8 py-1">
+                   <div className="lg:col-span-6 grid grid-cols-2 gap-4 border-l border-r border-[#0e312a] px-8 py-1">
                       <div className="space-y-1">
                          <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest">Hardware</p>
                          <p className="text-[10px] font-bold text-white/90 truncate">{e.caracteristicas_pc}</p>
@@ -185,33 +185,16 @@ const InventoryPage: React.FC = () => {
                          <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest">RAM / Disco</p>
                          <p className="text-[10px] font-bold text-zinc-400">{e.memoria_ram || 'N/A'} - {e.disco || 'N/A'}</p>
                       </div>
-                      <div className="col-span-2 pt-2 border-t border-[#0e312a]/50">
-                         <p className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">S.O. Actual</p>
+                      <div className="col-span-1 pt-2 border-t border-[#0e312a]/50">
+                         <p className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">S.O.</p>
                          <p className="text-[10px] font-bold text-white/70 truncate uppercase">{e.sistema_operativo}</p>
+                      </div>
+                      <div className="col-span-1 pt-2 border-t border-[#0e312a]/50">
+                         <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Monitores</p>
+                         <p className="text-[10px] font-bold text-white/70 truncate uppercase">{e.monitores || 'Standar'}</p>
                       </div>
                    </div>
 
-                   {/* Infraestructura Red (SWITCH & VLAN) */}
-                   <div className="lg:col-span-3 bg-[#0c0d0c] rounded-2xl p-5 border border-[#1a1c1a] grid grid-cols-2 gap-6 relative group-hover:border-indigo-500/30 transition-all shadow-inner">
-                      <div className="space-y-2">
-                         <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
-                            <Server size={10} /> IP Switch
-                         </p>
-                         <p className="text-sm font-black text-white/95 font-mono tracking-tighter">
-                            {e.ip_switch || 'No Asignada'}
-                         </p>
-                         <p className="text-[9px] font-bold text-[#4e564e] uppercase">Pto: <span className="text-white">{e.puerto_switch || 'N/A'}</span></p>
-                      </div>
-                      <div className="space-y-2 border-l border-white/5 pl-6">
-                         <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-1.5">
-                            VLAN ID
-                         </p>
-                         <p className="text-2xl font-black text-amber-500 leading-none py-1 italic tracking-tighter">
-                            {e.vlan || '--'}
-                         </p>
-                         <p className="text-[9px] font-bold text-[#4e564e] uppercase">RED SEGURA</p>
-                      </div>
-                   </div>
 
                    {/* Acciones Rápidas */}
                    <div className="lg:col-span-2 flex items-center justify-end gap-3 px-4">
