@@ -73,8 +73,30 @@ try {
 
     Write-Log "PC: $env:COMPUTERNAME | Limpiando y analizando hardware..."
 
-    $IP = (Get-NetIPAddress -AddressFamily IPv4 | Where { $_.IPAddress -notlike '169.254*' -and $_.InterfaceAlias -notlike '*Loopback*' } | Select -Expand IPAddress -First 1)
-    $MAC = if (Get-NetAdapter | Where { $_.Status -eq 'Up' }) { ((Get-NetAdapter | Where { $_.Status -eq 'Up' } | Select -Expand MacAddress -First 1) -replace '-', ':') } else { "N/A" }
+    # Captura inteligente de IP Priorizando Ethernet
+    $IPAddressObj = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { 
+        $_.IPAddress -notlike '169.254*' -and 
+        ($_.InterfaceAlias -like '*Ethernet*' -or $_.InterfaceAlias -like '*Área local*')
+    } | Select-Object -First 1
+
+    if ($null -eq $IPAddressObj) {
+        # Fallback si no hay Ethernet activo
+        $IPAddressObj = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { 
+            $_.IPAddress -notlike '169.254*' -and $_.InterfaceAlias -notlike '*Loopback*' 
+        } | Select-Object -First 1
+    }
+    $IP = $IPAddressObj.IPAddress
+
+    # Captura de MAC Priorizando Ethernet
+    $NetAdapter = Get-NetAdapter | Where-Object { 
+        $_.Status -eq 'Up' -and ($_.Name -like '*Ethernet*' -or $_.Name -like '*Área local*')
+    } | Select-Object -First 1
+
+    if ($null -eq $NetAdapter) {
+        # Fallback MAC
+        $NetAdapter = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
+    }
+    $MAC = if ($NetAdapter) { ($NetAdapter.MacAddress -replace '-', ':') } else { "N/A" }
     
     $CPU = Get-CimInstance Win32_Processor -EA SilentlyContinue
     $OS = Get-CimInstance Win32_OperatingSystem -EA SilentlyContinue
