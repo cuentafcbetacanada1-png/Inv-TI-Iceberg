@@ -19,7 +19,7 @@ function Invoke-WithRetry {
     while ($attempt -le $MaxRetries) {
         try { return & $Action } catch {
             if ($attempt -ge $MaxRetries) { throw }
-            Write-Log "Intento $attempt fallido (Reintentando...)" "WARN"
+            Write-Log "Intento $attempt fallido..." "WARN"
             Start-Sleep -Seconds $DelaySeconds
             $attempt++
         }
@@ -34,8 +34,7 @@ function Get-EnvValue {
         foreach ($l in $lines) {
             $cl = $l -replace '[^\x20-\x7E]', ''
             if ($cl -match "^\s*$Key\s*=\s*(.*)$") {
-                $v = $matches[1].Trim().Trim('"').Trim("'").Trim()
-                if ($v) { return $v }
+                return $matches[1].Trim().Trim('"').Trim("'").Trim()
             }
         }
     } catch {}
@@ -46,22 +45,25 @@ $ScriptDir = Split-Path -Parent $PSCommandPath
 $DotEnvPath = Join-Path $ScriptDir ".env"
 $script:LogPath = Join-Path $ScriptDir "iceberg-agent.log"
 
-if (-not $Silent) { Write-Host "`n[ ICEBERG IT :: Agente v3.4 :: Estable ]" -ForegroundColor Cyan }
+if (-not $Silent) {
+    Write-Host "`n[ ICEBERG IT :: Agente v4.1 :: FINAL ]" -ForegroundColor Cyan
+    Write-Host "------------------------------------------"
+}
 
 try {
     $BASE_DOMAIN = "https://xgyovzjguphckcsalxex.supabase.co"
     $uEnv = Get-EnvValue -Path $DotEnvPath -Key "VITE_SUPABASE_URL"
     $kEnv = Get-EnvValue -Path $DotEnvPath -Key "VITE_SUPABASE_ANON_KEY"
+    $mEnv = [Environment]::GetEnvironmentVariable("ICEBERG_SUPABASE_KEY", "Machine")
     
-    # CONSTRUCCIÓN DE URL COMPATIBLE CON PS 5.1
     $SelectedURL = if ($uEnv) { $uEnv.TrimEnd("/") } else { $BASE_DOMAIN }
     $FinalURL = ($SelectedURL + "/rest/v1/equipos?on_conflict=hostname").Replace(" ", "")
     
-    $Key = if ($kEnv) { $kEnv } else { "TU_KEY_MOCK" }
+    # Prioridad de la Key: 1. .env, 2. Variable de Entorno de Sistema, 3. Hardcoded Fallback
+    $Key = if ($kEnv) { $kEnv } elseif ($mEnv) { $mEnv } else { "TU_KEY_AQUI" }
 
-    Write-Log "PC: $env:COMPUTERNAME | Conectando..."
+    Write-Log "PC: $env:COMPUTERNAME | Usuario: $env:USERNAME | Analizando..."
 
-    # TELEMETRÍA 
     $IP = (Get-NetIPAddress -AddressFamily IPv4 | Where { $_.IPAddress -notlike '169.254*' -and $_.InterfaceAlias -notlike '*Loopback*' } | Select -Expand IPAddress -First 1)
     $MAC = if (Get-NetAdapter | Where { $_.Status -eq 'Up' }) { ((Get-NetAdapter | Where { $_.Status -eq 'Up' } | Select -Expand MacAddress -First 1) -replace '-', ':') } else { "N/A" }
     
@@ -72,42 +74,44 @@ try {
     $Disk = Get-CimInstance Win32_DiskDrive -EA SilentlyContinue | Select -First 1
     $C = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'" -EA SilentlyContinue
 
+    # FILTRO AVANZADO DE SERIAL
+    $RawSerial = if ($Bios.SerialNumber) { $Bios.SerialNumber.Trim() } else { "N/A" }
+    $GenericSerials = @("System Serial Number", "To be filled by O.E.M.", "0", "None", "Default string", "")
+    $Serial = if ($GenericSerials -contains $RawSerial) { "GENERIC-$env:COMPUTERNAME" } else { $RawSerial }
+
     $Data = @{
         hostname = $env:COMPUTERNAME
         username = $env:USERNAME
         ip_local = if ($IP) { $IP } else { "0.0.0.0" }
-        ip_publica = "Detectada"
+        ip_publica = "Local"
         mac_address = $MAC
         caracteristicas_pc = ($CPU.Name -replace '\s+', ' ').Trim()
-        monitores = "Activo"
-        numero_serie = if ($Sys.SerialNumber) { $Sys.SerialNumber.Trim() } else { "GENERIC-$env:COMPUTERNAME" }
+        monitores = "Conectado"
+        numero_serie = $Serial
         marca_pc = $Sys.Manufacturer
         es_escritorio = -not [bool](Get-CimInstance Win32_Battery -EA SilentlyContinue)
         es_laptop = [bool](Get-CimInstance Win32_Battery -EA SilentlyContinue)
         memoria_ram = if ($Sys.TotalPhysicalMemory) { "$([math]::round($Sys.TotalPhysicalMemory / 1GB)) GB" } else { "N/A" }
         sistema_operativo = $OS.Caption
-        disco = if ($Disk.Model) { "$([math]::round($C.Size / 1GB)) GB" } else { "N/A" }
+        disco = if ($Disk.Model) { "$([math]::round($C.Size / 1GB)) GB ($($Disk.Model.Trim()))" } else { "N/A" }
         modelo = $Sys.Model
+        updated_at = (Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
     }
 
-    $Json = $Payload | ConvertTo-Json -Compress
-    $headers = @{ "apikey" = $Key; "Authorization" = "Bearer $Key"; "Prefer" = "resolution=merge-duplicates" }
-
-    try {
-        Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ($Data | ConvertTo-Json -Compress) -ContentType "application/json; charset=utf-8"
-        Write-Log "Exito: Sincronizacion avanzada."
-    } catch {
-        if ($_.Exception.Message -like "*(400)*") {
-            Write-Log "Fallo parcial (Faltan columnas en DB). Reintentando basico..." "WARN"
-            $Basico = $Data.Clone()
-            $Basico.Remove("ip_publica")
-            $Basico.Remove("mac_address")
-            Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ($Basico | ConvertTo-Json -Compress) -ContentType "application/json; charset=utf-8"
-            Write-Log "Exito: Sincronizacion basica."
-        } else { throw }
+    $headers = @{ 
+        "apikey" = $Key
+        "Authorization" = "Bearer $Key"
+        "Prefer" = "resolution=merge-duplicates"
+        "Content-Type" = "application/json"
     }
+
+    Invoke-WithRetry -Action {
+        Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ($Data | ConvertTo-Json -Compress) -ErrorAction Stop
+    }
+
+    Write-Log "Sincronizacion completada con exito."
     exit 0
 } catch {
-    Write-Log "ERROR: $($_.Exception.Message)" "ERROR"
+    Write-Log "FALLO: $($_.Exception.Message)" "ERROR"
     exit 1
 }

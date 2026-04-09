@@ -83,7 +83,11 @@ const InventoryPage: React.FC = () => {
 
   const filteredEquipos = equipos.filter(e => {
     const searchString = `${e.username} ${e.hostname} ${e.numero_serie || ''} ${e.marca_pc || ''}`.toLowerCase()
-    const matchesSearch = searchString.includes(searchTerm.toLowerCase())
+    const matchesSearch = searchString.includes(searchTerm.toLowerCase()) ||
+        (e.ip_local?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (e.vlan?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (e.ip_switch?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (e.codigo_activo?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     if (filterTech === 'laptops') return matchesSearch && e.es_laptop
     if (filterTech === 'desktops') return matchesSearch && e.es_escritorio
     return matchesSearch

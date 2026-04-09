@@ -7,7 +7,12 @@ param(
     [string]$InstallDir = "C:\ProgramData\IcebergAgent"
 )
 
-$ErrorActionPreference = "Stop"
+# --- VERIFICACION DE ADMINISTRADOR ---
+$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+if (-not $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Host "[ERROR] Debes ejecutar este script como ADMINISTRADOR." -ForegroundColor Red
+    exit 1
+}
 
 function Get-EnvValueFromFile {
     param(
@@ -16,9 +21,11 @@ function Get-EnvValueFromFile {
     )
 
     if (-not (Test-Path $FilePath)) { return $null }
-    $match = Select-String -Path $FilePath -Pattern ("^{0}=(.*)$" -f [regex]::Escape($KeyName)) -ErrorAction SilentlyContinue | Select-Object -First 1
-    if (-not $match) { return $null }
-    return $match.Matches[0].Groups[1].Value.Trim()
+    try {
+        $match = Select-String -Path $FilePath -Pattern ("^{0}=(.*)$" -f [regex]::Escape($KeyName)) -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $match) { return $null }
+        return $match.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'")
+    } catch { return $null }
 }
 
 function Write-Step {

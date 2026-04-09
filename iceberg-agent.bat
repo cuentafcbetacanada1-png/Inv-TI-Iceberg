@@ -1,5 +1,14 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
+
+:: --- VERIFICACION DE ADMINISTRADOR ---
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+    echo [ERROR] Se requieren privilegios de ADMINISTRADOR.
+    echo Por favor, haz clic derecho y selecciona "Ejecutar como administrador".
+    pause
+    exit /b 1
+)
 
 set "SCRIPT_DIR=%~dp0"
 set "PS1_PATH=%SCRIPT_DIR%iceberg-agent.ps1"
@@ -9,11 +18,14 @@ if not exist "%PS1_PATH%" (
     exit /b 1
 )
 
-title Iceberg IT :: Agente de Telemetria
+title ICEBERG IT :: Agente de Telemetria
+cls
 echo.
-echo [ ICEBERG IT :: Launcher ]
-echo ----------------------------------------
-echo [*] Ejecutando agente PowerShell...
+echo ==============================================
+echo   ICEBERG IT :: MONITORIZACION DE ACTIVOS
+echo ==============================================
+echo.
+echo [*] Iniciando agente de sincronizacion...
 
 if /i "%~1"=="silent" (
     powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%PS1_PATH%" -Silent
