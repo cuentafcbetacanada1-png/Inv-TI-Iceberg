@@ -78,28 +78,31 @@ const DashboardLayout: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen bg-zinc-950 font-sans text-zinc-400 overflow-hidden selection:bg-primary-500/30">
+    <div className="flex h-screen bg-zinc-950 font-sans text-zinc-100 overflow-hidden selection:bg-primary-500/30">
+      {/* Fondo Exótico */}
+      <div className="bg-mesh" />
+
       {/* Premium Sidebar */}
       <aside className={cn(
-        "relative border-r border-white/5 flex flex-col bg-zinc-950 transition-all duration-500 ease-in-out z-30",
+        "relative border-r border-white/5 flex flex-col bg-black/40 backdrop-blur-3xl transition-all duration-500 ease-in-out z-30",
         collapsed ? "w-20" : "w-72"
       )}>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-20 w-6 h-6 bg-zinc-900 border border-white/10 rounded-full flex items-center justify-center text-zinc-500 hover:text-white transition-all z-40 hover:scale-110"
+          className="absolute -right-3 top-20 w-6 h-6 bg-zinc-900 border border-white/10 rounded-full flex items-center justify-center text-zinc-500 hover:text-white transition-all z-40 hover:scale-110 shadow-xl"
         >
           {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
 
-        <div className="p-6 flex flex-col h-full">
+        <div className="p-6 flex flex-col h-full bg-gradient-to-b from-primary-500/5 to-transparent">
           <div className={cn("flex items-center gap-4 mb-10 transition-all", collapsed && "justify-center")}>
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20 shrink-0">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-blue-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-primary-500/40 shrink-0 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
               <Command className="text-white w-6 h-6" />
             </div>
             {!collapsed && (
               <div className="flex flex-col">
-                <h1 className="text-lg font-black text-white tracking-tighter leading-tight italic">ICEBERG <span className="text-primary-500">IT</span></h1>
-                <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em]">Gestión de Activos</span>
+                <h1 className="text-xl font-black text-white tracking-widest leading-tight italic drop-shadow-md">ICEBERG <span className="text-primary-500">IT</span></h1>
+                <span className="text-[9px] font-black text-zinc-500 uppercase tracking-[0.3em] opacity-80">Quantum Inventory</span>
               </div>
             )}
           </div>

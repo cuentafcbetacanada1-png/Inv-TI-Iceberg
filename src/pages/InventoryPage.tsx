@@ -13,7 +13,8 @@ import {
   Globe,
   Download,
   Zap,
-  Activity
+  Activity,
+  Database
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
@@ -61,59 +62,68 @@ const InventoryPage: React.FC = () => {
   })
 
   return (
-    <div className="space-y-8 animate-in font-bold">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/5 font-bold">
-        <div className="space-y-1 font-bold">
-           <div className="flex items-center gap-2 text-primary-500 font-black text-[10px] uppercase tracking-[0.3em]">
-              <div className="w-1 h-1 rounded-full bg-primary-500 animate-pulse" />
-              <span>Sistema de Inventarios Iceberg</span>
+    <div className="space-y-8 animate-in">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-white/5">
+        <div className="space-y-2">
+           <div className="flex items-center gap-2 text-primary-500 font-black text-[10px] uppercase tracking-[0.4em]">
+              <div className="w-2 h-2 rounded-full bg-primary-500 shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-pulse" />
+              <span>Network Asset Management</span>
            </div>
-           <h1 className="text-4xl font-black text-white tracking-tighter italic uppercase">Panel de Control IT</h1>
-           <p className="text-sm text-zinc-500 font-bold">Monitoreo de telemetría y matriz técnica de activos.</p>
+           <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter italic uppercase drop-shadow-2xl">Inventario <span className="text-primary-500">Iceberg</span></h1>
+           <p className="text-sm text-zinc-500 font-medium tracking-wide">Control centralizado de telemetría y hardware corporativo.</p>
         </div>
-        <div className="flex gap-3 font-bold">
+        <div className="flex flex-wrap gap-3">
            <a 
              href="/iceberg-agent.bat" 
              download 
-             className="px-4 py-2.5 rounded-xl border border-primary-500/20 text-primary-400 hover:text-white hover:bg-primary-500/10 transition-all flex items-center gap-2 font-bold"
+             className="px-6 py-3 rounded-2xl bg-zinc-900 border border-white/10 text-zinc-300 hover:text-white hover:border-white/20 hover:bg-zinc-800 transition-all flex items-center gap-2 font-bold shadow-xl"
            >
-              <Download size={16} />
-              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Descargar Agente</span>
+              <Download size={18} className="text-primary-500" />
+              <span className="text-[11px] font-black uppercase tracking-widest">Agente</span>
            </a>
            <button 
              onClick={handleRefresh}
              disabled={isRefreshing || isLoading}
-             className="px-4 py-2.5 rounded-xl border border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2 font-bold"
+             className="px-6 py-3 rounded-2xl bg-zinc-900 border border-white/10 text-zinc-300 hover:text-white hover:border-white/20 transition-all flex items-center gap-2 font-bold shadow-xl"
            >
-              <RefreshCcw size={16} className={cn((isRefreshing || isLoading) && "animate-spin")} />
-              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Actualizar</span>
+              <RefreshCcw size={18} className={cn("text-emerald-500", (isRefreshing || isLoading) && "animate-spin")} />
+              <span className="text-[11px] font-black uppercase tracking-widest">Sincronizar</span>
            </button>
-           <Link to="/crear" className="btn-v10-primary px-6 flex items-center gap-2 font-bold">
-              <Plus size={16} />
-              <span className="text-[10px] font-black uppercase tracking-widest leading-none">Nuevo Registro</span>
+           <Link to="/crear" className="btn-v10-primary px-8">
+              <Plus size={20} />
+              <span className="text-[11px] font-black uppercase tracking-widest">Nuevo Registro</span>
            </Link>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-bold">
-         <div className="md:col-span-2 card-premium p-6 flex items-center gap-6 border-l-4 border-l-primary-500 font-bold">
-            <div className="w-12 h-12 rounded-2xl bg-primary-500/10 flex items-center justify-center shrink-0">
-               <Zap size={24} className="text-primary-500 animate-pulse" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+         <div className="md:col-span-2 card-premium p-8 flex items-center gap-8 border-l-4 border-l-primary-500 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+               <Database size={80} className="text-primary-500 transform rotate-12" />
             </div>
-            <div className="space-y-1 font-bold">
-               <h3 className="text-[10px] font-black text-white uppercase tracking-widest italic">Asistente de Telemetría Iceberg (IA)</h3>
-               <p className="text-[11px] text-zinc-400 font-bold leading-relaxed">
-                  Se han detectado <span className="text-primary-400">{equipos.length} activos</span> sincronizados. 
-                  La salud general de la matriz es del <span className="text-emerald-500">{Math.round((equipos.filter(e => e.validado).length / (equipos.length || 1)) * 100)}%</span>. 
-                  Recomendación: Sincronizar agentes en <span className="text-amber-500">{equipos.filter(e => !e.validado).length} terminales</span> pendientes.
+            <div className="w-16 h-16 rounded-3xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center shrink-0 shadow-inner">
+               <Zap size={30} className="text-primary-500 animate-pulse fill-primary-500/20" />
+            </div>
+            <div className="space-y-2 relative z-10">
+               <h3 className="text-[11px] font-black text-white uppercase tracking-[0.2em] italic flex items-center gap-2">
+                  <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,1)]" />
+                  Asistente de Red (v10.4)
+               </h3>
+               <p className="text-sm text-zinc-400 font-medium leading-relaxed max-w-xl">
+                  Se han detectado <span className="text-white font-black underline decoration-primary-500/50 underline-offset-4">{equipos.length} terminales activos</span>. 
+                  La integridad de la memoria RAM promedia los <span className="text-emerald-400 font-black italic">16 GB por nodo</span>. 
+                  Sugerencia: Verificar <span className="text-rose-400 font-black">{equipos.filter(e => !e.validado).length} equipos</span> con telemetría incompleta.
                </p>
             </div>
          </div>
-         <div className="card-premium p-6 flex flex-col justify-center gap-2 border-l-4 border-l-emerald-500/50 font-bold">
-            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Optimización de Hardware</span>
-            <div className="flex items-center gap-2 font-bold">
-               <Cpu size={14} className="text-emerald-500" />
-               <span className="text-xs font-black text-white uppercase tracking-tighter italic">Promedio RAM: 16.4 GB</span>
+         <div className="card-premium p-8 flex flex-col justify-center gap-4 border-l-4 border-l-emerald-500/50 bg-emerald-500/[0.02]">
+            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em]">Estado del Sector</span>
+            <div className="space-y-1">
+               <div className="flex items-center gap-2">
+                  <Cpu size={18} className="text-emerald-500" />
+                  <span className="text-2xl font-black text-white tracking-tighter italic">SECTOR_ALFA</span>
+               </div>
+               <p className="text-[11px] text-zinc-500 font-bold uppercase tracking-widest">Nodos Estabilizados</p>
             </div>
          </div>
       </div>

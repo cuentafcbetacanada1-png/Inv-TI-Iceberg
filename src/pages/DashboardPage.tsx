@@ -30,25 +30,27 @@ const StatCard: React.FC<{
   icon: React.ElementType, 
   trend?: string, 
   description: string,
-  color: string 
-}> = ({ label, value, icon: Icon, trend, description, color }) => (
-  <div className="card-premium p-6 space-y-4 group transition-all duration-300">
-    <div className="flex items-center justify-between">
-      <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-500", color)}>
-        <Icon size={22} className="group-hover:scale-105 transition-transform" />
+  color: string,
+  glow: string
+}> = ({ label, value, icon: Icon, trend, description, color, glow }) => (
+  <div className={cn("card-premium p-6 space-y-4 group relative overflow-hidden", glow)}>
+    <div className="flex items-center justify-between relative z-10">
+      <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center border-2 transition-all duration-500 transform group-hover:-rotate-6", color)}>
+        <Icon size={22} className="group-hover:scale-110 transition-transform" />
       </div>
       {trend && (
-        <div className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">
+        <div className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 shadow-lg shadow-emerald-500/5">
           <ArrowUpRight size={14} />
-          <span className="text-[10px] font-semibold">{trend}</span>
+          <span className="text-[10px] font-black tracking-widest">{trend}</span>
         </div>
       )}
     </div>
-    <div className="space-y-2">
-      <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">{label}</span>
-      <h3 className="text-3xl font-bold text-white tracking-tight">{value}</h3>
-      <p className="text-[11px] text-zinc-500 leading-relaxed">{description}</p>
+    <div className="space-y-1 relative z-10">
+      <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">{label}</span>
+      <h3 className="text-4xl font-black text-white tracking-tighter italic">{value}</h3>
+      <p className="text-[11px] text-zinc-400 font-medium leading-relaxed opacity-80">{description}</p>
     </div>
+    <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-current opacity-[0.03] blur-3xl rounded-full" />
   </div>
 )
 
@@ -121,7 +123,8 @@ const DashboardPage: React.FC = () => {
           icon={Monitor} 
           trend="+12%" 
           description="Presencia en Red"
-          color="bg-primary-500/5 border-primary-500/10 text-primary-500"
+          color="bg-primary-500/10 border-primary-500/20 text-primary-400"
+          glow="hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.3)] shadow-primary-500/5 placeholder:shadow-primary-500/10"
         />
         <StatCard 
           label="Activos Verificados" 
@@ -129,14 +132,16 @@ const DashboardPage: React.FC = () => {
           icon={ShieldCheck} 
           trend="+08%" 
           description="Garantía de Acceso"
-          color="bg-emerald-500/5 border-emerald-500/10 text-emerald-500"
+          color="bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+          glow="hover:shadow-[0_0_40px_-10px_rgba(34,197,94,0.3)] shadow-emerald-500/5 placeholder:shadow-emerald-500/10"
         />
         <StatCard 
           label="Señales de Alerta" 
           value={pendientes} 
           icon={AlertCircle} 
           description="Telemetría Requerida"
-          color="bg-rose-500/5 border-rose-500/10 text-rose-500"
+          color="bg-rose-500/10 border-rose-500/20 text-rose-400"
+          glow="hover:shadow-[0_0_40px_-10px_rgba(244,63,94,0.3)] shadow-rose-500/5 placeholder:shadow-rose-500/10"
         />
         <div className="card-premium p-6 relative overflow-hidden">
            <div className="relative z-10 space-y-4">
