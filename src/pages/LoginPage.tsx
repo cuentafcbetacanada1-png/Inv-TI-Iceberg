@@ -1,120 +1,152 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { 
-  Lock, 
-  Mail, 
-  Monitor,
-  RefreshCw,
-  ArrowRight
-} from 'lucide-react'
-import { supabase } from '../services/supabase'
+import React, { useState } from 'react'
 import { useAuthStore } from '../store/authStore'
+import { 
+  Zap, 
+  Mail, 
+  Lock, 
+  ArrowRight, 
+  ShieldCheck,
+  Cpu,
+  Globe
+} from 'lucide-react'
 import { toast } from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
+import { cn } from '../lib/utils'
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const { user } = useAuthStore()
-  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isFocused, setIsFocused] = useState<string | null>(null)
+  
+  const { signIn } = useAuthStore()
 
-  useEffect(() => {
-    if (user) {
-      navigate('/', { replace: true })
-    }
-  }, [user, navigate])
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
+    setIsLoading(true)
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
-      
-      if (error) {
-        toast.error('Acceso denegado')
-      } else if (data.user) {
-        toast.success('Conexión establecida')
-        navigate('/', { replace: true })
-      }
+      await signIn(email, password)
+      toast.success('Acceso Autorizado')
     } catch {
-      toast.error('Error de autenticación')
+      toast.error('Credenciales Inválidas')
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans">
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-[380px] space-y-8"
-      >
-        <div className="flex flex-col items-center text-center gap-2">
-           <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center shadow-lg shadow-primary-500/10">
-              <Monitor className="text-white w-5 h-5" />
-           </div>
-           <div className="mt-2">
-              <h1 className="text-xl font-bold text-white tracking-tight uppercase">Iceberg <span className="text-primary-500">IT</span></h1>
-              <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-1">Management Console v8.8</p>
-           </div>
+    <div className="min-h-screen bg-[#090a09] flex items-center justify-center p-6 relative overflow-hidden font-sans">
+      {/* Background Decor (Cyber Grid) */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(#00ff88 0.5px, transparent 0.5px)', backgroundSize: '30px 30px' }} />
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#00ff88]/5 rounded-full blur-[120px]" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#00ff88]/5 rounded-full blur-[120px]" />
+
+      <div className="w-full max-w-md relative z-10 animate-in">
+        <div className="flex flex-col items-center mb-12">
+            <div className="w-16 h-16 bg-[#00ff88] rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(0,255,136,0.3)] mb-6 rotate-3 hover:rotate-0 transition-transform duration-500 group">
+                <Zap size={32} className="text-black group-hover:scale-110 transition-transform" />
+            </div>
+            <h1 className="text-4xl font-black text-white italic tracking-tighter uppercase mb-1 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Iceberg <span className="text-[#00ff88]">IT</span></h1>
+            <p className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em] mb-4">Consola de Mando v10.4</p>
+            <div className="h-0.5 w-12 bg-[#00ff88]/30 rounded-full" />
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-xl shadow-2xl space-y-6">
-           <div className="space-y-1">
-              <h2 className="text-sm font-bold text-zinc-100 uppercase tracking-widest">Autenticación</h2>
-              <p className="text-[11px] text-zinc-500">Ingrese sus credenciales corporativas</p>
-           </div>
+        <div className="card-matrix p-10 border-[#0e312a] shadow-2xl relative overflow-hidden group">
+          {/* Internal Glow */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff88]/5 rounded-full blur-2xl group-hover:bg-[#00ff88]/10 transition-all" />
+          
+          <div className="mb-10 text-center">
+            <h2 className="text-xs font-black text-white uppercase tracking-[0.3em] italic mb-2">Autenticación Requerida</h2>
+            <p className="text-[10px] font-bold text-[#4e564e] uppercase tracking-widest leading-relaxed">Sincronice sus credenciales corporativas para acceder al panel de control.</p>
+          </div>
 
-           <form onSubmit={handleLogin} className="space-y-4">
-             <div className="space-y-1.5">
-               <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest ml-1">Correo Electrónico</label>
-               <div className="relative group">
-                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-700 group-focus-within:text-primary-500 transition-colors" />
-                 <input
-                   type="email"
-                   required
-                   value={email}
-                   onChange={(e) => setEmail(e.target.value)}
-                   className="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-zinc-100 text-sm outline-none focus:border-zinc-600 transition-all placeholder:text-zinc-600 font-medium"
-                   placeholder="admin@empresa.com"
-                 />
-               </div>
-             </div>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-2">
+              <label className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.3em] ml-1 flex items-center gap-2">
+                <Mail size={10} className={isFocused === 'email' ? 'text-[#00ff88]' : ''} />
+                Correo Electrónico
+              </label>
+              <div className={cn(
+                "group relative transition-all duration-300",
+                isFocused === 'email' ? "scale-[1.02]" : ""
+              )}>
+                <input
+                  type="email"
+                  required
+                  placeholder="admin@it-iceberg.com"
+                  className="w-full bg-[#090a09] border border-[#0e312a] text-sm text-white px-5 py-4 rounded-2xl outline-none focus:border-[#00ff88] transition-all font-bold placeholder:text-[#0e312a] placeholder:italic"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setIsFocused('email')}
+                  onBlur={() => setIsFocused(null)}
+                />
+                <div className={cn(
+                    "absolute inset-0 bg-[#00ff88]/5 rounded-2xl transition-opacity pointer-events-none",
+                    isFocused === 'email' ? "opacity-100" : "opacity-0"
+                )} />
+              </div>
+            </div>
 
-             <div className="space-y-1.5">
-               <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest ml-1">Contraseña</label>
-               <div className="relative group">
-                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-700 group-focus-within:text-primary-500 transition-colors" />
-                 <input
-                   type="password"
-                   required
-                   value={password}
-                   onChange={(e) => setPassword(e.target.value)}
-                   className="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-zinc-100 text-sm outline-none focus:border-zinc-600 transition-all placeholder:text-zinc-600"
-                   placeholder="••••••••"
-                 />
-               </div>
-             </div>
+            <div className="space-y-2 pb-2">
+              <label className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.3em] ml-1 flex items-center gap-2">
+                <Lock size={10} className={isFocused === 'pass' ? 'text-[#00ff88]' : ''} />
+                Contraseña
+              </label>
+              <div className={cn(
+                "group relative transition-all duration-300",
+                isFocused === 'pass' ? "scale-[1.02]" : ""
+              )}>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  className="w-full bg-[#090a09] border border-[#0e312a] text-sm text-white px-5 py-4 rounded-2xl outline-none focus:border-[#00ff88] transition-all font-bold placeholder:text-[#0e312a]"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setIsFocused('pass')}
+                  onBlur={() => setIsFocused(null)}
+                />
+                <div className={cn(
+                    "absolute inset-0 bg-[#00ff88]/5 rounded-2xl transition-opacity pointer-events-none",
+                    isFocused === 'pass' ? "opacity-100" : "opacity-0"
+                )} />
+              </div>
+            </div>
 
-             <button
-               type="submit"
-               disabled={loading}
-               className="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs uppercase tracking-widest py-3 rounded-lg transition-all shadow-md active:scale-[0.98] disabled:opacity-50 mt-2"
-             >
-               {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <>Acceder <ArrowRight className="w-4 h-4" /></>}
-             </button>
-           </form>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full group/btn relative py-5 bg-[#00ff88] hover:bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all duration-500 shadow-[0_0_20px_rgba(0,255,136,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-[1.02] flex items-center justify-center gap-3 active:scale-95"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              ) : (
+                <>
+                  Entrar a la Matriz
+                  <ArrowRight size={16} className="group-hover/btn:translate-x-2 transition-transform duration-500" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Security Footer inside card */}
+          <div className="mt-10 pt-8 border-t border-[#0e312a] flex items-center justify-center gap-6 opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700">
+             <ShieldCheck size={18} className="text-[#00ff88]" />
+             <Cpu size={18} className="text-[#00ff88]" />
+             <Globe size={18} className="text-[#00ff88]" />
+          </div>
         </div>
 
-        <p className="text-[10px] text-zinc-700 font-bold uppercase tracking-widest text-center">
-           Iceberg Logistics IT Solutions © 2026
-        </p>
-      </motion.div>
+        <div className="mt-12 text-center space-y-2">
+            <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.2em] italic">
+                ICEBERG LOGISTICS IT SOLUTIONS © 2026
+            </p>
+            <div className="flex items-center justify-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
+                <span className="text-[8px] font-black text-[#00ff88] uppercase tracking-widest">Servidores Cifrados Activos</span>
+            </div>
+        </div>
+      </div>
     </div>
   )
 }
