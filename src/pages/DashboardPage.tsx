@@ -1,25 +1,61 @@
 import React, { useEffect } from 'react'
 import { 
-  Users, 
+  History, 
   ShieldCheck, 
-  Database,
-  Plus,
-  MoreVertical,
-  MessageCircle,
-  LayoutDashboard
+  Cpu,
+  Monitor,
+  Zap,
+  Network,
+  MoreHorizontal
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { cn } from '../lib/utils'
+import { 
+  ResponsiveContainer, 
+  AreaChart, 
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid
+} from 'recharts'
 
-const StatCard: React.FC<{ icon: any, value: string | number, label: string, color: string }> = ({ icon: Icon, value, label, color }) => (
-   <div className="card-soft p-6 flex flex-col items-center justify-center text-center relative group min-w-[200px]">
-      <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300", color)}>
-         <Icon className="w-6 h-6" />
+const chartData = [
+  { time: 'Dec 21', val: 320 },
+  { time: 'Dec 22', val: 380 },
+  { time: 'Dec 23', val: 310 },
+  { time: 'Dec 24', val: 420 },
+  { time: 'Dec 25', val: 480 },
+  { time: 'Dec 26', val: 410 },
+  { time: 'Dec 27', val: 450 },
+]
+
+const StatMetric: React.FC<{ label: string, value: string | number, trend: string, up?: boolean }> = ({ label, value, trend, up }) => (
+   <div className="flex-1 min-w-[200px] border-r border-[#0e312a] last:border-none px-6 py-2 group cursor-pointer hover:bg-white/5 transition-colors first:rounded-l-2xl last:rounded-r-2xl">
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e] mb-2">{label}</p>
+      <h3 className="text-3xl font-black text-white italic tracking-tighter mb-2">{value}</h3>
+      <div className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest", up ? "bg-[#00ff88]/10 text-[#00ff88]" : "bg-red-500/10 text-red-500")}>
+         <Zap size={10} className={cn(!up && "rotate-180")} />
+         <span>{trend}</span>
       </div>
-      <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-      <h3 className="text-3xl font-black text-[#1b2559] tracking-tight">{value}</h3>
-      <p className="text-xs font-bold text-[#a3aed0] uppercase tracking-widest mt-1">{label}</p>
    </div>
+)
+
+const ProgressRing: React.FC<{ percent: number }> = ({ percent }) => (
+  <div className="relative w-48 h-48 flex items-center justify-center">
+    <svg className="w-full h-full -rotate-90">
+      <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-[#0e312a]" />
+      <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" 
+        strokeDasharray={2 * Math.PI * 80} 
+        strokeDashoffset={2 * Math.PI * 80 * (1 - percent / 100)} 
+        strokeLinecap="round"
+        className="text-[#00ff88] drop-shadow-[0_0_8px_rgba(0,255,136,0.6)]" 
+      />
+    </svg>
+    <div className="absolute flex flex-col items-center">
+       <span className="text-4xl font-black text-white italic tracking-tighter">{percent}%</span>
+    </div>
+  </div>
 )
 
 const DashboardPage: React.FC = () => {
@@ -31,105 +67,116 @@ const DashboardPage: React.FC = () => {
 
   const total = equipos.length
   const validados = equipos.filter(e => e.validado).length
-  const pendientes = total - validados
+  const salud = total > 0 ? Math.round((validados / total) * 100) : 0
 
   return (
     <div className="space-y-10">
-      <div className="flex items-center justify-between">
-         <h1 className="text-2xl font-black text-[#1b2559]">Overview</h1>
-         <div className="flex gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-sm text-sm font-bold text-[#a3aed0] hover:text-[#4318ff] transition-all">
-               Last 30 days
-            </button>
-         </div>
+      {/* Metrics Row Estilo Imagen */}
+      <div className="card-matrix flex flex-wrap divide-x divide-[#0e312a] overflow-hidden">
+         <StatMetric label="Total Node Count" value={total.toLocaleString()} trend="+12.45%" up />
+         <StatMetric label="Encryption Rate" value={validados.toLocaleString()} trend="-2.65%" />
+         <StatMetric label="Sync Efficiency" value="98.41%" trend="+1.25%" up />
+         <StatMetric label="Avg Load Time" value="1.2ms" trend="+4.12%" up />
       </div>
 
-      {/* Hero Stats al estilo SMMPlanner */}
-      <div className="flex flex-wrap gap-6 items-stretch">
-        <StatCard icon={Users} value={total} label="Total Assets" color="bg-[#f4f7fe] text-[#4318ff]" />
-        <StatCard icon={ShieldCheck} value={validados} label="Validated" color="bg-[#f4f7fe] text-[#05cd99]" />
-        <StatCard icon={Database} value={pendientes} label="Pending" color="bg-[#f4f7fe] text-[#ffb547]" />
-        
-        <div className="card-soft flex-1 flex flex-col items-center justify-center border-dashed border-2 border-gray-100 hover:border-[#4318ff]/30 cursor-pointer group bg-gray-50/30">
-           <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-[#4318ff] transition-all">
-              <Plus size={20} />
-           </div>
-           <span className="text-xs font-bold text-[#a3aed0] mt-3 group-hover:text-[#4318ff] transition-all">Add New User</span>
-        </div>
-      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
+         {/* Chart Section */}
+         <div className="xl:col-span-2 card-matrix p-10 space-y-10">
+            <div className="flex items-center justify-between">
+               <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e] mb-1">Matrix Activity</p>
+                  <h3 className="text-4xl font-black text-white italic tracking-tighter">{total * 1234}</h3>
+                  <span className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest">+12.4% from last scan</span>
+               </div>
+               <button className="p-2 rounded-xl bg-white/5 text-[#4e564e] hover:text-[#00ff88] transition-all">
+                  <MoreHorizontal size={20} />
+               </button>
+            </div>
 
-      {/* Inventory List Preview */}
-      <div className="card-soft p-8">
-         <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-black text-[#1b2559]">Recent Inventory</h2>
-            <div className="flex gap-2">
-               {['Name', 'Local IP', 'Model', 'Status'].map(f => (
-                 <button key={f} className="px-4 py-2 bg-[#f4f7fe] rounded-lg text-xs font-bold text-[#a3aed0] hover:text-[#4318ff] transition-all">
-                   {f}
-                 </button>
-               ))}
+            <div className="h-[350px] w-full">
+               <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData}>
+                     <defs>
+                        <linearGradient id="emeraldGradient" x1="0" y1="0" x2="0" y2="1">
+                           <stop offset="5%" stopColor="#00ff88" stopOpacity={0.2}/>
+                           <stop offset="95%" stopColor="#00ff88" stopOpacity={0}/>
+                        </linearGradient>
+                     </defs>
+                     <CartesianGrid strokeDasharray="3 3" stroke="#0e312a" vertical={false} opacity={0.5} />
+                     <XAxis 
+                        dataKey="time" 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{fill: '#4e564e', fontSize: 10, fontWeight: 800}} 
+                        dy={10}
+                     />
+                     <YAxis hide />
+                     <Tooltip 
+                        contentStyle={{ backgroundColor: '#121412', border: '1px solid #0e312a', borderRadius: '12px' }}
+                        itemStyle={{ color: '#00ff88', fontSize: '10px', fontWeight: '900' }}
+                     />
+                     <Area 
+                        type="monotone" 
+                        dataKey="val" 
+                        stroke="#00ff88" 
+                        strokeWidth={4} 
+                        fill="url(#emeraldGradient)" 
+                        animationDuration={2500}
+                     />
+                  </AreaChart>
+               </ResponsiveContainer>
             </div>
          </div>
 
-         <div className="overflow-x-auto">
-            <table className="w-full text-left">
-               <thead>
-                  <tr className="text-[10px] font-black text-[#a3aed0] uppercase tracking-[0.2em] border-b border-gray-50">
-                     <th className="pb-4">Hostname</th>
-                     <th className="pb-4">Local IP</th>
-                     <th className="pb-4">Model</th>
-                     <th className="pb-4 text-center">TFA</th>
-                     <th className="pb-4">Last Sync</th>
-                     <th className="pb-4">Actions</th>
-                  </tr>
-               </thead>
-               <tbody className="divide-y divide-gray-50">
-                  {equipos.slice(0, 5).map((e) => (
-                    <tr key={e.id} className="group hover:bg-[#f4f7fe]/50 transition-all">
-                       <td className="py-5">
-                          <div className="flex items-center gap-3">
-                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center text-[#4318ff] font-bold text-xs ring-4 ring-gray-50">
-                                {e.hostname?.charAt(0) || 'H'}
-                             </div>
-                             <div>
-                                <div className="text-sm font-black text-[#1b2559]">{e.hostname || 'Unknown'}</div>
-                                <div className="text-[10px] font-medium text-[#a3aed0]">{e.username}</div>
-                             </div>
-                          </div>
-                       </td>
-                       <td className="py-5 text-sm font-bold text-[#a3aed0]">{e.ip_local}</td>
-                       <td className="py-5 text-sm font-bold text-[#1b2559]">{e.marca_pc || 'Generic'}</td>
-                       <td className="py-5">
-                          <div className="flex justify-center">
-                             {e.validado ? (
-                                <div className="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center text-green-500">
-                                   <ShieldCheck size={12} />
-                                </div>
-                             ) : (
-                                <div className="w-5 h-5 rounded-full bg-amber-50 flex items-center justify-center text-amber-500">
-                                   <Activity size={12} />
-                                </div>
-                             )}
-                          </div>
-                       </td>
-                       <td className="py-5 text-[11px] font-bold text-[#a3aed0] uppercase tracking-wider">
-                          {new Date(e.updated_at).toLocaleDateString()}
-                       </td>
-                       <td className="py-5">
-                          <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                             <button className="p-2 hover:bg-white rounded-lg text-gray-400 hover:text-[#4318ff] shadow-sm">
-                                <MessageCircle size={16} />
-                             </button>
-                             <button className="p-2 hover:bg-white rounded-lg text-gray-400 hover:text-gray-600 shadow-sm">
-                                <MoreVertical size={16} />
-                             </button>
-                          </div>
-                       </td>
-                    </tr>
-                  ))}
-               </tbody>
-            </table>
+         {/* Satisfaction / Health Ring Section */}
+         <div className="card-matrix p-10 flex flex-col items-center justify-between text-center min-h-[500px]">
+            <div className="flex w-full items-center justify-between mb-10">
+               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e]">Integrity Status</h4>
+               <MoreHorizontal size={18} className="text-[#4e564e]" />
+            </div>
+
+            <ProgressRing percent={salud} />
+            
+            <div className="space-y-2 mt-8">
+               <div className="text-[10px] font-black text-[#4e564e] uppercase tracking-widest">Global Scan Quality</div>
+               <div className="text-sm font-bold text-white">Based on node telemetry validation</div>
+            </div>
+
+            <div className="mt-10 p-6 rounded-3xl bg-white/5 border border-white/5 w-full text-left space-y-4 relative overflow-hidden group">
+               <div className="absolute -right-10 -bottom-10 w-24 h-24 bg-[#00ff88]/5 rounded-full" />
+               <div className="text-xs font-black text-[#00ff88] uppercase tracking-widest flex items-center gap-2">
+                  <Zap size={14} className="neon-pulse" />
+                  Live Broadcast
+               </div>
+               <p className="text-xs font-bold text-[#4e564e] uppercase leading-relaxed">System is broadcasting encrypted telemetry to master server.</p>
+               <button className="text-[10px] font-black text-white uppercase tracking-widest hover:text-[#00ff88] transition-colors">Open Matrix Console →</button>
+            </div>
          </div>
+      </div>
+
+      {/* Row of Detailed Logs */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-10">
+         {[
+           { l: 'BETA_SRV_32', t: 'Live Broadcast', v: '1.58m', c: 'text-[#00ff88]' },
+           { l: 'ALPHA_NODE_01', t: 'Encrypted Data', v: '1.02m', c: 'text-[#00ff88]' },
+           { l: 'OMEGA_RELAY', t: 'Matrix Sync', v: '1.98m', c: 'text-[#00ff88]' }
+         ].map((item, i) => (
+           <div key={i} className="card-matrix p-4 flex items-center justify-between group hover:border-[#00ff88]/40">
+              <div className="flex items-center gap-4">
+                 <div className="w-10 h-10 rounded-xl bg-[#00ff88]/10 flex items-center justify-center text-[#00ff88]">
+                    <Network size={18} />
+                 </div>
+                 <div>
+                    <h5 className="text-[11px] font-black text-white italic">{item.l}</h5>
+                    <p className="text-[9px] font-black text-[#4e564e] uppercase">{item.t}</p>
+                 </div>
+              </div>
+              <div className="text-right">
+                 <div className="text-[10px] font-black text-white">{item.v}</div>
+                 <div className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">Live</div>
+              </div>
+           </div>
+         ))}
       </div>
     </div>
   )
