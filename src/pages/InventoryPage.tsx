@@ -11,7 +11,6 @@ import {
   Plus,
   FileSpreadsheet,
   Zap,
-  AlertCircle,
   Server,
   ShieldAlert
 } from 'lucide-react'
@@ -44,23 +43,13 @@ const InventoryPage: React.FC = () => {
     toast.success('Inventario sincronizado')
   }
 
-  // FUNCIÓN DE BORRADO REFORZADA
   const handleActionDelete = async (id: string, name: string) => {
-    // 1. Confirmación de seguridad
     const confirmed = window.confirm(`ATENCIÓN: ¿Desea eliminar definitivamente el equipo [${name}]?`);
-    
     if (confirmed) {
       try {
-        console.log('--- INICIANDO PURGA DE ACTIVO IT ---');
-        console.log('ID objetivo:', id);
-        
-        // Llamada directa al store
         await deleteEquipo(id);
-        
-        // Mensaje de éxito manual por si falla el store
         toast.success(`Equipo ${name} eliminado correctamente`);
       } catch (err: any) {
-        console.error('ERROR EN ACCIÓN DE BORRADO:', err);
         toast.error(`Fallo en la matriz: ${err.message || 'Error Desconocido'}`);
       }
     }
@@ -68,8 +57,6 @@ const InventoryPage: React.FC = () => {
 
   const exportToCSV = () => {
     if (equipos.length === 0) return toast.error('No hay datos para exportar')
-    
-    // Encabezados profesionales
     const headers = [
       'HOSTNAME', 'USUARIO', 'IP LOCAL', 'SISTEMA OPERATIVO', 
       'PROCESADOR', 'RAM', 'ALMACENAMIENTO', 
@@ -80,7 +67,6 @@ const InventoryPage: React.FC = () => {
     ]
 
     const rows = equipos.map(e => {
-      // Parsear información de monitores
       const monitorList = (e.monitores || '').split('\n')
       const parseMonitor = (str: string) => {
         const parts = str.split('|')
@@ -88,25 +74,14 @@ const InventoryPage: React.FC = () => {
         const serial = parts[1]?.replace('S/N:', '').trim() || ''
         return { model, serial }
       }
-
       const m1 = monitorList[0] ? parseMonitor(monitorList[0]) : { model: '', serial: '' }
       const m2 = monitorList[1] ? parseMonitor(monitorList[1]) : { model: '', serial: '' }
 
       return [
-        e.hostname,
-        e.username,
-        e.ip_local,
-        e.sistema_operativo,
-        e.caracteristicas_pc?.replace(/,/g, ' '),
-        e.memoria_ram,
-        e.disco,
-        e.marca_pc,
-        e.modelo,
-        e.numero_serie,
-        m1.model,
-        m1.serial,
-        m2.model,
-        m2.serial,
+        e.hostname, e.username, e.ip_local, e.sistema_operativo,
+        e.caracteristicas_pc?.replace(/,/g, ' '), e.memoria_ram, e.disco,
+        e.marca_pc, e.modelo, e.numero_serie,
+        m1.model, m1.serial, m2.model, m2.serial,
         new Date(e.created_at).toLocaleString()
       ]
     })
@@ -136,7 +111,8 @@ const InventoryPage: React.FC = () => {
     return matchesSearch
   })
 
-  r    <div className="space-y-12 animate-in pb-20 font-sans text-white">
+  return (
+    <div className="space-y-12 animate-in pb-20 font-sans text-white">
       {/* Header Sección Principal */}
       <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-[#00ff88]/10 relative">
         <div className="space-y-4">
@@ -162,7 +138,7 @@ const InventoryPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Barra de Búsqueda y Filtros con más aire */}
+      {/* Barra de Búsqueda y Filtros */}
       <div className="flex flex-col lg:flex-row gap-8 items-center bg-[#0d0f0d] p-3 rounded-[2.5rem] border border-[#0e312a]/50">
          <div className="relative flex-1 w-full group">
             <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4e564e] group-focus-within:text-[#00ff88] transition-colors" />
@@ -193,7 +169,7 @@ const InventoryPage: React.FC = () => {
          </div>
       </div>
 
-      {/* Grilla de Equipos con Estilo Mejorado */}
+      {/* Grilla de Equipos */}
       <div className="grid grid-cols-1 gap-10">
          {isLoading && equipos.length === 0 ? (
            <div className="col-span-full flex flex-col items-center justify-center py-40 space-y-6">
@@ -205,104 +181,55 @@ const InventoryPage: React.FC = () => {
            </div>
          ) : filteredEquipos.length > 0 ? (
            filteredEquipos.map((e: any) => (
-             <div 
-               key={e.id}
-               onClick={() => navigate(`/editar/${e.id}`)}
-               className="group relative"
-             >
-                {/* Glow de fondo dinámico */}
+             <div key={e.id} onClick={() => navigate(`/editar/${e.id}`)} className="group relative" >
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00ff88]/0 via-[#00ff88]/10 to-[#00ff88]/0 rounded-[2.5rem] blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                
                 <div className="card-matrix relative bg-[#090a09]/80 backdrop-blur-2xl border border-[#0e312a] hover:border-[#00ff88]/40 transition-all duration-500 p-10 rounded-[2.5rem] overflow-hidden">
                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                      
-                      {/* Cabecera de la Tarjeta */}
                       <div className="lg:col-span-4 flex items-center gap-8">
                          <div className={cn(
                            "w-24 h-24 rounded-3xl flex items-center justify-center border-2 transition-all duration-500 group-hover:scale-110",
-                           e.es_laptop 
-                            ? "bg-amber-500/5 border-amber-500/10 text-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.1)]" 
-                            : "bg-[#00ff88]/5 border-[#00ff88]/10 text-[#00ff88] shadow-[0_0_30px_rgba(0,255,136,0.1)]"
+                           e.es_laptop ? "bg-amber-500/5 border-amber-500/10 text-amber-500" : "bg-[#00ff88]/5 border-[#00ff88]/10 text-[#00ff88]"
                          )}>
                             {e.es_laptop ? <Laptop size={44} strokeWidth={1.5} /> : <DesktopIcon size={44} strokeWidth={1.5} />}
                          </div>
                          <div className="space-y-3">
-                            <div className="flex flex-col">
-                               <span className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.3em] mb-1">Identificador Host</span>
-                               <h3 className="text-3xl font-black italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-none">
-                                 {e.hostname}
-                               </h3>
-                            </div>
+                            <h3 className="text-3xl font-black italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-none">{e.hostname}</h3>
                             <div className="flex items-center gap-3">
-                               <div className="px-3 py-1 bg-[#121412] border border-[#0e312a] rounded-lg">
-                                  <span className="text-[9px] font-bold text-white uppercase tracking-widest">{e.codigo_activo || 'S/N ACTIVO'}</span>
-                               </div>
-                               <div className="flex items-center gap-1.5 px-3 py-1 bg-[#00ff88]/10 rounded-lg">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] shadow-[0_0_5px_#00ff88]" />
-                                  <span className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">ONLINE</span>
-                               </div>
+                               <span className="text-[9px] font-bold text-white uppercase px-3 py-1 bg-[#121412] border border-[#0e312a] rounded-lg">{e.codigo_activo || 'S/N ACTIVO'}</span>
+                               <span className="text-[9px] font-black text-[#00ff88] uppercase px-3 py-1 bg-[#00ff88]/10 rounded-lg flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-[#00ff88]" /> ONLINE</span>
                             </div>
                          </div>
                       </div>
-
-                      {/* Bloque Central de Hardware */}
                       <div className="lg:col-span-6 grid grid-cols-2 gap-x-12 gap-y-6 lg:border-l lg:border-[#0e312a] lg:pl-12 lg:py-4">
-                         <div className="space-y-2">
-                            <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.2em] flex items-center gap-2">
-                               <Zap size={10} className="text-[#00ff88]" /> Arquitectura
-                            </p>
-                            <p className="text-xs font-bold text-white/90 truncate uppercase leading-relaxed">{e.caracteristicas_pc || 'CPU GENÉRICO'}</p>
+                         <div>
+                            <p className="text-[9px] font-black text-[#4e564e] uppercase flex items-center gap-2 mb-1"><Zap size={10} className="text-[#00ff88]" /> Arquitectura</p>
+                            <p className="text-xs font-bold text-white/90 truncate uppercase">{e.caracteristicas_pc || 'CPU GENÉRICO'}</p>
                          </div>
-                         <div className="space-y-2">
-                            <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-[0.2em]">Memoria / Almacén</p>
-                            <p className="text-xs font-bold text-zinc-400 uppercase tracking-wide">{e.memoria_ram || 'N/A'} RAM • {e.disco || 'N/A'}</p>
+                         <div>
+                            <p className="text-[9px] font-black text-[#4e564e] uppercase mb-1">Memoria / Disco</p>
+                            <p className="text-xs font-bold text-zinc-400 uppercase">{e.memoria_ram || 'N/A'} • {e.disco || 'N/A'}</p>
                          </div>
-                         <div className="space-y-2">
-                            <p className="text-[9px] font-black text-[#00ff88] uppercase tracking-[0.2em]">Entorno O.S.</p>
+                         <div>
+                            <p className="text-[9px] font-black text-[#00ff88] uppercase mb-1">Entorno O.S.</p>
                             <p className="text-xs font-bold text-white/70 truncate uppercase">{e.sistema_operativo}</p>
                          </div>
-                         <div className="space-y-2">
-                            <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                               <Server size={10} className="text-indigo-400" /> Periféricos Visuales
-                            </p>
-                            <p className="text-[10px] font-bold text-white/60 uppercase whitespace-pre-line leading-tight">
-                              {e.monitores || 'Pantalla Integrada'}
-                            </p>
+                         <div>
+                            <p className="text-[9px] font-black text-indigo-400 uppercase flex items-center gap-2 mb-1"><Server size={10} /> Monitores</p>
+                            <p className="text-[10px] font-bold text-white/60 uppercase whitespace-pre-line leading-tight">{e.monitores || 'Integrada'}</p>
                          </div>
                       </div>
-
-                      {/* Botones de Acción */}
                       <div className="lg:col-span-2 flex items-center justify-end gap-4">
-                         <button 
-                           onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }}
-                           className="w-14 h-14 bg-[#1a1c1a] hover:bg-[#00ff88] text-[#4e564e] hover:text-black rounded-2xl transition-all border border-[#0e312a] hover:border-[#00ff88] flex items-center justify-center group/btn"
-                         > <Edit2 size={20} className="group-hover/btn:scale-110 transition-transform" /> </button>
-                         <button 
-                           onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }}
-                           className="w-14 h-14 bg-[#1a1c1a] hover:bg-red-500 text-[#4e564e] hover:text-white rounded-2xl transition-all border border-[#0e312a] hover:border-red-500 flex items-center justify-center group/btn"
-                         > <Trash2 size={20} className="group-hover/btn:scale-110 transition-transform" /> </button>
+                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-14 h-14 bg-[#1a1c1a] hover:bg-[#00ff88] text-[#4e564e] hover:text-black rounded-2xl transition-all border border-[#0e312a] flex items-center justify-center group/btn"><Edit2 size={20} /></button>
+                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-14 h-14 bg-[#1a1c1a] hover:bg-red-500 text-[#4e564e] hover:text-white rounded-2xl transition-all border border-[#0e312a] flex items-center justify-center group/btn"><Trash2 size={20} /></button>
                       </div>
-
                    </div>
                 </div>
              </div>
            ))
          ) : (
            <div className="flex flex-col items-center justify-center py-40 border-2 border-dashed border-[#0e312a] rounded-[3rem] space-y-6 bg-[#090a09]/50">
-              <div className="p-8 bg-zinc-900/50 rounded-full border border-white/5">
-                 <ShieldAlert size={60} className="text-[#0e312a]" />
-              </div>
-              <p className="text-[12px] font-black text-[#4e564e] uppercase tracking-[0.5em]">No se detectan activos en este sector</p>
-           </div>
-         )}
-      </div>
-    </div>
-    </div>
-           ))
-         ) : (
-           <div className="flex flex-col items-center justify-center p-20 border-2 border-dashed border-[#0e312a] rounded-[2.5rem] space-y-4">
-              <ShieldAlert size={48} className="text-[#0e312a]" />
-              <p className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em]">Sin nodos en el sector</p>
+              <ShieldAlert size={60} className="text-[#0e312a]" />
+              <p className="text-[12px] font-black text-[#4e564e] uppercase tracking-[0.5em]">No se detectan activos</p>
            </div>
          )}
       </div>
