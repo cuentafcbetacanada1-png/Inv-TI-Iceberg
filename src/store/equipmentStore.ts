@@ -7,6 +7,7 @@ interface EquipmentState {
   isLoading: boolean
   error: string | null
   fetchEquipos: () => Promise<void>
+  getEquipo: (id: string) => Promise<Equipo | null>
   addEquipo: (equipo: NewEquipo) => Promise<void>
   updateEquipo: (id: string, updates: Partial<Equipo>) => Promise<void>
   deleteEquipo: (id: string) => Promise<void>
@@ -30,6 +31,20 @@ export const useEquipmentStore = create<EquipmentState>((set, get) => ({
     } else {
       set({ equipos: data || [], isLoading: false })
     }
+  },
+
+  getEquipo: async (id: string) => {
+    const { data, error } = await supabase
+      .from('equipos')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      set({ error: error.message })
+      return null
+    }
+    return data
   },
 
   addEquipo: async (equipo) => {

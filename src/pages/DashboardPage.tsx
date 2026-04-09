@@ -22,13 +22,13 @@ import {
 import { toast } from 'react-hot-toast'
 
 const chartData = [
-  { time: 'Dec 21', val: 320 },
-  { time: 'Dec 22', val: 380 },
-  { time: 'Dec 23', val: 310 },
-  { time: 'Dec 24', val: 420 },
-  { time: 'Dec 25', val: 480 },
-  { time: 'Dec 26', val: 410 },
-  { time: 'Dec 27', val: 450 },
+  { time: 'Lun', val: 320 },
+  { time: 'Mar', val: 380 },
+  { time: 'Mie', val: 310 },
+  { time: 'Jue', val: 420 },
+  { time: 'Vie', val: 480 },
+  { time: 'Sab', val: 410 },
+  { time: 'Dom', val: 450 },
 ]
 
 const StatMetric: React.FC<{ label: string, value: string | number, trend: string, up?: boolean }> = ({ label, value, trend, up }) => (
@@ -67,12 +67,12 @@ const DashboardPage: React.FC = () => {
   }, [fetchEquipos])
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('¿Eliminar registro de la Matriz?')) {
+    if (window.confirm('¿Seguro que desea eliminar este equipo?')) {
       try {
         await deleteEquipo(id)
-        toast.success('Nodo desconectado')
+        toast.success('Equipo eliminado correctamente')
       } catch {
-        toast.error('Error en la purga del nodo')
+        toast.error('Error al intentar eliminar')
       }
     }
   }
@@ -83,22 +83,22 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-10">
-      {/* Metrics Row */}
+      {/* Fila de Métricas en Español */}
       <div className="card-matrix flex flex-wrap divide-x divide-[#0e312a] overflow-hidden">
-         <StatMetric label="Total Node Count" value={total.toLocaleString()} trend="+12.45%" up />
-         <StatMetric label="Encryption Rate" value={validados.toLocaleString()} trend="-2.65%" />
-         <StatMetric label="Sync Efficiency" value="98.41%" trend="+1.25%" up />
-         <StatMetric label="Avg Load Time" value="1.2ms" trend="+4.12%" up />
+         <StatMetric label="Total Equipos" value={total.toLocaleString()} trend="+12.45%" up />
+         <StatMetric label="Equipos Validados" value={validados.toLocaleString()} trend="-2.65%" />
+         <StatMetric label="Eficiencia Sinc." value="98.41%" trend="+1.25%" up />
+         <StatMetric label="Latencia Promedio" value="1.2ms" trend="+4.12%" up />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
-         {/* Chart Section */}
+         {/* Sección Gráfica */}
          <div className="xl:col-span-2 card-matrix p-10 space-y-10">
             <div className="flex items-center justify-between">
                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e] mb-1">Matrix Activity</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e] mb-1">Actividad del Sistema</p>
                   <h3 className="text-4xl font-black text-white italic tracking-tighter">{total * 1234}</h3>
-                  <span className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest">+12.4% from last scan</span>
+                  <span className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest">+12.4% desde el último escaneo</span>
                </div>
                <button className="p-2 rounded-xl bg-white/5 text-[#4e564e] hover:text-[#00ff88] transition-all">
                   <MoreHorizontal size={20} />
@@ -140,38 +140,39 @@ const DashboardPage: React.FC = () => {
             </div>
          </div>
 
-         {/* Integrity Status */}
+         {/* Estado de Integridad */}
          <div className="card-matrix p-10 flex flex-col items-center justify-between text-center min-h-[500px]">
             <div className="flex w-full items-center justify-between mb-10">
-               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e]">Integrity Status</h4>
+               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e]">Estado de Integridad</h4>
                <MoreHorizontal size={18} className="text-[#4e564e]" />
             </div>
 
             <ProgressRing percent={salud} />
             
             <div className="space-y-2 mt-8">
-               <div className="text-[10px] font-black text-[#4e564e] uppercase tracking-widest">Global Scan Quality</div>
-               <div className="text-sm font-bold text-white">Based on node telemetry validation</div>
+               <div className="text-[10px] font-black text-[#4e564e] uppercase tracking-widest">Calidad del Escaneo</div>
+               <div className="text-sm font-bold text-white italic">Basado en validación de telemetría</div>
             </div>
 
             <div className="mt-10 p-6 rounded-3xl bg-white/5 border border-white/5 w-full text-left space-y-4 relative overflow-hidden group">
                <div className="absolute -right-10 -bottom-10 w-24 h-24 bg-[#00ff88]/5 rounded-full" />
-               <div className="text-xs font-black text-[#00ff88] uppercase tracking-widest flex items-center gap-2">
-                  <Zap size={14} className="neon-pulse" />
-                  Live Broadcast
+               <div className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest flex items-center gap-2">
+                  <Zap size={14} className="animate-pulse" />
+                  Transmisión en Vivo
                </div>
-               <p className="text-xs font-bold text-[#4e564e] uppercase leading-relaxed">System is broadcasting encrypted telemetry to master server.</p>
-               <button className="text-[10px] font-black text-white uppercase tracking-widest hover:text-[#00ff88] transition-colors">Open Matrix Console →</button>
+               <p className="text-[10px] font-bold text-[#4e564e] uppercase leading-relaxed italic">El agente está emitiendo telemetría cifrada al servidor maestro.</p>
+               <button className="text-[10px] font-black text-white uppercase tracking-widest hover:text-[#00ff88] transition-colors">Abrir Consola IT →</button>
             </div>
          </div>
       </div>
 
-      {/* Row of Detailed Logs & Actions */}
+      {/* Registros Detallados */}
+      <h3 className="text-xs font-black text-[#4e564e] uppercase tracking-[0.4em] mb-4 pl-2 italic">Últimos Registros</h3>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-10">
-         {equipos.slice(0, 3).map((e, i) => (
-           <div key={e.id} className="card-matrix p-5 flex items-center justify-between group hover:border-[#00ff88]/40">
+         {equipos.slice(0, 3).map((e) => (
+           <div key={e.id} className="card-matrix p-5 flex items-center justify-between group hover:border-[#00ff88]/40 transition-all">
               <div className="flex items-center gap-4">
-                 <div className="w-10 h-10 rounded-xl bg-[#00ff88]/10 flex items-center justify-center text-[#00ff88]">
+                 <div className="w-10 h-10 rounded-xl bg-[#00ff88]/10 flex items-center justify-center text-[#00ff88] shadow-inner">
                     <Network size={18} />
                  </div>
                  <div>
@@ -182,13 +183,15 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                  <Link 
                    to={`/editar/${e.id}`}
-                   className="p-2.5 bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-xl text-[#00ff88] hover:bg-[#00ff88] hover:text-black transition-all"
+                   className="p-2.5 bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-xl text-[#00ff88] hover:bg-[#00ff88] hover:text-black transition-all shadow-sm"
+                   title="Editar Equipo"
                  >
                     <Edit2 size={14} />
                  </Link>
                  <button 
                    onClick={() => handleDelete(e.id)}
-                   className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                   className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                   title="Eliminar Equipo"
                  >
                     <Trash2 size={14} />
                  </button>
