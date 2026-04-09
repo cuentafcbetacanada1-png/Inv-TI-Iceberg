@@ -1,11 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { 
+  History, 
   ShieldCheck, 
   Zap,
-  Network,
-  Edit2,
-  Trash2,
-  MoreHorizontal
+  Activity,
+  Plus,
+  Monitor,
+  Laptop,
+  CheckCircle2,
+  Clock,
+  ArrowUpRight,
+  Database
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useEquipmentStore } from '../store/equipmentStore'
@@ -19,185 +24,186 @@ import {
   Tooltip,
   CartesianGrid
 } from 'recharts'
-import { toast } from 'react-hot-toast'
 
 const chartData = [
-  { time: 'Lun', val: 320 },
-  { time: 'Mar', val: 380 },
-  { time: 'Mie', val: 310 },
-  { time: 'Jue', val: 420 },
-  { time: 'Vie', val: 480 },
-  { time: 'Sab', val: 410 },
-  { time: 'Dom', val: 450 },
+  { dia: 'Lun', nodos: 4 },
+  { dia: 'Mar', nodos: 7 },
+  { dia: 'Mie', nodos: 5 },
+  { dia: 'Jue', nodos: 12 },
+  { dia: 'Vie', nodos: 8 },
+  { dia: 'Sab', nodos: 3 },
+  { dia: 'Dom', nodos: 6 },
 ]
 
-const StatMetric: React.FC<{ label: string, value: string | number, trend: string, up?: boolean }> = ({ label, value, trend, up }) => (
-   <div className="flex-1 min-w-[200px] border-r border-[#0e312a] last:border-none px-6 py-2 group cursor-pointer hover:bg-white/5 transition-colors first:rounded-l-2xl last:rounded-r-2xl">
-      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e] mb-2">{label}</p>
-      <h3 className="text-3xl font-black text-white italic tracking-tighter mb-2">{value}</h3>
-      <div className={cn("inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest", up ? "bg-[#00ff88]/10 text-[#00ff88]" : "bg-red-500/10 text-red-500")}>
-         <Zap size={10} className={cn(!up && "rotate-180")} />
-         <span>{trend}</span>
+const ResumenCard: React.FC<{ label: string, value: string | number, sub: string, icon: any, color: string }> = ({ label, value, sub, icon: Icon, color }) => (
+   <div className="card-matrix p-6 flex flex-col justify-between group h-40 relative overflow-hidden">
+      <div className={cn("absolute -right-4 -top-4 w-24 h-24 opacity-5 transition-transform group-hover:scale-125", color)}>
+         <Icon size={90} />
+      </div>
+      <div className="flex items-center gap-3">
+         <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", color.replace('text-', 'bg-').concat('/10 border-').concat(color.replace('text-', '')))}>
+            <Icon size={18} className={color} />
+         </div>
+         <span className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.2em]">{label}</span>
+      </div>
+      <div>
+         <h4 className="text-3xl font-black text-white italic tracking-tighter mb-1">{value}</h4>
+         <p className="text-[10px] font-bold text-[#4e564e] uppercase tracking-widest flex items-center gap-1">
+            <ArrowUpRight size={12} className="text-[#00ff88]" />
+            {sub}
+         </p>
       </div>
    </div>
 )
 
-const ProgressRing: React.FC<{ percent: number }> = ({ percent }) => (
-  <div className="relative w-48 h-48 flex items-center justify-center">
-    <svg className="w-full h-full -rotate-90">
-      <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-[#0e312a]" />
-      <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" 
-        strokeDasharray={2 * Math.PI * 80} 
-        strokeDashoffset={2 * Math.PI * 80 * (1 - percent / 100)} 
-        strokeLinecap="round"
-        className="text-[#00ff88] drop-shadow-[0_0_8px_rgba(0,255,136,0.6)]" 
-      />
-    </svg>
-    <div className="absolute flex flex-col items-center">
-       <span className="text-4xl font-black text-white italic tracking-tighter">{percent}%</span>
-    </div>
-  </div>
-)
-
 const DashboardPage: React.FC = () => {
-  const { equipos, fetchEquipos, deleteEquipo } = useEquipmentStore()
+  const { equipos, fetchEquipos } = useEquipmentStore()
 
   useEffect(() => {
     fetchEquipos()
   }, [fetchEquipos])
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('¿Seguro que desea eliminar este equipo?')) {
-      try {
-        await deleteEquipo(id)
-        toast.success('Equipo eliminado correctamente')
-      } catch {
-        toast.error('Error al intentar eliminar')
-      }
-    }
-  }
+  const stats = useMemo(() => {
+    const total = equipos.length
+    const validados = equipos.filter(e => e.validado).length
+    const laptops = equipos.filter(e => e.es_laptop).length
+    const escritorios = equipos.filter(e => e.es_escritorio).length
+    const salud = total > 0 ? Math.round((validados / total) * 100) : 0
+    
+    // Simular ultimas implementaciones basadas en los datos reales
+    const recientes = [...equipos]
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .slice(0, 5)
 
-  const total = equipos.length
-  const validados = equipos.filter(e => e.validado).length
-  const salud = total > 0 ? Math.round((validados / total) * 100) : 0
+    return { total, validados, laptops, escritorios, salud, recientes }
+  }, [equipos])
 
   return (
-    <div className="space-y-10">
-      {/* Fila de Métricas en Español */}
-      <div className="card-matrix flex flex-wrap divide-x divide-[#0e312a] overflow-hidden">
-         <StatMetric label="Total Equipos" value={total.toLocaleString()} trend="+12.45%" up />
-         <StatMetric label="Equipos Validados" value={validados.toLocaleString()} trend="-2.65%" />
-         <StatMetric label="Eficiencia Sinc." value="98.41%" trend="+1.25%" up />
-         <StatMetric label="Latencia Promedio" value="1.2ms" trend="+4.12%" up />
+    <div className="space-y-10 pb-20 animate-in">
+      {/* Indicadores Principales */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+         <ResumenCard label="Activos Totales" value={stats.total} sub="Nodos Protegidos" icon={Monitor} color="text-[#00ff88]" />
+         <ResumenCard label="Laptops" value={stats.laptops} sub="Fuerza Móvil" icon={Laptop} color="text-amber-500" />
+         <ResumenCard label="Integridad" value={`${stats.salud}%`} sub="Datos Validados" icon={ShieldCheck} color="text-indigo-500" />
+         <ResumenCard label="Uptime Agente" value="99.9%" sub="Servicio Cloud" icon={Zap} color="text-[#00ff88]" />
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
-         {/* Sección Gráfica */}
-         <div className="xl:col-span-2 card-matrix p-10 space-y-10">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-10">
+         {/* Gráfica de Implementación */}
+         <div className="xl:col-span-8 card-matrix p-10 space-y-10">
             <div className="flex items-center justify-between">
-               <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e] mb-1">Actividad del Sistema</p>
-                  <h3 className="text-4xl font-black text-white italic tracking-tighter">{total * 1234}</h3>
-                  <span className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest">+12.4% desde el último escaneo</span>
+               <div className="space-y-1">
+                  <h3 className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em]">Flujo de Implementación</h3>
+                  <div className="flex items-center gap-3">
+                     <h2 className="text-3xl font-black text-white italic tracking-tighter">Actividad de Red</h2>
+                     <span className="bg-[#00ff88]/10 text-[#00ff88] px-2 py-1 rounded-lg text-[10px] font-black uppercase">+3 en 24h</span>
+                  </div>
                </div>
-               <button className="p-2 rounded-xl bg-white/5 text-[#4e564e] hover:text-[#00ff88] transition-all">
-                  <MoreHorizontal size={20} />
-               </button>
+               <div className="flex gap-2">
+                  {['7D', '30D', '90D'].map(t => (
+                    <button key={t} className="px-3 py-1.5 rounded-lg border border-[#0e312a] text-[10px] font-black text-[#4e564e] hover:text-[#00ff88] transition-all">{t}</button>
+                  ))}
+               </div>
             </div>
 
             <div className="h-[350px] w-full">
                <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData}>
                      <defs>
-                        <linearGradient id="emeraldGradient" x1="0" y1="0" x2="0" y2="1">
+                        <linearGradient id="glowGradient" x1="0" y1="0" x2="0" y2="1">
                            <stop offset="5%" stopColor="#00ff88" stopOpacity={0.2}/>
                            <stop offset="95%" stopColor="#00ff88" stopOpacity={0}/>
                         </linearGradient>
                      </defs>
-                     <CartesianGrid strokeDasharray="3 3" stroke="#0e312a" vertical={false} opacity={0.5} />
-                     <XAxis 
-                        dataKey="time" 
-                        axisLine={false} 
-                        tickLine={false} 
-                        tick={{fill: '#4e564e', fontSize: 10, fontWeight: 800}} 
-                        dy={10}
-                     />
+                     <CartesianGrid strokeDasharray="3 3" stroke="#0e312a" vertical={false} opacity={0.3} />
+                     <XAxis dataKey="dia" axisLine={false} tickLine={false} tick={{fill: '#4e564e', fontSize: 10, fontWeight: 800}} dy={10} />
                      <YAxis hide />
                      <Tooltip 
-                        contentStyle={{ backgroundColor: '#121412', border: '1px solid #0e312a', borderRadius: '12px' }}
+                        contentStyle={{ backgroundColor: '#121412', border: '1px solid #00ff8820', borderRadius: '12px' }}
                         itemStyle={{ color: '#00ff88', fontSize: '10px', fontWeight: '900' }}
                      />
-                     <Area 
-                        type="monotone" 
-                        dataKey="val" 
-                        stroke="#00ff88" 
-                        strokeWidth={4} 
-                        fill="url(#emeraldGradient)" 
-                        animationDuration={2500}
-                     />
+                     <Area type="monotone" dataKey="nodos" stroke="#00ff88" strokeWidth={4} fill="url(#glowGradient)" animationDuration={2000} />
                   </AreaChart>
                </ResponsiveContainer>
             </div>
-         </div>
 
-         {/* Estado de Integridad */}
-         <div className="card-matrix p-10 flex flex-col items-center justify-between text-center min-h-[500px]">
-            <div className="flex w-full items-center justify-between mb-10">
-               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4e564e]">Estado de Integridad</h4>
-               <MoreHorizontal size={18} className="text-[#4e564e]" />
-            </div>
-
-            <ProgressRing percent={salud} />
-            
-            <div className="space-y-2 mt-8">
-               <div className="text-[10px] font-black text-[#4e564e] uppercase tracking-widest">Calidad del Escaneo</div>
-               <div className="text-sm font-bold text-white italic">Basado en validación de telemetría</div>
-            </div>
-
-            <div className="mt-10 p-6 rounded-3xl bg-white/5 border border-white/5 w-full text-left space-y-4 relative overflow-hidden group">
-               <div className="absolute -right-10 -bottom-10 w-24 h-24 bg-[#00ff88]/5 rounded-full" />
-               <div className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest flex items-center gap-2">
-                  <Zap size={14} className="animate-pulse" />
-                  Transmisión en Vivo
+            <div className="pt-8 border-t border-[#0e312a] flex items-center justify-between">
+               <div className="flex items-center gap-10">
+                  <div>
+                     <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest mb-1">Total HDD Scan</p>
+                     <span className="text-sm font-black text-white italic">4.2 TB</span>
+                  </div>
+                  <div>
+                     <p className="text-[9px] font-black text-[#4e564e] uppercase tracking-widest mb-1">RAM Promedio</p>
+                     <span className="text-sm font-black text-white italic">16.4 GB</span>
+                  </div>
                </div>
-               <p className="text-[10px] font-bold text-[#4e564e] uppercase leading-relaxed italic">El agente está emitiendo telemetría cifrada al servidor maestro.</p>
-               <button className="text-[10px] font-black text-white uppercase tracking-widest hover:text-[#00ff88] transition-colors">Abrir Consola IT →</button>
+               <Link to="/inventario" className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest hover:underline decoration-[#00ff88]/30">Ver Inventario Completo →</Link>
             </div>
          </div>
-      </div>
 
-      {/* Registros Detallados */}
-      <h3 className="text-xs font-black text-[#4e564e] uppercase tracking-[0.4em] mb-4 pl-2 italic">Últimos Registros</h3>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-10">
-         {equipos.slice(0, 3).map((e) => (
-           <div key={e.id} className="card-matrix p-5 flex items-center justify-between group hover:border-[#00ff88]/40 transition-all">
-              <div className="flex items-center gap-4">
-                 <div className="w-10 h-10 rounded-xl bg-[#00ff88]/10 flex items-center justify-center text-[#00ff88] shadow-inner">
-                    <Network size={18} />
-                 </div>
-                 <div>
-                    <h5 className="text-[11px] font-black text-white italic truncate max-w-[120px]">{e.hostname}</h5>
-                    <p className="text-[9px] font-black text-[#4e564e] uppercase">{e.ip_local}</p>
-                 </div>
-              </div>
-              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <Link 
-                   to={`/editar/${e.id}`}
-                   className="p-2.5 bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-xl text-[#00ff88] hover:bg-[#00ff88] hover:text-black transition-all shadow-sm"
-                   title="Editar Equipo"
-                 >
-                    <Edit2 size={14} />
-                 </Link>
-                 <button 
-                   onClick={() => handleDelete(e.id)}
-                   className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                   title="Eliminar Equipo"
-                 >
-                    <Trash2 size={14} />
-                 </button>
-              </div>
-           </div>
-         ))}
+         {/* Línea de Tiempo de Implementación */}
+         <div className="xl:col-span-4 flex flex-col gap-10">
+            <div className="card-matrix p-8 space-y-8 flex-1">
+               <div className="flex items-center justify-between">
+                  <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Implementaciones Recientes</h3>
+                  <Clock size={16} className="text-[#4e564e]" />
+               </div>
+
+               <div className="space-y-6">
+                  {stats.recientes.length === 0 ? (
+                    <div className="text-center py-10">
+                       <p className="text-[10px] font-bold text-[#4e564e] uppercase italic tracking-widest">Esperando nuevos nodos...</p>
+                    </div>
+                  ) : stats.recientes.map((e, i) => (
+                    <div key={e.id} className="relative pl-6 border-l border-[#0e312a] group cursor-pointer">
+                       <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 rounded-full bg-[#00ff88] shadow-[0_0_10px_#00ff88] group-hover:scale-150 transition-transform" />
+                       <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                             <span className="text-[11px] font-black text-white uppercase italic truncate max-w-[150px]">{e.hostname}</span>
+                             <span className="text-[9px] font-black text-[#00ff88] uppercase tracking-tighter">Inyectado</span>
+                          </div>
+                          <p className="text-[9px] font-bold text-[#4e564e] uppercase">IP: {e.ip_local}</p>
+                          <p className="text-[8px] font-black text-zinc-600 uppercase mt-1">
+                             {new Date(e.created_at).toLocaleDateString()} - {new Date(e.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                          </p>
+                       </div>
+                    </div>
+                  ))}
+               </div>
+
+               <button className="w-full py-4 rounded-2xl bg-[#00ff88]/5 border border-[#00ff88]/10 text-[10px] font-black text-[#00ff88] uppercase tracking-[0.3em] hover:bg-[#00ff88] hover:text-black transition-all">
+                  Ver Historial Completo
+               </button>
+            </div>
+
+            {/* Estado del Nodo de Datos */}
+            <div className="card-matrix p-8 bg-[#00ff88]/5 border-[#00ff88]/20 relative overflow-hidden group">
+               <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-[#00ff88]/5 rounded-full group-hover:scale-110 transition-transform" />
+               <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-[#00ff88] flex items-center justify-center shadow-[0_0_20px_rgba(0,255,136,0.3)]">
+                     <Database size={24} className="text-black" />
+                  </div>
+                  <div>
+                     <h4 className="text-xs font-black text-white uppercase tracking-widest">Base de Datos</h4>
+                     <p className="text-[10px] font-bold text-[#00ff88] uppercase italic">Sincronización Activa</p>
+                  </div>
+               </div>
+               <div className="space-y-3">
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                     <span className="text-[#4e564e]">Estado</span>
+                     <span className="text-[#00ff88] flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
+                        Online
+                     </span>
+                  </div>
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#4e564e]">
+                     <span>Último Respaldo</span>
+                     <span className="text-white">Hoy, 08:30 AM</span>
+                  </div>
+               </div>
+            </div>
+         </div>
       </div>
     </div>
   )

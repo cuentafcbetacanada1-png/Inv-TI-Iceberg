@@ -87,7 +87,7 @@ const InventoryPage: React.FC = () => {
              className="px-6 py-4 rounded-2xl bg-[#121412] border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] hover:border-[#00ff88]/30 transition-all flex items-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-xl"
            >
               <RefreshCcw size={16} className={cn(isRefreshing && "animate-spin")} />
-              Sincronizar
+              Actualizar
            </button>
            <Link to="/crear" className="btn-matrix flex items-center gap-3 px-8 text-[10px] font-black uppercase tracking-widest">
               <Plus size={18} />
