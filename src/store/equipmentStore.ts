@@ -79,24 +79,28 @@ export const useEquipmentStore = create<EquipmentState>((set, get) => ({
     }
   },
 
-  deleteEquipo: async (id) => {
+  deleteEquipo: async (id: string) => {
     set({ isLoading: true })
-    const { error } = await supabase
-      .from('equipos')
-      .delete()
-      .eq('id', id)
+    try {
+      const { error } = await supabase
+        .from('equipos')
+        .delete()
+        .eq('id', id)
 
-    if (error) {
-      console.error('Error deleting:', error)
-      set({ error: error.message, isLoading: false })
-      throw error
-    } else {
-      // Forzar actualización inmediata del estado local para evitar que "parezca" que sigue ahí
+      if (error) {
+        console.error('Error de Supabase al borrar:', error)
+        set({ error: error.message, isLoading: false })
+        throw error
+      }
+      
+      // Actualización local inmediata
       set((state) => ({
         equipos: state.equipos.filter(e => e.id !== id),
         isLoading: false
       }))
-      await get().fetchEquipos() // Recargar para sincronizar totalmente
+    } catch (err) {
+      set({ isLoading: false })
+      throw err
     }
   },
 

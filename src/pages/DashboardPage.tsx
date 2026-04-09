@@ -1,13 +1,10 @@
 import React, { useEffect, useMemo } from 'react'
 import { 
-  History, 
   ShieldCheck, 
   Zap,
   Activity,
-  Plus,
   Monitor,
   Laptop,
-  CheckCircle2,
   Clock,
   ArrowUpRight,
   Database,
@@ -30,6 +27,7 @@ import {
   Pie,
   Cell
 } from 'recharts'
+import type { Equipo } from '../types'
 
 const chartData = [
   { dia: 'Lun', nodos: 4 },
@@ -79,7 +77,7 @@ const DashboardPage: React.FC = () => {
     const salud = total > 0 ? Math.round((validados / total) * 100) : 0
     
     // Distribución por marca
-    const brands = equipos.reduce((acc: any, curr) => {
+    const brands = equipos.reduce((acc: Record<string, number>, curr: Equipo) => {
       const brand = curr.marca_pc?.toUpperCase() || 'DESCONOCIDO'
       acc[brand] = (acc[brand] || 0) + 1
       return acc
@@ -88,7 +86,7 @@ const DashboardPage: React.FC = () => {
     const brandData = Object.entries(brands).map(([name, value]) => ({ name, value }))
 
     // Distribución por SO
-    const osSet = equipos.reduce((acc: any, curr) => {
+    const osSet = equipos.reduce((acc: Record<string, number>, curr: Equipo) => {
       const os = curr.sistema_operativo?.includes('Windows 10') ? 'Windows 10' : 
                  curr.sistema_operativo?.includes('Windows 11') ? 'Windows 11' : 'Otros'
       acc[os] = (acc[os] || 0) + 1
@@ -105,7 +103,7 @@ const DashboardPage: React.FC = () => {
   }, [equipos])
 
   return (
-    <div className="space-y-10 pb-20 animate-in font-sans">
+    <div className="space-y-10 pb-20 animate-in font-sans text-white">
       {/* Indicadores Principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
          <ResumenCard label="Activos Totales" value={stats.total} sub="Nodos en Servidor" icon={Monitor} color="text-[#00ff88]" />
@@ -123,10 +121,6 @@ const DashboardPage: React.FC = () => {
                   <div className="space-y-1">
                      <h3 className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em]">Fuerza de Implementación</h3>
                      <h2 className="text-3xl font-black text-white italic tracking-tighter">Historial de Red</h2>
-                  </div>
-                  <div className="flex bg-[#090a09] border border-[#0e312a] p-1 rounded-xl">
-                     <button className="px-4 py-2 bg-[#00ff88] text-black rounded-lg text-[10px] font-black uppercase tracking-widest">Global</button>
-                     <button className="px-4 py-2 text-[#4e564e] hover:text-[#00ff88] text-[10px] font-black uppercase tracking-widest">Local</button>
                   </div>
                </div>
 
@@ -162,7 +156,7 @@ const DashboardPage: React.FC = () => {
                      <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                            <Pie data={stats.brandData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
-                              {stats.brandData.map((entry, index) => (
+                              {stats.brandData.map((_, index) => (
                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                               ))}
                            </Pie>
@@ -175,14 +169,16 @@ const DashboardPage: React.FC = () => {
                        <div key={b.name} className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                           <span className="text-[9px] font-black text-white uppercase tracking-tighter truncate">{b.name}</span>
-                          <span className="text-[9px] font-bold text-[#4e564e] ml-auto">{Math.round((b.value/stats.total)*100)}%</span>
+                          <span className="text-[9px] font-bold text-[#4e564e] ml-auto">
+                             {stats.total > 0 ? Math.round((Number(b.value) / stats.total) * 100) : 0}%
+                          </span>
                        </div>
                      ))}
                   </div>
                </div>
 
                {/* Sistemas Operativos */}
-               <div className="card-matrix p-8 space-y-6 text-white">
+               <div className="card-matrix p-8 space-y-6">
                   <div className="flex items-center gap-3">
                      <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-500">
                         <LayoutGrid size={18} />
@@ -190,14 +186,14 @@ const DashboardPage: React.FC = () => {
                      <h3 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Distribución SO</h3>
                   </div>
                   <div className="space-y-6 pt-4">
-                     {stats.osData.map((os, i) => (
+                     {stats.osData.map((os) => (
                        <div key={os.name} className="space-y-2">
                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest italic">
-                             <span>{os.name}</span>
-                             <span className="text-[#00ff88]">{os.value} Equipos</span>
+                             <span>{String(os.name)}</span>
+                             <span className="text-[#00ff88]">{Number(os.value)} Equipos</span>
                           </div>
                           <div className="h-1.5 w-full bg-[#0e312a] rounded-full overflow-hidden">
-                             <div className="h-full bg-[#00ff88] shadow-[0_0_10px_#00ff88]" style={{ width: `${(os.value/stats.total)*100}%` }} />
+                             <div className="h-full bg-[#00ff88] shadow-[0_0_10px_#00ff88]" style={{ width: `${stats.total > 0 ? (Number(os.value) / stats.total) * 100 : 0}%` }} />
                           </div>
                        </div>
                      ))}
@@ -223,21 +219,18 @@ const DashboardPage: React.FC = () => {
                        <Database size={40} className="mx-auto mb-4" />
                        <p className="text-[10px] font-black uppercase tracking-widest">Sincronizando Matriz...</p>
                     </div>
-                  ) : stats.recientes.map((e, i) => (
+                  ) : stats.recientes.map((e: Equipo) => (
                     <div key={e.id} className="relative pl-8 border-l border-[#0e312a] group hover:bg-[#00ff88]/[0.02] p-2 rounded-xl transition-all">
                        <div className="absolute left-[-6px] top-3 w-3 h-3 rounded-full bg-[#0e312a] border-2 border-[#090a09] group-hover:bg-[#00ff88] group-hover:shadow-[0_0_15px_#00ff88] transition-all" />
                        <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                             <span className="text-xs font-black text-white italic group-hover:text-[#00ff88] transition-colors">{e.hostname}</span>
-                             <span className="bg-[#00ff88]/5 text-[#00ff88] px-1.5 py-0.5 rounded text-[8px] font-black uppercase">LIVE</span>
+                             <span className="text-xs font-black text-white italic group-hover:text-[#00ff88] transition-colors uppercase">{String(e.hostname)}</span>
+                             <span className="bg-[#00ff88]/5 text-[#00ff88] px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">FUNCONANDO</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                             <div className="text-[9px] font-black text-[#4e564e] uppercase tracking-tighter">IP: {e.ip_local}</div>
-                             <div className="text-[9px] font-black text-[#4e564e] uppercase bg-[#121412] px-2 rounded-md italic">{e.username}</div>
+                          <div className="flex items-center gap-3 text-zinc-500 font-bold">
+                             <div className="text-[9px] uppercase tracking-tighter">IP: {e.ip_local}</div>
+                             <div className="text-[9px] uppercase bg-[#121412] px-2 rounded-md italic">{e.username}</div>
                           </div>
-                          <p className="text-[8px] font-black text-zinc-700 uppercase">
-                             {new Date(e.created_at).toLocaleDateString()} - {new Date(e.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                          </p>
                        </div>
                     </div>
                   ))}
