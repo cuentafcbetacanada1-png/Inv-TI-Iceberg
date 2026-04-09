@@ -82,7 +82,7 @@ const InventoryPage: React.FC = () => {
   }
 
   const filteredEquipos = equipos.filter(e => {
-    const searchString = `${e.username} ${e.hostname} ${e.numero_serie || ''} ${e.marca_pc || ''}`.toLowerCase()
+    const searchString = `${e.username || ''} ${e.hostname || ''} ${e.numero_serie || ''} ${e.marca_pc || ''}`.toLowerCase()
     const matchesSearch = searchString.includes(searchTerm.toLowerCase()) ||
         (e.ip_local?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
         (e.vlan?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
