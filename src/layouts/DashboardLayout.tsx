@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useLocation, Outlet } from 'react-router-dom'
+import { Link, useLocation, Outlet, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   LayoutDashboard,
   Database,
@@ -33,6 +33,25 @@ const SidebarItem: React.FC<{ to: string, icon: React.ElementType, label: string
 const DashboardLayout: React.FC = () => {
   const { signOut } = useAuthStore()
   const location = useLocation()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const currentSearch = searchParams.get('search') || ''
+
+  const handleSearch = (term: string) => {
+    const params = new URLSearchParams(searchParams)
+    if (term) {
+      params.set('search', term)
+    } else {
+      params.delete('search')
+    }
+    
+    // Si no estamos en inventario y se busca algo, redirigir a inventario
+    if (location.pathname !== '/inventario' && location.pathname !== '/') {
+      navigate(`/inventario?${params.toString()}`)
+    } else {
+      navigate(`${location.pathname}?${params.toString()}`, { replace: true })
+    }
+  }
 
   return (
     <div className="flex h-screen bg-[#090a09] font-sans text-white overflow-hidden selection:bg-[#00ff88]/30">
@@ -82,11 +101,13 @@ const DashboardLayout: React.FC = () => {
                 {location.pathname === '/' ? 'Panel de Control' : 'Inventario IT'}
              </h2>
              <div className="h-4 w-px bg-[#0e312a]" />
-             <div className="flex items-center gap-4 bg-[#121412] px-5 py-2.5 rounded-2xl border border-[#0e312a] w-80">
+             <div className="flex items-center gap-4 bg-[#121412] px-5 py-2.5 rounded-2xl border border-[#0e312a] w-80 focus-within:border-[#00ff88]/50 transition-all">
                 <Search size={18} className="text-[#4e564e]" />
                 <input 
                   type="text" 
                   placeholder="Buscar en registros..." 
+                  value={currentSearch}
+                  onChange={(e) => handleSearch(e.target.value)}
                   className="bg-transparent border-none outline-none text-xs w-full placeholder:text-[#4e564e] font-black uppercase tracking-widest text-[#00ff88]"
                 />
              </div>

@@ -29,10 +29,8 @@ const InventoryPage: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const urlSearch = searchParams.get('search')
-    if (urlSearch) {
-      setSearchTerm(urlSearch)
-    }
+    const urlSearch = searchParams.get('search') || ''
+    setSearchTerm(urlSearch)
   }, [searchParams])
 
   useEffect(() => {
