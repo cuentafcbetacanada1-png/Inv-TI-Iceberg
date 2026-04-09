@@ -129,56 +129,26 @@ const EditEquipmentPage: React.FC = () => {
            </div>
         </div>
 
-        {/* Infraestructura Crítica y Gestión */}
-        <div className="space-y-10">
-           
-           <div className="card-matrix p-8 border-indigo-500/10 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-1 h-20 bg-indigo-500" />
-              <div className="flex items-center gap-3 mb-8">
-                 <Server size={18} className="text-indigo-500" />
-                 <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-indigo-400">Infraestructura Crítica</h3>
-              </div>
-              <div className="grid grid-cols-2 gap-6">
-                 <InputField label="IP Switch" value={formData.ip_switch} onChange={(e: any) => setFormData({...formData, ip_switch: e.target.value})} />
-                 <InputField label="Puerto Switch" value={formData.puerto_switch} onChange={(e: any) => setFormData({...formData, puerto_switch: e.target.value})} />
-                 <InputField label="VLAN Asignada" value={formData.vlan} onChange={(e: any) => setFormData({...formData, vlan: e.target.value})} colSpan="col-span-2" />
-              </div>
-           </div>
-
-           <div className="card-matrix p-8 border-amber-500/10 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-1 h-20 bg-amber-500" />
-              <div className="flex items-center gap-3 mb-8">
-                 <MapPin size={18} className="text-amber-500" />
-                 <h3 className="text-xs font-black uppercase tracking-[0.3em] italic text-amber-500">Gestión de Activo</h3>
-              </div>
-              <div className="grid grid-cols-2 gap-6">
-                 <InputField label="Ubicación Física" value={formData.ubicacion_fisica} onChange={(e: any) => setFormData({...formData, ubicacion_fisica: e.target.value})} />
-                 <InputField label="Código Activo" value={formData.codigo_activo} onChange={(e: any) => setFormData({...formData, codigo_activo: e.target.value})} />
-                 <InputField icon={ShieldAlert} label="Vigencia Garantía" value={formData.estado_garantia} onChange={(e: any) => setFormData({...formData, estado_garantia: e.target.value})} colSpan="col-span-2" />
-              </div>
-           </div>
-
-           <div className="flex gap-4">
-              <div className="flex bg-[#0e312a]/20 p-1.5 rounded-2xl border border-[#0e312a] flex-1">
-                 <button 
-                   type="button"
-                   onClick={() => setFormData({...formData, es_laptop: true, es_escritorio: false})}
-                   className={cn("flex-1 py-4 flex items-center justify-center gap-3 rounded-xl transition-all font-black text-[10px] uppercase", formData.es_laptop ? "bg-amber-500 text-black shadow-lg" : "text-[#4e564e]")}
-                 > <Laptop size={16} /> Laptop </button>
-                 <button 
-                   type="button"
-                   onClick={() => setFormData({...formData, es_laptop: false, es_escritorio: true})}
-                   className={cn("flex-1 py-4 flex items-center justify-center gap-3 rounded-xl transition-all font-black text-[10px] uppercase", formData.es_escritorio ? "bg-[#00ff88] text-black shadow-lg" : "text-[#4e564e]")}
-                 > <DesktopIcon size={16} /> PC </button>
-              </div>
-              <button 
-                type="submit" 
-                className="flex-[1.5] btn-matrix flex items-center justify-center gap-3 py-4 text-[11px] font-black italic tracking-widest shadow-[0_10px_30px_rgba(0,255,136,0.3)]"
-              >
-                 <Save size={20} /> Guardar Cambios
-              </button>
-           </div>
-        </div>
+         <div className="flex gap-4 col-span-1 lg:col-span-2">
+            <div className="flex bg-[#0e312a]/20 p-1.5 rounded-2xl border border-[#0e312a] flex-1">
+               <button 
+                 type="button"
+                 onClick={() => setFormData({...formData, es_laptop: true, es_escritorio: false})}
+                 className={cn("flex-1 py-4 flex items-center justify-center gap-3 rounded-xl transition-all font-black text-[10px] uppercase", formData.es_laptop ? "bg-amber-500 text-black shadow-lg" : "text-[#4e564e]")}
+               > <Laptop size={16} /> Laptop </button>
+               <button 
+                 type="button"
+                 onClick={() => setFormData({...formData, es_laptop: false, es_escritorio: true})}
+                 className={cn("flex-1 py-4 flex items-center justify-center gap-3 rounded-xl transition-all font-black text-[10px] uppercase", formData.es_escritorio ? "bg-[#00ff88] text-black shadow-lg" : "text-[#4e564e]")}
+               > <DesktopIcon size={16} /> PC </button>
+            </div>
+            <button 
+              type="submit" 
+              className="flex-[1.5] btn-matrix flex items-center justify-center gap-3 py-4 text-[11px] font-black italic tracking-widest shadow-[0_10px_30_rgba(0,255,136,0.3)]"
+            >
+               <Save size={20} /> Guardar Cambios
+            </button>
+         </div>
       </form>
     </div>
   )
