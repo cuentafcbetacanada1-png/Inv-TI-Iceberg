@@ -9,13 +9,8 @@ import {
   Loader2,
   RefreshCcw,
   Plus,
-  Globe,
-  Download,
-  Zap,
-  Activity,
-  Database,
   FileSpreadsheet,
-  Filter
+  Zap
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { toast } from 'react-hot-toast'
@@ -52,8 +47,10 @@ const InventoryPage: React.FC = () => {
       try {
         await deleteEquipo(id)
         toast.success('Equipo eliminado')
-      } catch {
-        toast.error('Error al intentar eliminar')
+      } catch (err: any) {
+        // El error ya lo maneja el store con un toast descriptivo, 
+        // pero aquí podemos añadir un log extra si queremos.
+        console.error('Fallo en UI al borrar:', err)
       }
     }
   }
@@ -196,8 +193,8 @@ const InventoryPage: React.FC = () => {
                 </tr>
               ) : (
                 filteredEquipos.map((e) => (
-                  <tr key={e.id} className="group hover:bg-white/[0.01] transition-colors font-sans">
-                    <td className="px-6 py-6">
+                  <tr key={e.id} className="group hover:bg-white/[0.01] transition-colors font-sans px-4">
+                    <td className="px-6 py-6 border-b border-[#0e312a]">
                        <div className="flex items-center gap-4">
                           <div className={cn(
                             "w-10 h-10 rounded-xl flex items-center justify-center border transition-all",
@@ -211,24 +208,24 @@ const InventoryPage: React.FC = () => {
                           </div>
                        </div>
                     </td>
-                    <td className="px-6 py-6">
+                    <td className="px-6 py-6 border-b border-[#0e312a]">
                        <div className="flex flex-col">
                           <span className="text-xs font-bold text-white uppercase">{e.username}</span>
                           <span className="text-[9px] font-black text-[#4e564e] uppercase tracking-tighter italic">Nro: {e.numero_serie || 'S/N'}</span>
                        </div>
                     </td>
-                    <td className="px-6 py-6">
+                    <td className="px-6 py-6 border-b border-[#0e312a]">
                        <code className="text-[10px] font-black text-[#00ff88] bg-[#00ff88]/5 px-2.5 py-1.5 rounded-lg border border-[#00ff88]/10 shadow-[0_0_15px_rgba(0,255,136,0.05)]">
                           {e.ip_local}
                        </code>
                     </td>
-                     <td className="px-6 py-6">
+                     <td className="px-6 py-6 border-b border-[#0e312a]">
                         <div className="flex flex-col max-w-[200px]">
                            <span className="text-[10px] font-black text-white italic truncate" title={e.caracteristicas_pc}>{e.caracteristicas_pc || 'Procesador Genérico'}</span>
                            <span className="text-[9px] font-bold text-[#4e564e] uppercase mt-0.5">{e.sistema_operativo}</span>
                         </div>
                      </td>
-                    <td className="px-6 py-6">
+                    <td className="px-6 py-6 border-b border-[#0e312a]">
                        <div className="flex flex-col gap-1.5">
                           <div className="flex items-center gap-2">
                              <div className="h-1 flex-1 bg-[#0e312a] rounded-full overflow-hidden">
@@ -239,7 +236,7 @@ const InventoryPage: React.FC = () => {
                           <span className="text-[9px] font-black text-[#4e564e] uppercase italic">{e.disco || 'SSD/HDD N/A'}</span>
                        </div>
                     </td>
-                    <td className="px-6 py-6 text-right">
+                    <td className="px-6 py-6 text-right border-b border-[#0e312a]">
                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
                           <Link 
                             to={`/editar/${e.id}`}
@@ -248,7 +245,10 @@ const InventoryPage: React.FC = () => {
                              <Edit2 size={16} />
                           </Link>
                           <button 
-                            onClick={() => handleDelete(e.id)}
+                            onClick={(event) => {
+                               event.stopPropagation();
+                               handleDelete(e.id);
+                            }}
                             className="p-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg"
                           >
                              <Trash2 size={16} />

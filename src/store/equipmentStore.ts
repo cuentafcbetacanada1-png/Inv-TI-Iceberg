@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Equipo, NewEquipo } from '../types'
 import { supabase } from '../services/supabase'
+import { toast } from 'react-hot-toast'
 
 interface EquipmentState {
   equipos: Equipo[]
@@ -88,7 +89,8 @@ export const useEquipmentStore = create<EquipmentState>((set, get) => ({
         .eq('id', id)
 
       if (error) {
-        console.error('Error de Supabase al borrar:', error)
+        console.error('ERROR CRITICO AL BORRAR:', error)
+        toast.error(`Error de seguridad: ${error.message}`)
         set({ error: error.message, isLoading: false })
         throw error
       }
