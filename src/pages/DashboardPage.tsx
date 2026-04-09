@@ -2,7 +2,10 @@ import React, { useEffect } from 'react'
 import { 
   Database,
   Activity,
-  Settings
+  Settings,
+  ShieldCheck,
+  HardDrive,
+  Monitor
 } from 'lucide-react'
 import { useEquipmentStore } from '../store/equipmentStore'
 import { cn } from '../lib/utils'
@@ -11,17 +14,18 @@ import {
   AreaChart, 
   Area,
   XAxis,
-  YAxis
+  YAxis,
+  Tooltip
 } from 'recharts'
 
 const chartData = [
-  { time: '00:00', load: 30 },
-  { time: '04:00', load: 25 },
-  { time: '08:00', load: 45 },
-  { time: '12:00', load: 60 },
-  { time: '16:00', load: 40 },
-  { time: '20:00', load: 55 },
-  { time: '23:00', load: 35 },
+  { time: '00:00', load: 12 },
+  { time: '04:00', load: 15 },
+  { time: '08:00', load: 28 },
+  { time: '12:00', load: 45 },
+  { time: '16:00', load: 30 },
+  { time: '20:00', load: 18 },
+  { time: '23:00', load: 10 },
 ]
 
 const StatGauge: React.FC<{ percent: number, label: string, colorClass: string, sublabel: string, strokeColor: string }> = ({ percent, label, colorClass, sublabel, strokeColor }) => (
@@ -45,10 +49,10 @@ const StatGauge: React.FC<{ percent: number, label: string, colorClass: string, 
   </div>
 )
 
-const MetricCard: React.FC<{ label: string, value: string | number, sub: string, icon: any }> = ({ label, value, sub, icon: Icon }) => (
+const MetricCard: React.FC<{ label: string, value: string | number, sub: string, icon: any, color: string }> = ({ label, value, sub, icon: Icon, color }) => (
    <div className="card-quantum p-6 flex items-center justify-between group">
       <div className="flex items-center gap-4">
-         <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-[#00f2ff] shadow-[inset_0_0_15px_rgba(0,242,255,0.1)] group-hover:bg-[#00f2ff]/10 transition-all">
+         <div className={cn("w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] transition-all", color)}>
             <Icon size={20} />
          </div>
          <div className="flex flex-col">
@@ -56,7 +60,7 @@ const MetricCard: React.FC<{ label: string, value: string | number, sub: string,
             <span className="text-sm font-bold text-white uppercase">{sub}</span>
          </div>
       </div>
-      <div className="bg-[#00f2ff]/10 text-[#00f2ff] px-4 py-1.5 rounded-xl text-xs font-black shadow-[0_0_15px_rgba(0,242,255,0.15)]">
+      <div className={cn("px-4 py-1.5 rounded-xl text-xs font-black shadow-lg", color.replace('text-', 'bg-').concat('/10'))}>
          {value}
       </div>
    </div>
@@ -72,30 +76,33 @@ const DashboardPage: React.FC = () => {
   const totalEquipos = equipos.length
   const validados = equipos.filter(e => e.validado).length
   const salud = totalEquipos > 0 ? Math.round((validados / totalEquipos) * 100) : 0
+  
+  // Storage critico (simulado basado en equipos reales)
+  const storageCritico = equipos.filter(e => e.disco && parseInt(e.disco) < 100).length
 
   return (
     <div className="space-y-8 animate-in pb-20">
-      {/* Top Metrics Row */}
+      {/* Indicadores Clave */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-         <MetricCard label="Nodos Activos" value={totalEquipos} sub="Telemetría" icon={Database} />
-         <MetricCard label="Eventos Red" value="2,367" sub="Monitoreo" icon={Activity} />
-         <MetricCard label="Salud Global" value={`${salud}%`} sub="Estado" icon={Settings} />
+         <MetricCard label="Inventario Total" value={totalEquipos} sub="Equipos Activos" icon={Monitor} color="text-cyan" />
+         <MetricCard label="Storage Crítico" value={storageCritico} sub="Alertas de Disco" icon={HardDrive} color="text-magenta" />
+         <MetricCard label="Seguridad" value="98%" sub="Nodos Protegidos" icon={ShieldCheck} color="text-violet" />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        {/* Left Side */}
+        {/* Gráficos de Salud y Carga */}
         <div className="xl:col-span-8 space-y-8">
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <StatGauge percent={salud} label="Salud del Sistema" sublabel="Nodos verificados en tiempo real" colorClass="shadow-[0_0_20px_rgba(255,0,122,0.3)]" strokeColor="#ff007a" />
-              <StatGauge percent={28} label="Carga de CPU" sublabel="Lorem ipsum carga detectada" colorClass="shadow-[0_0_20px_rgba(112,0,255,0.3)]" strokeColor="#7000ff" />
+              <StatGauge percent={salud} label="Integridad de Datos" sublabel="Verificación de telemetría" colorClass="shadow-[0_0_20px_rgba(255,0,122,0.3)]" strokeColor="#ff007a" />
+              <StatGauge percent={34} label="Carga del Agente" sublabel="Impacto CPU en despliegue" colorClass="shadow-[0_0_20px_rgba(112,0,255,0.3)]" strokeColor="#7000ff" />
            </div>
 
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="card-quantum p-8">
                  <div className="flex justify-between items-start mb-8">
                     <div>
-                       <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Carga de Red</h4>
-                       <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-loose">3,567 Nodes Active</span>
+                       <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Sincronización de Red</h4>
+                       <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-loose">Latencia: 12ms</span>
                     </div>
                  </div>
                  <div className="h-44">
@@ -117,8 +124,8 @@ const DashboardPage: React.FC = () => {
               <div className="card-quantum p-8">
                  <div className="flex justify-between items-start mb-8">
                     <div>
-                       <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Uso de Memoria</h4>
-                       <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-loose">4,789 GB Reserved</span>
+                       <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Memoria Agente</h4>
+                       <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-loose">Consumo: 45MB avg</span>
                     </div>
                  </div>
                  <div className="h-44">
@@ -140,20 +147,21 @@ const DashboardPage: React.FC = () => {
            </div>
         </div>
 
-        {/* Right Side */}
+        {/* Panel Lateral: Ajustes de Monitoreo */}
         <div className="xl:col-span-4 space-y-8">
            <div className="card-quantum p-8 space-y-8">
+              <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Configuración de Red</h4>
               {[
-                { l: "Lorem ipsum dolor sit", c: true },
-                { l: "Lorem ipsum dolor sit", c: false },
-                { l: "Lorem ipsum dolor sit", c: false },
+                { l: "Alertas de Disco", c: true, s: "Notificar espacio < 10%" },
+                { l: "Auto-Scan GPO", c: false, s: "Sincronizar cada hora" },
+                { l: "Debug Log", c: false, s: "Capturar errores del agente" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center justify-between group cursor-pointer">
                    <div className="flex flex-col">
                       <span className="text-[11px] font-black text-white uppercase tracking-wider">{item.l}</span>
-                      <span className="text-[9px] text-zinc-500 font-bold uppercase mt-1">Status: Stable connection</span>
+                      <span className="text-[9px] text-zinc-500 font-bold uppercase mt-1">{item.s}</span>
                    </div>
-                   <div className={cn("w-12 h-6 rounded-full relative transition-all duration-300", item.c ? "bg-[#00f2ff]" : "bg-white/10")}>
+                   <div className={cn("w-12 h-6 rounded-full relative transition-all duration-300", item.c ? "bg-cyan shadow-[0_0_15px_#00f2ff]" : "bg-white/10")}>
                       <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300", item.c ? "right-1" : "left-1")} />
                    </div>
                 </div>
@@ -162,20 +170,21 @@ const DashboardPage: React.FC = () => {
 
            <div className="card-quantum p-8 space-y-8 flex-1">
               <div className="flex items-center justify-between">
-                 <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Métricas Históricas</h4>
-                 <div className="flex gap-1.5">
-                    {[1, 2, 3].map(i => <div key={i} className="w-2 h-2 rounded-full bg-white/10" />)}
-                 </div>
+                 <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Historial Reciente</h4>
+                 <Activity size={14} className="text-zinc-500" />
               </div>
               <div className="space-y-4">
                  {[
-                   { l: 'Lorem sit', v: '+$385', c: 'text-[#00f2ff]' },
-                   { l: 'Lorem sit', v: '+$485', c: 'text-[#ff007a]' },
-                   { l: 'Lorem sit', v: '-$78', c: 'text-[#7000ff]' }
+                   { l: 'Nuevo Nodo', v: '+1', c: 'text-cyan', s: 'Equipo detectado en LAN' },
+                   { l: 'S.O. Update', v: 'Win11', c: 'text-magenta', s: 'Migración exitosa' },
+                   { l: 'Error Scan', v: 'IP:32', c: 'text-violet', s: 'Acceso denegado WMI' }
                  ].map((item, i) => (
-                   <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
-                      <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">{item.l}</span>
-                      <span className={cn("text-[11px] font-black tracking-widest", item.c)}>{item.v}</span>
+                   <div key={i} className="flex flex-col p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all cursor-pointer group">
+                      <div className="flex justify-between items-center mb-1">
+                         <span className="text-[11px] font-bold text-white uppercase tracking-widest">{item.l}</span>
+                         <span className={cn("text-[11px] font-black tracking-widest", item.c)}>{item.v}</span>
+                      </div>
+                      <span className="text-[9px] text-zinc-500 uppercase font-black">{item.s}</span>
                    </div>
                  ))}
               </div>
