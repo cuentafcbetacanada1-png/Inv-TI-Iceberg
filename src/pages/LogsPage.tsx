@@ -98,7 +98,6 @@ const LogsPage: React.FC = () => {
   }
 
   return (
-  return (
     <div className="space-y-6 animate-in font-sans">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-5 border-b border-white/10">
         <div className="space-y-1">
