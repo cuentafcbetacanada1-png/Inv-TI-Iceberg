@@ -10,7 +10,9 @@ import {
   Trash2,
   ArrowRight
 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { cn } from '../lib/utils'
+import { useEquipmentStore } from '../store/equipmentStore'
 
 interface LogEntry {
   id: string
@@ -22,10 +24,12 @@ interface LogEntry {
 }
 
 const LogsPage: React.FC = () => {
+  const navigate = useNavigate()
   const { equipos, fetchEquipos } = useEquipmentStore()
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState<LogEntry['type'] | 'all'>('all')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
   useEffect(() => {
     const loadLogs = async () => {
@@ -69,6 +73,10 @@ const LogsPage: React.FC = () => {
   }, [equipos, fetchEquipos])
 
   const filteredLogs = filter === 'all' ? logs : logs.filter(l => l.type === filter)
+
+  const toggleExpand = (id: string) => {
+    setExpandedId(expandedId === id ? null : id)
+  }
 
   const getTypeStyles = (type: LogEntry['type']) => {
     switch (type) {
@@ -132,43 +140,82 @@ const LogsPage: React.FC = () => {
              <p className="text-xs font-black text-zinc-600 uppercase tracking-widest">Sin registros que mostrar</p>
           </div>
         ) : (
-          filteredLogs.map((log) => (
-            <div key={log.id} className="card-premium p-6 group hover:bg-white/[0.02] transition-all font-bold">
-               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 font-bold">
-                  <div className="flex gap-4 font-bold">
-                     <div className={cn(
-                       "w-12 h-12 rounded-2xl flex items-center justify-center border shrink-0 transition-transform group-hover:scale-110",
-                       getTypeStyles(log.type)
-                     )}>
-                        {getTypeIcon(log.type)}
-                     </div>
-                     <div className="space-y-1 font-bold">
-                        <div className="flex items-center gap-3 font-bold">
-                           <h3 className="text-sm font-black text-white italic uppercase">{log.action}</h3>
-                           <span className={cn(
-                             "px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border",
-                             getTypeStyles(log.type)
-                           )}>{log.type}</span>
+          filteredLogs.map((log) => {
+            const isExpanded = expandedId === log.id
+            // Extraer ID de equipo si es posible para el link de editar
+            const eqId = log.id.startsWith('real-') ? log.id.replace('real-', '') : null
+
+            return (
+              <div key={log.id} className={cn(
+                "card-premium overflow-hidden transition-all duration-300 font-bold",
+                isExpanded ? "ring-1 ring-[#00ff88]/30 bg-white/[0.03]" : "hover:bg-white/[0.02]"
+              )}>
+                <div 
+                  className="p-6 cursor-pointer group"
+                  onClick={() => toggleExpand(log.id)}
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 font-bold">
+                      <div className="flex gap-4 font-bold">
+                        <div className={cn(
+                          "w-12 h-12 rounded-2xl flex items-center justify-center border shrink-0 transition-transform group-hover:scale-110",
+                          getTypeStyles(log.type)
+                        )}>
+                            {getTypeIcon(log.type)}
                         </div>
-                        <p className="text-xs text-zinc-400 font-bold tracking-tight">{log.details}</p>
-                        <div className="flex items-center gap-4 pt-2 font-bold">
-                           <div className="flex items-center gap-1.5 text-[10px] font-black text-zinc-600 uppercase">
+                        <div className="space-y-1 font-bold">
+                            <div className="flex items-center gap-3 font-bold">
+                              <h3 className="text-sm font-black text-white italic uppercase">{log.action}</h3>
+                              <span className={cn(
+                                "px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border",
+                                getTypeStyles(log.type)
+                              )}>{log.type}</span>
+                            </div>
+                            <p className="text-xs text-zinc-400 font-bold tracking-tight">{log.details}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-6 font-bold">
+                        <div className="flex items-center gap-4 font-bold">
+                            <div className="flex items-center gap-1.5 text-[10px] font-black text-zinc-600 uppercase">
                               <User size={10} className="text-primary-500" /> {log.user_email}
-                           </div>
-                           <div className="flex items-center gap-1.5 text-[10px] font-black text-zinc-600 uppercase">
-                              <Clock size={10} className="text-zinc-700" /> {new Date(log.created_at).toLocaleTimeString()}
-                           </div>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-[10px] font-black text-zinc-600 uppercase">
+                              <Clock size={10} className="text-zinc-700" /> {new Date(log.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                            </div>
                         </div>
-                     </div>
+                        <div className={cn("transition-transform duration-300", isExpanded ? "rotate-90" : "")}>
+                           <ArrowRight size={16} className="text-zinc-700" />
+                        </div>
+                      </div>
                   </div>
-                  <div className="flex items-center gap-3 ml-16 md:ml-0 font-bold">
-                     <button className="p-2 text-zinc-700 hover:text-white transition-colors font-bold">
-                        <ArrowRight size={16} />
-                     </button>
+                </div>
+
+                {/* Área Desplegable */}
+                <div className={cn(
+                  "overflow-hidden transition-all duration-300 border-t border-white/5 bg-black/40",
+                  isExpanded ? "max-h-[300px] opacity-100 p-6" : "max-h-0 opacity-0"
+                )}>
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="space-y-2">
+                       <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Información detallada del evento</p>
+                       <p className="text-sm text-zinc-300 italic font-bold">
+                          "{log.details}"
+                       </p>
+                       <p className="text-[10px] font-bold text-zinc-600 uppercase">Fecha completa: {new Date(log.created_at).toLocaleString('es-ES')}</p>
+                    </div>
+                    {eqId && (
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); navigate(`/editar/${eqId}`); }}
+                        className="btn-matrix px-6 py-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
+                      >
+                         <Edit2 size={14} /> Editar Equipo
+                      </button>
+                    )}
                   </div>
-               </div>
-            </div>
-          ))
+                </div>
+              </div>
+            )
+          })
         )}
       </div>
 
