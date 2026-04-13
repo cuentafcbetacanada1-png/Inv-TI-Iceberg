@@ -82,7 +82,9 @@ try {
         throw "La prueba del agente fallo con codigo $LASTEXITCODE"
     }
 
-    Write-Step "Instalacion completada."
+    Write-Step "Instalacion completada y ejecucion forzada (Sin reinicio)."
+    Start-ScheduledTask -TaskName $TaskName
+    
     Write-Host "Task: $TaskName" -ForegroundColor Green
     Write-Host "Script: $agentScript" -ForegroundColor Green
     Write-Host "Launcher: $batPath" -ForegroundColor Green
