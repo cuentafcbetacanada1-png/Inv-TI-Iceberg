@@ -83,9 +83,9 @@ const EditEquipmentPage: React.FC = () => {
         {Icon && <Icon size={12} className="text-[#00ff88] opacity-70" />}
         {label}
       </label>
-      {label === 'Monitores' ? (
+      {(label === 'Monitores' || label === 'Matriz de Monitores' || label === 'Visualizadores') ? (
         <textarea
-          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[#00ff88] focus:ring-1 focus:ring-[#00ff88]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner min-h-[80px] resize-none"
+          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[#00ff88] focus:ring-1 focus:ring-[#00ff88]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner min-h-[100px] resize-none"
           value={value || ''}
           onChange={onChange}
         />
