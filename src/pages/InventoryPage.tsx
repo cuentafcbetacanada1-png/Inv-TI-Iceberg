@@ -169,37 +169,37 @@ const InventoryPage: React.FC = () => {
   })
 
   return (
-    <div className="space-y-4 animate-in pb-10 font-sans text-white">
-      {/* Header Sección Principal - Ultra Compacto */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[#0e312a]/50 relative">
-        <div className="space-y-0.5">
-           <div className="flex items-center gap-1.5 text-[#00ff88] font-semibold text-[8px] uppercase tracking-[0.4em]">
-              <div className="w-1 h-1 rounded-full bg-[#00ff88] shadow-[0_0_10px_#00ff88] animate-pulse" />
-              <span className="text-glow">Iceberg Systems</span>
+    <div className="space-y-6 animate-in pb-12 font-sans text-white">
+      {/* Header Sección Principal - Profesional y Espacioso */}
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-5 border-b border-[#0e312a]/50 relative">
+        <div className="space-y-1">
+           <div className="flex items-center gap-2 text-[#00ff88] font-bold text-[10px] uppercase tracking-[0.4em]">
+              <div className="w-2 h-2 rounded-full bg-[#00ff88] shadow-[0_0_12px_#00ff88] animate-pulse" />
+              <span className="text-glow">Red Iceberg</span>
            </div>
-           <h1 className="text-xl font-bold tracking-tighter italic uppercase text-white/90">
-              Inventario <span className="text-[#00ff88]">IT</span>
+           <h1 className="text-2xl font-bold tracking-tighter italic uppercase text-white/95 leading-none">
+              Control de <span className="text-[#00ff88]">Inventario</span>
            </h1>
         </div>
-        <div className="flex flex-wrap gap-1.5 text-white">
-           <button onClick={exportToExcel} className="px-4 py-2 rounded-lg bg-[#121412]/30 border border-[#0e312a]/30 text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-1.5 font-semibold text-[8px] uppercase tracking-widest backdrop-blur-xl group hover:border-[#00ff88]/30 shrink-0">
-              <FileSpreadsheet size={12} /> Excel
+        <div className="flex flex-wrap gap-2 text-white">
+           <button onClick={exportToExcel} className="px-6 py-2.5 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest backdrop-blur-xl group hover:border-[#00ff88]/30 shrink-0">
+              <FileSpreadsheet size={16} /> Exportar Excel
            </button>
-           <button onClick={handleRefresh} disabled={isRefreshing} className="px-4 py-2 rounded-lg bg-[#121412]/30 border border-[#0e312a]/30 text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-1.5 font-semibold text-[8px] uppercase tracking-widest hover:border-[#00ff88]/30 shrink-0">
-              <RefreshCcw size={12} className={isRefreshing ? "animate-spin" : ""} /> Sync
+           <button onClick={handleRefresh} disabled={isRefreshing} className="px-6 py-2.5 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest hover:border-[#00ff88]/30 shrink-0">
+              <RefreshCcw size={16} className={isRefreshing ? "animate-spin" : ""} /> Sincronizar
            </button>
-           <Link to="/crear" className="btn-matrix flex items-center gap-1.5 px-5 py-2 text-[8px] font-bold uppercase tracking-widest shrink-0">
-              <Plus size={14} /> Registrar
+           <Link to="/crear" className="btn-matrix flex items-center gap-2 px-8 py-2.5 text-[10px] font-bold uppercase tracking-widest shrink-0 shadow-lg">
+              <Plus size={18} /> Nuevo Nodo
            </Link>
         </div>
       </header>
 
-      {/* Barra de Búsqueda y Filtros Compacta */}
-      <div className="flex flex-col lg:flex-row gap-2 items-center bg-[#0d0f0d]/50 p-1 rounded-xl border border-[#0e312a]/30 backdrop-blur-md">
+      {/* Barra de Búsqueda y Filtros Optimizada */}
+      <div className="flex flex-col lg:flex-row gap-3 items-center bg-[#0d0f0d]/50 p-2 rounded-2xl border border-[#0e312a]/30 backdrop-blur-md">
          <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[#4e564e]" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#4e564e]" />
             <input
-              placeholder="BUSCAR EQUIPO..."
+              placeholder="IDENTIFICAR EQUIPO EN LA RED..."
               value={searchTerm}
               onChange={(e) => {
                 const val = e.target.value;
@@ -209,77 +209,77 @@ const InventoryPage: React.FC = () => {
                 else params.delete('search');
                 navigate({ search: params.toString() }, { replace: true });
               }}
-              className="w-full bg-transparent border-none rounded-lg pl-8 pr-4 py-1.5 text-[8px] outline-none focus:ring-0 transition-all font-semibold uppercase tracking-widest text-[#00ff88] placeholder:text-[#2a302a]"
+              className="w-full bg-transparent border-none rounded-xl pl-10 pr-4 py-3 text-[11px] outline-none focus:ring-0 transition-all font-bold uppercase tracking-widest text-[#00ff88] placeholder:text-[#2a302a]"
             />
          </div>
-         <div className="flex items-center gap-1 p-0.5 bg-black/40 rounded-lg">
+         <div className="flex items-center gap-1.5 p-1 bg-black/40 rounded-xl">
             {['todos', 'laptops', 'desktops'].map(f => (
               <button 
                 key={f} onClick={() => setFilterTech(f as any)}
                 className={cn(
-                  "px-2.5 py-1 rounded-md text-[7px] font-bold uppercase tracking-widest transition-all", 
-                  filterTech === f ? "bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black shadow-[0_0_10px_rgba(0,255,136,0.3)]" : "text-[#4e564e] hover:text-white"
+                  "px-5 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all", 
+                  filterTech === f ? "bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black shadow-[0_0_15px_rgba(0,255,136,0.3)]" : "text-[#4e564e] hover:text-white"
                 )}
               > {f} </button>
             ))}
          </div>
       </div>
 
-      {/* Grilla de Equipos - Densidad ULTRA Alta */}
-      <div className="grid grid-cols-1 gap-1.5 text-white">
+      {/* Grilla de Equipos - Legibilidad Mejorada */}
+      <div className="grid grid-cols-1 gap-3 text-white">
          {isLoading && equipos.length === 0 ? (
-           <div className="flex flex-col items-center justify-center py-10 space-y-2">
-              <Loader2 size={18} className="text-[#00ff88] animate-spin opacity-30" />
-              <p className="text-[7px] font-semibold text-[#00ff88] uppercase tracking-[0.3em] opacity-50">Cargando...</p>
+           <div className="flex flex-col items-center justify-center py-20 space-y-4">
+              <Loader2 size={32} className="text-[#00ff88] animate-spin opacity-30" />
+              <p className="text-[10px] font-bold text-[#00ff88] uppercase tracking-[0.5em] opacity-50 animate-pulse">Consultando Matriz...</p>
            </div>
          ) : filteredEquipos.length > 0 ? (
            filteredEquipos.map((e: any) => (
              <div key={e.id} onClick={() => navigate(`/editar/${e.id}`)} className="group relative">
-                <div className="card-matrix relative bg-[#090a09]/30 backdrop-blur-md border border-[#0e312a]/20 hover:border-[#00ff88]/30 transition-all duration-300 p-2 rounded-xl overflow-hidden cursor-pointer">
-                   <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+                <div className="card-matrix relative bg-[#090a09]/40 backdrop-blur-md border border-[#0e312a]/30 hover:border-[#00ff88]/50 transition-all duration-300 p-4 rounded-2xl overflow-hidden cursor-pointer shadow-xl">
+                   <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
                       
-                      {/* Identidad Mini */}
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                      {/* Identidad */}
+                      <div className="flex items-center gap-4 min-w-0 flex-1">
                          <div className={cn(
-                           "w-8 h-8 rounded-lg flex items-center justify-center border transition-all shadow-inner shrink-0",
-                           e.es_laptop ? "bg-amber-500/10 border-amber-500/20 text-amber-500" : "bg-[#00ff88]/10 border-[#00ff88]/20 text-[#00ff88]"
+                           "w-12 h-12 rounded-xl flex items-center justify-center border transition-all shadow-inner shrink-0 group-hover:scale-105 duration-300",
+                           e.es_laptop ? "bg-amber-500/10 border-amber-500/40 text-amber-500" : "bg-[#00ff88]/10 border-[#00ff88]/40 text-[#00ff88]"
                          )}>
-                            {e.es_laptop ? <Laptop size={14} /> : <DesktopIcon size={14} />}
+                            {e.es_laptop ? <Laptop size={20} /> : <DesktopIcon size={20} />}
                          </div>
-                         <div className="space-y-0 min-w-0">
-                            <h3 className="text-sm font-bold italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-tight truncate">{e.hostname}</h3>
-                            <div className="flex items-center gap-1.5">
-                               <span className="text-[7px] font-semibold text-white/30 truncate">{e.username}</span>
-                               <span className="w-0.5 h-0.5 rounded-full bg-white/20" />
-                               <span className="text-[7px] font-bold text-[#00ff88] uppercase opacity-70">AUTO-ON</span>
+                         <div className="space-y-0.5 min-w-0">
+                            <h3 className="text-base font-bold italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-tight truncate">{e.hostname}</h3>
+                            <div className="flex items-center gap-2">
+                               <span className="text-[10px] font-bold text-white/40 truncate">{e.username}</span>
+                               <span className="w-1 h-1 rounded-full bg-white/20" />
+                               <span className="text-[9px] font-black text-[#00ff88] uppercase opacity-80 tracking-widest">SISTEMA ACTIVO</span>
                             </div>
                          </div>
                       </div>
 
-                      {/* Hardware Ultra Compacto */}
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 items-center flex-[2] w-full lg:w-auto">
+                      {/* Hardware */}
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 items-center flex-[2.5] w-full lg:w-auto">
                          <div className="overflow-hidden">
-                             <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-0">Marca/Modelo</p>
-                             <p className="text-[8px] font-semibold text-zinc-400 truncate uppercase leading-tight">{e.marca_pc || 'GEN'} • {e.modelo || 'GEN'}</p>
+                             <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1 tracking-widest">Fabricante</p>
+                             <p className="text-[10px] font-bold text-zinc-300 truncate uppercase leading-tight">{e.marca_pc || 'GENÉRICO'} / {e.modelo || 'ESTÁNDAR'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-0">Hardware</p>
-                            <p className="text-[8px] font-semibold text-zinc-300 truncate uppercase leading-tight">{e.memoria_ram || 'N/A'} • {e.disco || 'N/A'}</p>
+                            <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1 tracking-widest">Capacidad</p>
+                            <p className="text-[10px] font-bold text-zinc-200 truncate uppercase leading-tight">{e.memoria_ram || 'S/D'} RAM • {e.disco || 'S/D'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-0">IP Local</p>
-                            <p className="text-[8px] font-semibold text-white/40 truncate uppercase leading-tight italic">{e.ip_local || 'DHCP'}</p>
+                            <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1 tracking-widest">Dirección IP</p>
+                            <p className="text-[10px] font-bold text-[#00ff88]/70 truncate uppercase leading-tight italic font-mono">{e.ip_local || 'ASIGNANDO...'}</p>
                          </div>
                          <div className="overflow-hidden hidden lg:block">
-                            <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-0">Serial</p>
-                            <p className="text-[8px] font-semibold text-zinc-500 uppercase leading-tight truncate">{e.numero_serie || 'N/A'}</p>
+                            <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1 tracking-widest">Identificador</p>
+                            <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight truncate">{e.numero_serie || 'N/A'}</p>
                          </div>
                       </div>
 
-                      {/* Acciones Micro */}
-                      <div className="flex items-center justify-end gap-1.5 shrink-0">
-                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-7 h-7 bg-white/5 hover:bg-[#00ff88] text-white/30 hover:text-black rounded-lg transition-all border border-white/5 flex items-center justify-center"><Edit2 size={10} /></button>
-                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-7 h-7 bg-white/5 hover:bg-red-500 text-white/30 hover:text-white rounded-lg transition-all border border-white/5 flex items-center justify-center"><Trash2 size={10} /></button>
+                      {/* Acciones */}
+                      <div className="flex items-center justify-end gap-2.5 shrink-0">
+                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-9 h-9 bg-white/5 hover:bg-[#00ff88] text-white/20 hover:text-black rounded-xl transition-all border border-white/5 flex items-center justify-center shadow-lg"><Edit2 size={14} /></button>
+                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-9 h-9 bg-white/5 hover:bg-red-500 text-white/20 hover:text-white rounded-xl transition-all border border-white/5 flex items-center justify-center shadow-lg"><Trash2 size={14} /></button>
                       </div>
 
                    </div>
@@ -287,9 +287,9 @@ const InventoryPage: React.FC = () => {
              </div>
            ))
          ) : (
-           <div className="flex flex-col items-center justify-center py-16 border border-dashed border-[#0e312a]/50 rounded-2xl space-y-3 bg-[#090a09]/20 backdrop-blur-sm">
-              <ShieldAlert size={32} className="text-[#0e312a]" />
-              <p className="text-[9px] font-semibold text-[#4e564e] uppercase tracking-[0.4em] italic">Cero registros</p>
+           <div className="flex flex-col items-center justify-center py-20 border border-dashed border-[#0e312a]/50 rounded-3xl space-y-4 bg-[#090a09]/20 backdrop-blur-sm">
+              <ShieldAlert size={48} className="text-[#0e312a]" />
+              <p className="text-xs font-bold text-[#4e564e] uppercase tracking-[0.5em] italic">Ninguna coincidencia encontrada</p>
            </div>
          )}
       </div>

@@ -78,20 +78,20 @@ const EditEquipmentPage: React.FC = () => {
   )
 
   const InputField = ({ label, icon: Icon, value, onChange, colSpan = "col-span-1" }: any) => (
-    <div className={cn("space-y-1", colSpan)}>
-      <label className="text-[7px] font-bold text-[#4e564e] uppercase tracking-[0.3em] ml-1 flex items-center gap-1.5">
-        {Icon && <Icon size={8} className="text-[#00ff88] opacity-60" />}
+    <div className={cn("space-y-2", colSpan)}>
+      <label className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em] ml-1 flex items-center gap-2">
+        {Icon && <Icon size={12} className="text-[#00ff88] opacity-80" />}
         {label}
       </label>
       {label === 'Monitores' ? (
         <textarea
-          className="w-full bg-[#090a09]/50 border border-[#0e312a]/30 text-[9px] text-white px-2.5 py-1.5 rounded-lg outline-none focus:border-[#00ff88] transition-all font-semibold placeholder:text-[#0e312a]/50 shadow-inner min-h-[50px] resize-none"
+          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[#00ff88] focus:ring-1 focus:ring-[#00ff88]/20 transition-all font-bold placeholder:text-[#0e312a]/50 shadow-inner min-h-[80px] resize-none"
           value={value || ''}
           onChange={onChange}
         />
       ) : (
         <input
-          className="w-full bg-[#090a09]/50 border border-[#0e312a]/30 text-[9px] text-white px-2.5 py-1.5 rounded-lg outline-none focus:border-[#00ff88] transition-all font-semibold placeholder:text-[#0e312a]/50 shadow-inner"
+          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[#00ff88] focus:ring-1 focus:ring-[#00ff88]/20 transition-all font-bold placeholder:text-[#0e312a]/50 shadow-inner"
           value={value || ''}
           onChange={onChange}
         />
@@ -100,68 +100,77 @@ const EditEquipmentPage: React.FC = () => {
   )
 
   return (
-    <div className="space-y-4 animate-in pb-10 font-sans text-white">
-      <header className="space-y-1">
+    <div className="space-y-6 animate-in pb-12 font-sans text-white">
+      <header className="space-y-2">
          <button 
            onClick={() => navigate(-1)}
-           className="flex items-center gap-1 text-[7px] font-bold text-[#4e564e] uppercase tracking-[0.2em] hover:text-[#00ff88] transition-all group"
+           className="flex items-center gap-2 text-[9px] font-black text-[#4e564e] uppercase tracking-[0.3em] hover:text-[#00ff88] transition-all group"
          >
-            <ChevronLeft size={10} className="group-hover:-translate-x-1 transition-transform" />
-            Atrás
+            <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            Volver al Inventario
          </button>
-         <h1 className="text-xl font-bold tracking-tighter italic uppercase">
-            Editar <span className="text-[#00ff88]">{formData.hostname}</span>
+         <h1 className="text-2xl font-black italic tracking-tighter uppercase text-white/95 leading-none">
+            Configurar Nodo <span className="text-[#00ff88]">{formData.hostname}</span>
          </h1>
       </header>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-         {/* LADO IZQUIERDO: Red */}
-         <div className="card-matrix p-4 relative overflow-hidden group">
-            <h3 className="text-[8px] font-bold uppercase tracking-[0.3em] italic text-[#00ff88]/70 mb-4">Conectividad Nodo</h3>
-            <div className="grid grid-cols-2 gap-3">
-               <InputField label="Hostname" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />
-               <InputField label="Marca" value={formData.marca_pc} onChange={(e: any) => setFormData({...formData, marca_pc: e.target.value})} />
+         {/* LADO IZQUIERDO: Identidad */}
+         <div className="card-matrix p-6 relative overflow-hidden group shadow-xl">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff88]/5 blur-3xl rounded-full" />
+            <h3 className="text-[11px] font-black uppercase tracking-[0.4em] italic text-[#00ff88]/70 mb-6 flex items-center gap-2">
+               <Server size={14} /> Gestión de Identidad
+            </h3>
+            <div className="grid grid-cols-2 gap-5 relative z-10">
+               <InputField label="Hostname de Red" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />
+               <InputField label="Fabricante" value={formData.marca_pc} onChange={(e: any) => setFormData({...formData, marca_pc: e.target.value})} />
                <InputField label="Modelo" value={formData.modelo} onChange={(e: any) => setFormData({...formData, modelo: e.target.value})} />
-               <InputField label="IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
-               <InputField icon={UserIcon} label="Usuario" value={formData.username} onChange={(e: any) => setFormData({...formData, username: e.target.value})} />
-               <InputField icon={Tag} label="Serial No." value={formData.numero_serie} onChange={(e: any) => setFormData({...formData, numero_serie: e.target.value})} colSpan="col-span-2" />
+               <InputField label="Dirección IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
+               <InputField icon={UserIcon} label="Administrador / Usuario" value={formData.username} onChange={(e: any) => setFormData({...formData, username: e.target.value})} />
+               <InputField icon={Tag} label="Serial Identificador" value={formData.numero_serie} onChange={(e: any) => setFormData({...formData, numero_serie: e.target.value})} colSpan="col-span-2" />
             </div>
          </div>
 
          {/* LADO DERECHO: Hardware */}
-         <div className="card-matrix p-4 relative overflow-hidden group border-[#1a1c1a]/50">
-            <h3 className="text-[8px] font-bold uppercase tracking-[0.3em] italic text-[#00ff88]/70 mb-4">Componentes Hardware</h3>
-            <div className="grid grid-cols-2 gap-3">
-               <InputField icon={Cpu} label="RAM" value={formData.memoria_ram} onChange={(e: any) => setFormData({...formData, memoria_ram: e.target.value})} />
-               <InputField icon={HardDrive} label="Disco" value={formData.disco} onChange={(e: any) => setFormData({...formData, disco: e.target.value})} />
-               <InputField label="Procesador" value={formData.caracteristicas_pc} onChange={(e: any) => setFormData({...formData, caracteristicas_pc: e.target.value})} colSpan="col-span-2" />
+         <div className="card-matrix p-6 relative overflow-hidden group border-[#1a1c1a]/60 shadow-xl">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full" />
+            <h3 className="text-[11px] font-black uppercase tracking-[0.4em] italic text-indigo-400/70 mb-6 flex items-center gap-2">
+               <Cpu size={14} /> Parámetros de Hardware
+            </h3>
+            <div className="grid grid-cols-2 gap-5 relative z-10">
+               <InputField icon={Cpu} label="RAM Instalada" value={formData.memoria_ram} onChange={(e: any) => setFormData({...formData, memoria_ram: e.target.value})} />
+               <InputField icon={HardDrive} label="Almacenamiento" value={formData.disco} onChange={(e: any) => setFormData({...formData, disco: e.target.value})} />
+               <InputField label="Especificaciones CPU" value={formData.caracteristicas_pc} onChange={(e: any) => setFormData({...formData, caracteristicas_pc: e.target.value})} colSpan="col-span-2" />
                <InputField label="Sistema Operativo" value={formData.sistema_operativo} onChange={(e: any) => setFormData({...formData, sistema_operativo: e.target.value})} colSpan="col-span-2" />
-               <InputField icon={DesktopIcon} label="Monitores Seriales" value={formData.monitores} onChange={(e: any) => setFormData({...formData, monitores: e.target.value})} colSpan="col-span-2" />
+               <InputField icon={DesktopIcon} label="Matriz de Monitores" value={formData.monitores} onChange={(e: any) => setFormData({...formData, monitores: e.target.value})} colSpan="col-span-2" />
             </div>
          </div>
 
          {/* BOTONES DE ACCIÓN */}
-         <div className="flex gap-3 col-span-1 lg:col-span-2">
-            <div className="flex bg-[#0e312a]/20 p-0.5 rounded-lg border border-[#0e312a]/50 flex-1">
+         <div className="flex flex-col md:flex-row gap-4 col-span-1 lg:col-span-2 mt-2">
+            <div className="flex bg-[#0e312a]/20 p-1 rounded-2xl border border-[#0e312a]/50 flex-1">
                <button 
                  type="button"
                  onClick={() => setFormData({...formData, es_laptop: true, es_escritorio: false})}
-                 className={cn("flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-md transition-all font-bold text-[8px] uppercase", formData.es_laptop ? "bg-amber-500 text-black shadow-lg" : "text-[#4e564e]")}
-               > <Laptop size={12} /> Laptop </button>
+                 className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest", formData.es_laptop ? "bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "text-[#4e564e]")}
+               > <Laptop size={16} /> Laptop </button>
                <button 
                  type="button"
                  onClick={() => setFormData({...formData, es_laptop: false, es_escritorio: true})}
-                 className={cn("flex-1 py-1.5 flex items-center justify-center gap-1.5 rounded-md transition-all font-bold text-[8px] uppercase", formData.es_escritorio ? "bg-[#00ff88] text-black shadow-lg" : "text-[#4e564e]")}
-               > <DesktopIcon size={12} /> PC </button>
+                 className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest", formData.es_escritorio ? "bg-[#00ff88] text-black shadow-[0_0_20px_rgba(0,255,136,0.3)]" : "text-[#4e564e]")}
+               > <DesktopIcon size={16} /> Estación PC </button>
             </div>
             <button 
               type="submit" 
-              className="flex-[1.2] btn-matrix flex items-center justify-center gap-1.5 py-2.5 text-[9px] font-bold italic tracking-widest"
+              className="flex-[1.4] py-4 rounded-2xl bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black text-xs font-black italic uppercase tracking-[0.4em] hover:scale-[1.01] active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,255,136,0.2)] flex items-center justify-center gap-3 group"
             >
-               <Save size={14} /> Aplicar Cambios
+               <Save size={18} className="group-hover:rotate-12 transition-transform" /> 
+               Actualizar Nodo en Matriz
             </button>
          </div>
+      </form>
+    </div>
       </form>
     </div>
   )
