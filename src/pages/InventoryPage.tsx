@@ -293,6 +293,7 @@ const InventoryPage: React.FC = () => {
            </div>
          )}
       </div>
+    </div>
    )
 }
 

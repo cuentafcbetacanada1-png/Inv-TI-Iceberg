@@ -219,7 +219,5 @@ const LogsPage: React.FC = () => {
     </div>
   )
 }
-  )
-}
 
 export default LogsPage
