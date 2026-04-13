@@ -50,7 +50,13 @@ const InventoryPage: React.FC = () => {
     if (confirmed) {
       try {
         await deleteEquipo(id);
-        toast.success(`Equipo ${name} eliminado correctamente`);
+        
+        const now = new Date()
+        const dia = now.toLocaleDateString('es-ES', { weekday: 'long' })
+        const fecha = now.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+        const hora = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        
+        toast.success(`Equipo ${name} ha sido eliminado correctamente, por Administrador, ${dia}, ${fecha} y ${hora} exactamente`);
       } catch (err: any) {
         toast.error(`Fallo en la matriz: ${err.message || 'Error Desconocido'}`);
       }

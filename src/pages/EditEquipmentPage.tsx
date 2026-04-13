@@ -56,7 +56,13 @@ const EditEquipmentPage: React.FC = () => {
     if (!formData) return
     try {
       await updateEquipo(formData.id, formData)
-      toast.success('Cambios sincronizados en la Matriz')
+      
+      const now = new Date()
+      const dia = now.toLocaleDateString('es-ES', { weekday: 'long' })
+      const fecha = now.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+      const hora = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      
+      toast.success(`Equipo ${formData.hostname} ha sido actualizado correctamente, por Administrador, ${dia}, ${fecha} y ${hora} exactamente`)
       navigate('/inventario')
     } catch (err: any) {
       console.error('Error al actualizar:', err)

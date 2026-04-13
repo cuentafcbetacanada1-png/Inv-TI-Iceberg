@@ -147,7 +147,15 @@ try {
     
     try {
         Invoke-RestMethod -Uri $FinalURL -Method Post -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($Payload)) -ErrorAction Stop
-        Write-Log "Sincronizacion Exitosa."
+        
+        $now = Get-Date
+        $culture = [System.Globalization.CultureInfo]::GetCultureInfo("es-ES")
+        $dia = $now.ToString("dddd", $culture)
+        $fecha = $now.ToString("dd 'de' MMMM 'de' yyyy", $culture)
+        $hora = $now.ToString("HH:mm:ss")
+        $SuccessMsg = "Equipo $env:COMPUTERNAME ha sido agregado correctamente, por Administrador, $dia, $fecha y $hora exactamente"
+        
+        Write-Log $SuccessMsg
     } catch {
         $stream = $_.Exception.Response.GetResponseStream()
         $reader = New-Object System.IO.StreamReader($stream)
