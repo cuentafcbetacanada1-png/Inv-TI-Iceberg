@@ -195,11 +195,11 @@ const InventoryPage: React.FC = () => {
       </header>
 
       {/* Barra de Búsqueda y Filtros Compacta */}
-      <div className="flex flex-col lg:flex-row gap-3 items-center bg-[#0d0f0d]/50 p-2 rounded-2xl border border-[#0e312a]/30 backdrop-blur-md">
+      <div className="flex flex-col lg:flex-row gap-2 items-center bg-[#0d0f0d]/50 p-1.5 rounded-xl border border-[#0e312a]/30 backdrop-blur-md">
          <div className="relative flex-1 w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#4e564e]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[#4e564e]" />
             <input
-              placeholder="BUSCAR HOSTNAME, USUARIO O SERIAL..."
+              placeholder="BUSCAR EQUIPO..."
               value={searchTerm}
               onChange={(e) => {
                 const val = e.target.value;
@@ -209,92 +209,91 @@ const InventoryPage: React.FC = () => {
                 else params.delete('search');
                 navigate({ search: params.toString() }, { replace: true });
               }}
-              className="w-full bg-transparent border-none rounded-lg pl-10 pr-4 py-3 text-[10px] outline-none focus:ring-0 transition-all font-semibold uppercase tracking-widest text-[#00ff88] placeholder:text-[#2a302a]"
+              className="w-full bg-transparent border-none rounded-lg pl-9 pr-4 py-2 text-[9px] outline-none focus:ring-0 transition-all font-semibold uppercase tracking-widest text-[#00ff88] placeholder:text-[#2a302a]"
             />
          </div>
-         <div className="flex items-center gap-1.5 p-1 bg-black/40 rounded-xl">
+         <div className="flex items-center gap-1 p-0.5 bg-black/40 rounded-lg">
             {['todos', 'laptops', 'desktops'].map(f => (
               <button 
                 key={f} onClick={() => setFilterTech(f as any)}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all", 
-                  filterTech === f ? "bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black shadow-[0_0_15px_rgba(0,255,136,0.3)]" : "text-[#4e564e] hover:text-white"
+                  "px-3 py-1.5 rounded-md text-[7px] font-bold uppercase tracking-widest transition-all", 
+                  filterTech === f ? "bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black shadow-[0_0_10px_rgba(0,255,136,0.3)]" : "text-[#4e564e] hover:text-white"
                 )}
               > {f} </button>
             ))}
          </div>
       </div>
 
-      {/* Grilla de Equipos - Densidad Alta */}
-      <div className="grid grid-cols-1 gap-4 text-white">
+      {/* Grilla de Equipos - Densidad ULTRA Alta */}
+      <div className="grid grid-cols-1 gap-2 text-white">
          {isLoading && equipos.length === 0 ? (
-           <div className="flex flex-col items-center justify-center py-16 space-y-3">
-              <Loader2 size={32} className="text-[#00ff88] animate-spin opacity-30" />
-              <p className="text-[9px] font-semibold text-[#00ff88] uppercase tracking-[0.3em] opacity-50">Accediendo...</p>
+           <div className="flex flex-col items-center justify-center py-12 space-y-2">
+              <Loader2 size={24} className="text-[#00ff88] animate-spin opacity-30" />
+              <p className="text-[8px] font-semibold text-[#00ff88] uppercase tracking-[0.3em] opacity-50">Accediendo...</p>
            </div>
          ) : filteredEquipos.length > 0 ? (
            filteredEquipos.map((e: any) => (
              <div key={e.id} onClick={() => navigate(`/editar/${e.id}`)} className="group relative">
-                <div className="card-matrix relative bg-[#090a09]/50 backdrop-blur-xl border border-[#0e312a]/30 hover:border-[#00ff88]/30 transition-all duration-300 p-5 rounded-3xl overflow-hidden cursor-pointer shadow-2xl">
-                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div className="card-matrix relative bg-[#090a09]/50 backdrop-blur-xl border border-[#0e312a]/20 hover:border-[#00ff88]/30 transition-all duration-300 p-3 rounded-2xl overflow-hidden cursor-pointer shadow-xl">
+                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
                       
-                      {/* Identidad Compacta */}
-                      <div className="lg:col-span-4 flex items-center gap-5">
+                      {/* Identidad Mini */}
+                      <div className="lg:col-span-3 flex items-center gap-3">
                          <div className={cn(
-                           "w-14 h-14 rounded-2xl flex items-center justify-center border transition-all shadow-inner",
+                           "w-10 h-10 rounded-xl flex items-center justify-center border transition-all shadow-inner shrink-0",
                            e.es_laptop ? "bg-amber-500/10 border-amber-500/20 text-amber-500" : "bg-[#00ff88]/10 border-[#00ff88]/20 text-[#00ff88]"
                          )}>
-                            {e.es_laptop ? <Laptop size={28} /> : <DesktopIcon size={28} />}
+                            {e.es_laptop ? <Laptop size={20} /> : <DesktopIcon size={20} />}
                          </div>
-                         <div className="space-y-1">
-                            <h3 className="text-xl font-bold italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-none text-white/90">{e.hostname}</h3>
-                            <div className="flex items-center gap-2">
-                               <span className="text-[8px] font-semibold text-white/40 bg-white/5 px-2 py-0.5 rounded-lg border border-white/5 uppercase">{e.codigo_activo || 'S/N ACT'}</span>
-                               <span className="flex items-center gap-1.5 text-[8px] font-bold text-[#00ff88] uppercase opacity-80 backdrop-blur-sm px-2 py-0.5 rounded-lg bg-[#00ff88]/5 border border-[#00ff88]/10"><div className="w-1 h-1 rounded-full bg-[#00ff88] animate-pulse" /> ON</span>
+                         <div className="space-y-0.5 min-w-0">
+                            <h3 className="text-base font-bold italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-tight truncate">{e.hostname}</h3>
+                            <div className="flex items-center gap-1.5">
+                               <span className="text-[7px] font-semibold text-white/30 bg-white/5 px-1.5 py-0.5 rounded border border-white/5 uppercase truncate">{e.codigo_activo || 'S/N ACT'}</span>
+                               <span className="flex items-center gap-1 text-[7px] font-bold text-[#00ff88] uppercase opacity-70"><div className="w-0.5 h-0.5 rounded-full bg-[#00ff88] animate-pulse" /> ON</span>
                             </div>
                          </div>
                       </div>
 
-                      {/* Hardware Densa */}
-                      <div className="lg:col-span-6 grid grid-cols-2 gap-4 lg:border-l lg:border-[#0e312a]/30 lg:pl-8 py-2">
+                      {/* Hardware Ultra Compacto */}
+                      <div className="lg:col-span-1 lg:border-l lg:border-[#0e312a]/30 lg:pl-4 overflow-hidden">
+                          <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-0.5">Marca</p>
+                          <p className="text-[8.5px] font-semibold text-zinc-400 truncate uppercase leading-tight">{e.marca_pc || 'Generic'}</p>
+                      </div>
+
+                      <div className="lg:col-span-6 grid grid-cols-2 md:grid-cols-3 gap-4 lg:border-l lg:border-[#0e312a]/30 lg:pl-6 py-0.5">
                          <div className="overflow-hidden">
-                            <p className="text-[8px] font-bold text-[#4e564e] uppercase flex items-center gap-2 mb-1"><Zap size={10} className="text-[#00ff88]/50" /> Procesador</p>
-                            <p className="text-[10px] font-semibold text-zinc-300 truncate uppercase leading-tight">{e.caracteristicas_pc || 'GENERIC'}</p>
+                            <p className="text-[7px] font-bold text-[#4e564e] uppercase flex items-center gap-1.5 mb-0.5"><Zap size={8} className="text-[#00ff88]/50" /> Procesador</p>
+                            <p className="text-[8.5px] font-semibold text-zinc-300 truncate uppercase leading-tight">{e.caracteristicas_pc || 'GENERIC'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[8px] font-bold text-[#4e564e] uppercase mb-1">Capacidad RAM/HD</p>
-                            <p className="text-[10px] font-semibold text-zinc-500 uppercase leading-tight">{e.memoria_ram || 'N/A'} • {e.disco || 'N/A'}</p>
+                            <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-0.5">Sistema</p>
+                            <p className="text-[8.5px] font-semibold text-white/40 truncate uppercase leading-tight">{e.sistema_operativo?.replace('Microsoft ', '')}</p>
                          </div>
-                         <div className="overflow-hidden">
-                            <p className="text-[8px] font-bold text-[#00ff88]/50 uppercase mb-1">Sistema Nativo</p>
-                            <p className="text-[10px] font-semibold text-white/40 truncate uppercase leading-tight">{e.sistema_operativo}</p>
-                         </div>
-                         <div className="overflow-hidden">
-                            <p className="text-[8px] font-bold text-indigo-400/50 uppercase mb-1">Terminales Visuales</p>
-                            <p className="text-[9.5px] font-semibold text-white/20 uppercase truncate leading-tight italic">{e.monitores || 'Internal Storage'}</p>
+                         <div className="overflow-hidden hidden md:block">
+                            <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-0.5">Memoria/Disco</p>
+                            <p className="text-[8.5px] font-semibold text-zinc-500 uppercase leading-tight">{e.memoria_ram || 'N/A'} • {e.disco || 'N/A'}</p>
                          </div>
                       </div>
 
-                      {/* Acciones Mini */}
-                      <div className="lg:col-span-2 flex items-center justify-end gap-2">
-                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-10 h-10 bg-white/5 hover:bg-[#00ff88] text-white/30 hover:text-black rounded-xl transition-all border border-white/5 flex items-center justify-center backdrop-blur-md shadow-lg group/btn hover:scale-110 active:scale-95"><Edit2 size={16} /></button>
-                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-10 h-10 bg-white/5 hover:bg-red-500 text-white/30 hover:text-white rounded-xl transition-all border border-white/5 flex items-center justify-center backdrop-blur-md shadow-lg group/btn hover:scale-110 active:scale-95"><Trash2 size={16} /></button>
+                      {/* Acciones Micro */}
+                      <div className="lg:col-span-2 flex items-center justify-end gap-1.5">
+                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-8 h-8 bg-white/5 hover:bg-[#00ff88] text-white/30 hover:text-black rounded-lg transition-all border border-white/5 flex items-center justify-center backdrop-blur-md shadow-lg group/btn hover:scale-105 active:scale-95"><Edit2 size={12} /></button>
+                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-8 h-8 bg-white/5 hover:bg-red-500 text-white/30 hover:text-white rounded-lg transition-all border border-white/5 flex items-center justify-center backdrop-blur-md shadow-lg group/btn hover:scale-105 active:scale-95"><Trash2 size={12} /></button>
                       </div>
 
                    </div>
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#00ff88]/5 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
              </div>
            ))
          ) : (
-           <div className="flex flex-col items-center justify-center py-24 border border-dashed border-[#0e312a]/50 rounded-3xl space-y-5 bg-[#090a09]/20 backdrop-blur-sm">
-              <ShieldAlert size={48} className="text-[#0e312a]" />
-              <p className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-[0.4em] italic">Cero registros detectados en la matriz</p>
+           <div className="flex flex-col items-center justify-center py-16 border border-dashed border-[#0e312a]/50 rounded-2xl space-y-3 bg-[#090a09]/20 backdrop-blur-sm">
+              <ShieldAlert size={32} className="text-[#0e312a]" />
+              <p className="text-[9px] font-semibold text-[#4e564e] uppercase tracking-[0.4em] italic">Cero registros</p>
            </div>
          )}
       </div>
-    </div>
-  )
+   )
 }
 
 export default InventoryPage
