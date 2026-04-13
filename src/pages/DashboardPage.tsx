@@ -50,11 +50,11 @@ const ResumenCard: React.FC<{ label: string, value: string | number, sub: string
          <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center border", color.replace('text-', 'bg-').concat('/10 border-').concat(color.replace('text-', '')))}>
             <Icon size={14} className={color} />
          </div>
-         <span className="text-[10px] font-bold text-[#4e564e] uppercase tracking-[0.2em]">{label}</span>
+         <span className="text-[10px] font-semibold text-[#889288] uppercase tracking-[0.2em]">{label}</span>
       </div>
       <div className="relative z-10 mt-2">
-         <h4 className="text-2xl font-bold text-white italic tracking-tighter mb-0.5 font-sans leading-none">{value}</h4>
-         <p className="text-[9px] font-bold text-[#4e564e] uppercase tracking-widest flex items-center gap-1.5 mt-1">
+         <h4 className="text-2xl font-bold text-white tracking-tight mb-0.5 font-sans leading-none">{value}</h4>
+         <p className="text-[9px] font-semibold text-[#4e564e] uppercase tracking-widest flex items-center gap-1.5 mt-1">
             <ArrowUpRight size={10} className="text-[#00ff88]" />
             {sub}
          </p>
@@ -107,9 +107,9 @@ const DashboardPage: React.FC = () => {
       {/* Indicadores Principales */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
          <ResumenCard label="Activos Totales" value={stats.total} sub="Nodos Conectados" icon={Monitor} color="text-[#00ff88]" />
-         <ResumenCard label="Terminales Laptops" value={stats.laptops} sub="Flota Móvil" icon={Laptop} color="text-amber-500" />
-         <ResumenCard label="Integridad Datos" value={`${stats.salud}%`} sub="Salud de Red" icon={ShieldCheck} color="text-indigo-500" />
-         <ResumenCard label="Latencia Media" value="Ok" sub="Status: 14ms" icon={Zap} color="text-[#00ff88]" />
+         <ResumenCard label="Terminales Laptops" value={stats.laptops} sub="Flota en Red" icon={Laptop} color="text-amber-500" />
+         <ResumenCard label="Consistencia" value={`${stats.salud}%`} sub="Estado General" icon={ShieldCheck} color="text-indigo-500" />
+         <ResumenCard label="Estado Red" value="Estable" sub="Latencia: 14ms" icon={Zap} color="text-[#00ff88]" />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-4">
@@ -119,8 +119,8 @@ const DashboardPage: React.FC = () => {
                <div className="absolute right-0 top-0 w-64 h-64 bg-[#00ff88]/5 blur-[100px]" />
                <div className="flex items-center justify-between relative z-10">
                   <div className="space-y-1">
-                     <h3 className="text-[10px] font-bold text-[#4e564e] uppercase tracking-[0.4em]">Fuerza de Red</h3>
-                     <h2 className="text-xl font-bold text-white italic tracking-tighter">Historial Logístico</h2>
+                     <h3 className="text-[10px] font-semibold text-[#889288] uppercase tracking-[0.3em]">Crecimiento de Red</h3>
+                     <h2 className="text-xl font-bold text-white tracking-tight uppercase">Historial Logístico</h2>
                   </div>
                </div>
 
@@ -134,10 +134,10 @@ const DashboardPage: React.FC = () => {
                            </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="#0e312a" vertical={false} opacity={0.1} />
-                        <XAxis dataKey="dia" axisLine={false} tickLine={false} tick={{fill: '#4e564e', fontSize: 10, fontWeight: 700}} />
+                        <XAxis dataKey="dia" axisLine={false} tickLine={false} tick={{fill: '#4e564e', fontSize: 10, fontWeight: 600}} />
                         <YAxis hide />
-                        <Tooltip contentStyle={{ backgroundColor: '#121412', border: '1px solid #00ff8820', borderRadius: '12px', padding: '10px' }} itemStyle={{ color: '#00ff88', fontSize: '10px', fontWeight: '700' }} />
-                        <Area type="monotone" dataKey="nodos" stroke="#00ff88" strokeWidth={4} fill="url(#glowGradient)" animationDuration={1500} />
+                        <Tooltip contentStyle={{ backgroundColor: '#121412', border: '1px solid #00ff8820', borderRadius: '12px', padding: '10px' }} itemStyle={{ color: '#00ff88', fontSize: '10px', fontWeight: '600' }} />
+                        <Area type="monotone" dataKey="nodos" stroke="#00ff88" strokeWidth={3} fill="url(#glowGradient)" animationDuration={1500} />
                      </AreaChart>
                   </ResponsiveContainer>
                </div>
@@ -148,7 +148,7 @@ const DashboardPage: React.FC = () => {
                <div className="card-matrix p-6 space-y-5">
                   <div className="flex items-center gap-3">
                      <PieIcon size={16} className="text-indigo-500" />
-                     <h3 className="text-[10px] font-bold text-white/70 uppercase tracking-[0.2em]">Top Fabricantes</h3>
+                     <h3 className="text-[10px] font-semibold text-white/70 uppercase tracking-[0.2em]">Top Fabricantes</h3>
                   </div>
                   <div className="h-40 flex items-center justify-center">
                      <ResponsiveContainer width="100%" height="100%">
@@ -166,8 +166,8 @@ const DashboardPage: React.FC = () => {
                      {stats.brandData.slice(0, 4).map((b, i) => (
                        <div key={b.name} className="flex items-center gap-2 min-w-0">
                           <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                          <span className="text-[9px] font-bold text-white/80 uppercase tracking-tighter truncate">{b.name}</span>
-                          <span className="text-[9px] font-bold text-[#4e564e] ml-auto">
+                          <span className="text-[9px] font-semibold text-white/80 uppercase tracking-tight truncate">{b.name}</span>
+                          <span className="text-[9px] font-semibold text-[#4e564e] ml-auto">
                              {stats.total > 0 ? Math.round((Number(b.value) / stats.total) * 100) : 0}%
                           </span>
                        </div>
@@ -179,12 +179,12 @@ const DashboardPage: React.FC = () => {
                <div className="card-matrix p-6 space-y-5">
                   <div className="flex items-center gap-3">
                      <LayoutGrid size={16} className="text-emerald-500" />
-                     <h3 className="text-[10px] font-bold text-white/70 uppercase tracking-[0.2em]">Sistemas Operativos</h3>
+                     <h3 className="text-[10px] font-semibold text-white/70 uppercase tracking-[0.2em]">Sistemas Operativos</h3>
                   </div>
                   <div className="space-y-4 pt-1">
                      {stats.osData.map((os) => (
                        <div key={os.name} className="space-y-2">
-                          <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest italic">
+                          <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest leading-none">
                              <span className="text-white/80">{String(os.name)}</span>
                              <span className="text-[#00ff88]">{Number(os.value)} Nodos</span>
                           </div>
@@ -198,13 +198,13 @@ const DashboardPage: React.FC = () => {
             </div>
          </div>
 
-         {/* Línea de Tiempo Profesional */}
+         {/* Línea de Tiempo de Transmisiones */}
          <div className="xl:col-span-4 space-y-4">
             <div className="card-matrix p-6 space-y-5 min-h-[400px] flex flex-col">
                <div className="flex items-center justify-between border-b border-[#0e312a]/30 pb-3">
                   <div className="flex items-center gap-2">
                      <Activity size={16} className="text-[#00ff88] animate-pulse" />
-                     <h3 className="text-[10px] font-bold text-white uppercase tracking-[0.3em] italic">Transmisiones</h3>
+                     <h3 className="text-[10px] font-semibold text-white uppercase tracking-[0.2em]">Últimos Reportes</h3>
                   </div>
                   <Clock size={16} className="text-[#4e564e]" />
                </div>
@@ -213,50 +213,52 @@ const DashboardPage: React.FC = () => {
                   {stats.recientes.length === 0 ? (
                     <div className="text-center py-20 opacity-20">
                        <Database size={32} className="mx-auto mb-3" />
-                       <p className="text-[9px] font-bold uppercase tracking-widest">Sincronizando...</p>
+                       <p className="text-[9px] font-semibold uppercase tracking-widest">Sincronizando...</p>
                     </div>
                   ) : stats.recientes.map((e: Equipo) => (
                     <div key={e.id} className="relative pl-5 border-l border-[#0e312a] group hover:bg-[#00ff88]/[0.05] p-2 rounded-xl transition-all">
-                       <div className="absolute left-[-6px] top-4 w-2.5 h-2.5 rounded-full bg-[#0e312a] border-2 border-[#090a09] group-hover:bg-[#00ff88] transition-all shadow-glow" />
+                       <div className="absolute left-[-6px] top-4 w-2.5 h-2.5 rounded-full bg-[#0e312a] border-2 border-[#090a09] group-hover:bg-[#00ff88] transition-all" />
                        <div className="space-y-1">
                           <div className="flex items-center justify-between gap-3">
-                             <span className="text-[11px] font-bold text-white italic group-hover:text-[#00ff88] transition-colors uppercase tracking-tight truncate">{String(e.hostname)}</span>
-                             <span className="bg-[#00ff88]/10 text-[#00ff88] px-1.5 py-0.5 rounded-md text-[7px] font-bold uppercase tracking-widest border border-[#00ff88]/20">ACTIVO</span>
+                             <span className="text-[11px] font-semibold text-white group-hover:text-[#00ff88] transition-colors uppercase tracking-tight truncate">{String(e.hostname)}</span>
+                             <span className="bg-[#00ff88]/10 text-[#00ff88] px-1.5 py-0.5 rounded-md text-[7px] font-semibold uppercase tracking-widest border border-[#00ff88]/20">ACTIVO</span>
                           </div>
-                          <div className="flex items-center gap-2 text-zinc-500 font-bold text-[9px]">
-                             <div className="uppercase tracking-tighter opacity-80 italic truncate">{e.username}</div>
+                          <div className="flex items-center gap-2 text-[#889288] font-medium text-[9px]">
+                             <div className="uppercase tracking-wide truncate">{e.username}</div>
                              <div className="w-1 h-1 rounded-full bg-zinc-800" />
-                             <div className="shrink-0 font-mono text-zinc-600">{e.ip_local}</div>
+                             <div className="shrink-0 font-mono text-[#4e564e]">{e.ip_local}</div>
                           </div>
                        </div>
                     </div>
                   ))}
                </div>
 
-               <Link to="/inventario" className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black text-[10px] font-bold uppercase tracking-[0.3em] hover:scale-[1.02] transition-all text-center flex items-center justify-center gap-2 shadow-[0_5px_20px_rgba(0,255,136,0.3)]">
+               <button 
+                 onClick={() => navigate('/inventario')}
+                 className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black text-[10px] font-bold uppercase tracking-[0.3em] hover:scale-[1.02] transition-all flex items-center justify-center gap-2 shadow-[0_5px_20px_rgba(0,255,136,0.3)]">
                   Ver Inventario Completo
-               </Link>
+               </button>
             </div>
 
-            {/* Hub de Servicios Compacto */}
+            {/* Hub de Servicios */}
             <div className="card-matrix p-5 bg-black/40 border-[#0e312a]/50 relative overflow-hidden group">
                <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-xl bg-[#121412] border border-[#0e312a] flex items-center justify-center text-[#00ff88] shadow-lg">
                      <Server size={18} className="group-hover:rotate-12 transition-transform" />
                   </div>
                   <div>
-                     <h4 className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">Telemetría</h4>
-                     <p className="text-[8px] font-bold text-[#4e564e] uppercase tracking-widest">Protocolo: Iceberg-SSL</p>
+                     <h4 className="text-[10px] font-semibold text-white uppercase tracking-[0.2em]">Conectividad</h4>
+                     <p className="text-[8px] font-medium text-[#889288] uppercase tracking-widest">Protocolo: Iceberg-SSL</p>
                   </div>
                </div>
                <div className="grid grid-cols-2 gap-3 relative z-10">
                   <div className="p-3 rounded-xl bg-[#0e312a]/10 border border-[#0e312a]/30 text-center backdrop-blur-sm group-hover:border-[#00ff88]/20 transition-all">
-                     <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-1">CPU Load</p>
-                     <span className="text-xs font-bold text-[#00ff88] italic">12.4%</span>
+                     <p className="text-[7px] font-semibold text-[#4e564e] uppercase mb-1">Carga CPU</p>
+                     <span className="text-xs font-semibold text-[#00ff88]">12.4%</span>
                   </div>
                   <div className="p-3 rounded-xl bg-[#0e312a]/10 border border-[#0e312a]/30 text-center backdrop-blur-sm group-hover:border-[#00ff88]/20 transition-all">
-                     <p className="text-[7px] font-bold text-[#4e564e] uppercase mb-1">Bandwidth</p>
-                     <span className="text-xs font-bold text-[#00ff88] italic">1.4 GB/s</span>
+                     <p className="text-[7px] font-semibold text-[#4e564e] uppercase mb-1">Ancho de Banda</p>
+                     <span className="text-xs font-semibold text-[#00ff88]">1.4 GB/s</span>
                   </div>
                </div>
                <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-[#00ff88]/5 rounded-full blur-3xl opacity-50" />

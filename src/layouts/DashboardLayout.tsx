@@ -21,11 +21,11 @@ const SidebarItem: React.FC<{ to: string, icon: React.ElementType, label: string
     <div className={cn(
       "flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-300",
       active
-        ? "sidebar-active-emerald font-bold scale-[1.02]"
-        : "text-[#4e564e] hover:text-[#00ff88] hover:bg-white/5"
+        ? "sidebar-active-emerald font-semibold scale-[1.02]"
+        : "text-[#889288] hover:text-[#00ff88] hover:bg-white/5"
     )}>
       <Icon className={cn("w-4 h-4", active ? "text-black" : "group-hover:text-[#00ff88]")} />
-      <span className={cn("text-[10px] tracking-widest uppercase", active ? "font-bold" : "font-semibold")}>{label}</span>
+      <span className={cn("text-[10px] tracking-widest uppercase", active ? "font-semibold" : "font-medium")}>{label}</span>
     </div>
   </Link>
 )
@@ -62,16 +62,16 @@ const DashboardLayout: React.FC = () => {
               <Zap size={18} className="text-black" />
            </div>
            <div className="flex flex-col">
-              <span className="text-lg font-bold tracking-tighter italic uppercase text-[#00ff88] text-glow leading-none">Iceberg IT</span>
-              <span className="text-[8px] font-bold uppercase tracking-[0.4em] text-[#4e564e] mt-1">Enterprise</span>
+              <span className="text-lg font-semibold tracking-tight uppercase text-[#00ff88] text-glow leading-none">Iceberg IT</span>
+              <span className="text-[8px] font-semibold uppercase tracking-[0.4em] text-[#4e564e] mt-1">Enterprise Infra</span>
            </div>
         </div>
 
         <nav className="flex-1">
           <SidebarItem to="/" icon={LayoutDashboard} label="Panel General" active={location.pathname === '/'} />
           <SidebarItem to="/inventario" icon={Database} label="Inventario" active={location.pathname === '/inventario'} />
-          <SidebarItem to="/crear" icon={PlusCircle} label="Nuevo Registro" active={location.pathname === '/crear'} />
-          <SidebarItem to="/logs" icon={Activity} label="Auditoría" active={location.pathname === '/logs'} />
+          <SidebarItem to="/crear" icon={PlusCircle} label="Registrar Nodo" active={location.pathname === '/crear'} />
+          <SidebarItem to="/logs" icon={Activity} label="Auditoría Red" active={location.pathname === '/logs'} />
         </nav>
         
         <div className="mt-auto space-y-4">
@@ -80,12 +80,12 @@ const DashboardLayout: React.FC = () => {
               <div className="w-7 h-7 rounded-lg bg-[#00ff88]/10 flex items-center justify-center text-[#00ff88] mb-2">
                  <Bell size={14} />
               </div>
-              <p className="text-[10px] font-bold text-white uppercase tracking-widest mb-0.5">Estado</p>
-              <p className="text-[8px] font-bold text-[#4e564e] uppercase">Sistemas Online</p>
+              <p className="text-[10px] font-semibold text-white uppercase tracking-widest mb-0.5">Control</p>
+              <p className="text-[8px] font-medium text-[#4e564e] uppercase">Sistema Activo</p>
            </div>
            <button 
              onClick={() => signOut()}
-             className="flex items-center gap-2.5 px-4 py-2 text-[#4e564e] hover:text-[#00ff88] transition-all w-full font-bold text-[10px] uppercase tracking-[0.2em] group"
+             className="flex items-center gap-2.5 px-4 py-2 text-[#4e564e] hover:text-[#00ff88] transition-all w-full font-semibold text-[10px] uppercase tracking-[0.2em] group"
            >
               <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
               <span>Cerrar Sesión</span>
@@ -97,7 +97,7 @@ const DashboardLayout: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <header className="h-16 flex items-center justify-between px-8 z-20 border-b border-white/[0.03]">
           <div className="flex items-center gap-5">
-             <h2 className="text-xl font-bold tracking-tighter uppercase italic text-white/90">
+             <h2 className="text-xl font-semibold tracking-tight uppercase text-white/90">
                 {location.pathname === '/' ? 'Panel de Control' : 'Inventario de Activos'}
              </h2>
              <div className="h-4 w-px bg-[#0e312a]/50" />
@@ -105,10 +105,10 @@ const DashboardLayout: React.FC = () => {
                 <Search size={14} className="text-[#4e564e]" />
                 <input 
                   type="text" 
-                  placeholder="BUSCAR EN LA MATRIZ..." 
+                  placeholder="BUSCAR EQUIPO..." 
                   value={currentSearch}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="bg-transparent border-none outline-none text-[10px] w-full placeholder:text-[#2a302a] font-bold uppercase tracking-widest text-[#00ff88]"
+                  className="bg-transparent border-none outline-none text-[10px] w-full placeholder:text-[#2a302a] font-semibold uppercase tracking-widest text-[#00ff88]"
                 />
              </div>
           </div>

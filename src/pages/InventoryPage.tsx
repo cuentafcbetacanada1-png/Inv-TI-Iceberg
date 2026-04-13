@@ -170,36 +170,36 @@ const InventoryPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-in pb-12 font-sans text-white">
-      {/* Header Sección Principal - Profesional y Espacioso */}
+      {/* Header Sección Principal */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-5 border-b border-[#0e312a]/50 relative">
         <div className="space-y-1">
-           <div className="flex items-center gap-2 text-[#00ff88] font-bold text-[10px] uppercase tracking-[0.4em]">
+           <div className="flex items-center gap-2 text-[#00ff88] font-semibold text-[10px] uppercase tracking-[0.3em]">
               <div className="w-2 h-2 rounded-full bg-[#00ff88] shadow-[0_0_12px_#00ff88] animate-pulse" />
               <span className="text-glow">Red Iceberg</span>
            </div>
-           <h1 className="text-2xl font-bold tracking-tighter italic uppercase text-white/95 leading-none">
+           <h1 className="text-2xl font-bold tracking-tight uppercase text-white/95 leading-none">
               Control de <span className="text-[#00ff88]">Inventario</span>
            </h1>
         </div>
         <div className="flex flex-wrap gap-2 text-white">
-           <button onClick={exportToExcel} className="px-6 py-2.5 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest backdrop-blur-xl group hover:border-[#00ff88]/30 shrink-0">
-              <FileSpreadsheet size={16} /> Exportar Excel
+           <button onClick={exportToExcel} className="px-6 py-2.5 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#889288] hover:text-[#00ff88] transition-all flex items-center gap-2 font-semibold text-[10px] uppercase tracking-widest backdrop-blur-xl group hover:border-[#00ff88]/30 shrink-0">
+              <FileSpreadsheet size={16} /> Exportar Reporte
            </button>
-           <button onClick={handleRefresh} disabled={isRefreshing} className="px-6 py-2.5 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest hover:border-[#00ff88]/30 shrink-0">
+           <button onClick={handleRefresh} disabled={isRefreshing} className="px-6 py-2.5 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#889288] hover:text-[#00ff88] transition-all flex items-center gap-2 font-semibold text-[10px] uppercase tracking-widest hover:border-[#00ff88]/30 shrink-0">
               <RefreshCcw size={16} className={isRefreshing ? "animate-spin" : ""} /> Sincronizar
            </button>
-           <Link to="/crear" className="btn-matrix flex items-center gap-2 px-8 py-2.5 text-[10px] font-bold uppercase tracking-widest shrink-0 shadow-lg">
+           <Link to="/crear" className="btn-matrix flex items-center gap-2 px-8 py-2.5 text-[10px] font-semibold uppercase tracking-widest shrink-0 shadow-lg">
               <Plus size={18} /> Nuevo Nodo
            </Link>
         </div>
       </header>
 
-      {/* Barra de Búsqueda y Filtros Optimizada */}
+      {/* Barra de Búsqueda y Filtros */}
       <div className="flex flex-col lg:flex-row gap-3 items-center bg-[#0d0f0d]/50 p-2 rounded-2xl border border-[#0e312a]/30 backdrop-blur-md">
          <div className="relative flex-1 w-full">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#4e564e]" />
             <input
-              placeholder="IDENTIFICAR EQUIPO EN LA RED..."
+              placeholder="IDENTIFICAR EQUIPO..."
               value={searchTerm}
               onChange={(e) => {
                 const val = e.target.value;
@@ -209,7 +209,7 @@ const InventoryPage: React.FC = () => {
                 else params.delete('search');
                 navigate({ search: params.toString() }, { replace: true });
               }}
-              className="w-full bg-transparent border-none rounded-xl pl-10 pr-4 py-3 text-[11px] outline-none focus:ring-0 transition-all font-bold uppercase tracking-widest text-[#00ff88] placeholder:text-[#2a302a]"
+              className="w-full bg-transparent border-none rounded-xl pl-10 pr-4 py-3 text-[11px] outline-none focus:ring-0 transition-all font-semibold uppercase tracking-widest text-[#00ff88] placeholder:text-[#2a302a]"
             />
          </div>
          <div className="flex items-center gap-1.5 p-1 bg-black/40 rounded-xl">
@@ -217,69 +217,66 @@ const InventoryPage: React.FC = () => {
               <button 
                 key={f} onClick={() => setFilterTech(f as any)}
                 className={cn(
-                  "px-5 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all", 
-                  filterTech === f ? "bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black shadow-[0_0_15px_rgba(0,255,136,0.3)]" : "text-[#4e564e] hover:text-white"
+                  "px-5 py-2 rounded-lg text-[9px] font-semibold uppercase tracking-widest transition-all", 
+                  filterTech === f ? "bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black" : "text-[#4e564e] hover:text-white"
                 )}
               > {f} </button>
             ))}
          </div>
       </div>
 
-      {/* Grilla de Equipos - Legibilidad Mejorada */}
+      {/* Grilla de Equipos */}
       <div className="grid grid-cols-1 gap-3 text-white">
          {isLoading && equipos.length === 0 ? (
            <div className="flex flex-col items-center justify-center py-20 space-y-4">
-              <Loader2 size={32} className="text-[#00ff88] animate-spin opacity-30" />
-              <p className="text-[10px] font-bold text-[#00ff88] uppercase tracking-[0.5em] opacity-50 animate-pulse">Consultando Matriz...</p>
+              <div className="w-8 h-8 border-2 border-[#00ff88]/20 border-t-[#00ff88] rounded-full animate-spin shadow-[0_0_15px_#00ff8820]" />
+              <p className="text-[10px] font-semibold text-[#00ff88] uppercase tracking-[0.4em] opacity-50">Consultando Matriz...</p>
            </div>
          ) : filteredEquipos.length > 0 ? (
            filteredEquipos.map((e: any) => (
              <div key={e.id} onClick={() => navigate(`/editar/${e.id}`)} className="group relative">
-                <div className="card-matrix relative bg-[#090a09]/40 backdrop-blur-md border border-[#0e312a]/30 hover:border-[#00ff88]/50 transition-all duration-300 p-4 rounded-2xl overflow-hidden cursor-pointer shadow-xl">
+                <div className="card-matrix relative bg-[#090a09]/40 backdrop-blur-md border border-[#0e312a]/30 hover:border-[#00ff88]/50 transition-all p-4 rounded-2xl cursor-pointer">
                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
                       
-                      {/* Identidad */}
                       <div className="flex items-center gap-4 min-w-0 flex-1">
                          <div className={cn(
-                           "w-12 h-12 rounded-xl flex items-center justify-center border transition-all shadow-inner shrink-0 group-hover:scale-105 duration-300",
+                           "w-12 h-12 rounded-xl flex items-center justify-center border transition-all shrink-0 shadow-inner group-hover:scale-105 duration-300",
                            e.es_laptop ? "bg-amber-500/10 border-amber-500/40 text-amber-500" : "bg-[#00ff88]/10 border-[#00ff88]/40 text-[#00ff88]"
                          )}>
                             {e.es_laptop ? <Laptop size={20} /> : <DesktopIcon size={20} />}
                          </div>
                          <div className="space-y-0.5 min-w-0">
-                            <h3 className="text-base font-bold italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-tight truncate">{e.hostname}</h3>
+                            <h3 className="text-base font-semibold uppercase tracking-tight group-hover:text-[#00ff88] transition-colors leading-tight truncate">{e.hostname}</h3>
                             <div className="flex items-center gap-2">
-                               <span className="text-[10px] font-bold text-white/40 truncate">{e.username}</span>
+                               <span className="text-[10px] font-medium text-white/50 truncate tracking-wide">{e.username}</span>
                                <span className="w-1 h-1 rounded-full bg-white/20" />
-                               <span className="text-[9px] font-black text-[#00ff88] uppercase opacity-80 tracking-widest">SISTEMA ACTIVO</span>
+                               <span className="text-[9px] font-semibold text-[#00ff88] uppercase opacity-80 tracking-widest">SISTEMA ACTIVO</span>
                             </div>
                          </div>
                       </div>
 
-                      {/* Hardware */}
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 items-center flex-[2.5] w-full lg:w-auto">
                          <div className="overflow-hidden">
-                             <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1 tracking-widest">Fabricante</p>
-                             <p className="text-[10px] font-bold text-zinc-300 truncate uppercase leading-tight">{e.marca_pc || 'GENÉRICO'} / {e.modelo || 'ESTÁNDAR'}</p>
+                             <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">Fabricante</p>
+                             <p className="text-[10px] font-medium text-zinc-300 truncate uppercase leading-tight">{e.marca_pc || 'GENÉRICO'} / {e.modelo || 'S/D'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1 tracking-widest">Capacidad</p>
-                            <p className="text-[10px] font-bold text-zinc-200 truncate uppercase leading-tight">{e.memoria_ram || 'S/D'} RAM • {e.disco || 'S/D'}</p>
+                            <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">Capacidad</p>
+                            <p className="text-[10px] font-medium text-zinc-200 truncate uppercase">{e.memoria_ram || 'S/D'} RAM • {e.disco || 'S/D'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1 tracking-widest">Dirección IP</p>
-                            <p className="text-[10px] font-bold text-[#00ff88]/70 truncate uppercase leading-tight italic font-mono">{e.ip_local || 'ASIGNANDO...'}</p>
+                            <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">IP de Red</p>
+                            <p className="text-[10px] font-semibold text-[#00ff88]/70 truncate uppercase font-mono">{e.ip_local || 'PENDIENTE'}</p>
                          </div>
                          <div className="overflow-hidden hidden lg:block">
-                            <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1 tracking-widest">Identificador</p>
-                            <p className="text-[10px] font-bold text-zinc-500 uppercase leading-tight truncate">{e.numero_serie || 'N/A'}</p>
+                            <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">Identificador</p>
+                            <p className="text-[10px] font-medium text-zinc-500 uppercase truncate">{e.numero_serie || 'N/A'}</p>
                          </div>
                       </div>
 
-                      {/* Acciones */}
                       <div className="flex items-center justify-end gap-2.5 shrink-0">
-                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-9 h-9 bg-white/5 hover:bg-[#00ff88] text-white/20 hover:text-black rounded-xl transition-all border border-white/5 flex items-center justify-center shadow-lg"><Edit2 size={14} /></button>
-                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-9 h-9 bg-white/5 hover:bg-red-500 text-white/20 hover:text-white rounded-xl transition-all border border-white/5 flex items-center justify-center shadow-lg"><Trash2 size={14} /></button>
+                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-9 h-9 bg-white/5 hover:bg-[#00ff88] text-white/50 hover:text-black rounded-xl transition-all border border-white/5 flex items-center justify-center"><Edit2 size={14} /></button>
+                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-9 h-9 bg-white/5 hover:bg-red-500 text-white/50 hover:text-white rounded-xl transition-all border border-white/5 flex items-center justify-center"><Trash2 size={14} /></button>
                       </div>
 
                    </div>

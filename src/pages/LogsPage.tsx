@@ -98,14 +98,15 @@ const LogsPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 animate-in font-bold">
+  return (
+    <div className="space-y-6 animate-in font-sans">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-5 border-b border-white/10">
         <div className="space-y-1">
-           <div className="flex items-center gap-2 text-[#00ff88] font-bold text-[9px] uppercase tracking-[0.4em]">
+           <div className="flex items-center gap-2 text-[#00ff88] font-semibold text-[9px] uppercase tracking-[0.3em]">
               <Activity size={10} />
               <span>Centro de Auditoría</span>
            </div>
-           <h1 className="text-2xl font-bold text-white tracking-tighter italic uppercase">Registros <span className="text-[#00ff88]">de Actividad</span></h1>
+           <h1 className="text-2xl font-bold text-white tracking-tight uppercase">Registros <span className="text-[#00ff88]">de Actividad</span></h1>
         </div>
         
         <div className="flex gap-1.5 bg-black/40 p-1 rounded-xl border border-white/5">
@@ -114,7 +115,7 @@ const LogsPage: React.FC = () => {
               key={t}
               onClick={() => setFilter(t)}
               className={cn(
-                "px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all border",
+                "px-4 py-2 rounded-lg text-[9px] font-semibold uppercase tracking-widest transition-all border",
                 filter === t 
                    ? "bg-white/10 text-white border-white/20 shadow-lg" 
                    : "text-zinc-600 hover:text-zinc-400 border-transparent shadow-none"
@@ -130,12 +131,12 @@ const LogsPage: React.FC = () => {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 opacity-50">
               <div className="w-8 h-8 border-2 border-[#00ff88]/20 border-t-[#00ff88] rounded-full animate-spin shadow-[0_0_15px_#00ff8820]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em] animate-pulse">Consultando Logs...</span>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] animate-pulse">Consultando Logs...</span>
           </div>
         ) : filteredLogs.length === 0 ? (
           <div className="card-matrix p-16 text-center border-dashed border-white/10">
               <Activity size={32} className="text-[#0e312a] mx-auto mb-3" />
-              <p className="text-[10px] font-bold text-[#4e564e] uppercase tracking-widest">Base de datos sin registros</p>
+              <p className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-widest">Base de datos sin registros</p>
           </div>
         ) : (
           filteredLogs.map((log) => {
@@ -161,22 +162,22 @@ const LogsPage: React.FC = () => {
                         </div>
                         <div className="space-y-0.5 min-w-0">
                             <div className="flex items-center gap-3">
-                              <h3 className="text-xs font-black text-white italic uppercase tracking-tight truncate">{log.action}</h3>
+                              <h3 className="text-xs font-semibold text-white uppercase tracking-tight truncate">{log.action}</h3>
                               <span className={cn(
-                                "px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-widest border shrink-0",
+                                "px-2 py-0.5 rounded-md text-[7px] font-semibold uppercase tracking-widest border shrink-0",
                                 getTypeStyles(log.type)
                               )}>{log.type}</span>
                             </div>
-                            <p className="text-[10px] text-zinc-500 font-bold tracking-tight truncate max-w-[400px]">{log.details}</p>
+                            <p className="text-[10px] text-zinc-500 font-medium tracking-tight truncate max-w-[400px]">{log.details}</p>
                         </div>
                       </div>
                       
                       <div className="flex items-center gap-5 justify-between md:justify-end shrink-0">
                         <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 text-[9px] font-bold text-white/40 uppercase tracking-widest">
+                            <div className="flex items-center gap-2 text-[9px] font-semibold text-white/40 uppercase tracking-widest">
                               <User size={10} className="text-[#00ff88]/60" /> {log.user_email}
                             </div>
-                            <div className="flex items-center gap-2 text-[9px] font-bold text-zinc-600 uppercase">
+                            <div className="flex items-center gap-2 text-[9px] font-semibold text-zinc-600 uppercase">
                               <Clock size={10} /> {new Date(log.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </div>
                         </div>
@@ -192,14 +193,14 @@ const LogsPage: React.FC = () => {
                   isExpanded ? "max-h-[200px] opacity-100 p-5" : "max-h-0 opacity-0"
                 )}>
                   <div className="flex items-center justify-between gap-5">
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest italic flex-1 leading-relaxed">
+                    <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest flex-1 leading-relaxed">
                        <span className="text-[#00ff88]/40 mr-2">DETALLE:</span>
                        "{log.details}"
                     </p>
                     {eqId && (
                       <button 
                         onClick={(e) => { e.stopPropagation(); navigate(`/editar/${eqId}`); }}
-                        className="btn-matrix px-6 py-2.5 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shrink-0"
+                        className="btn-matrix px-6 py-2.5 flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.1em] shadow-lg shrink-0"
                       >
                          <Edit2 size={12} /> Gestionar Nodo
                       </button>
@@ -215,7 +216,7 @@ const LogsPage: React.FC = () => {
       <footer className="pt-6 flex justify-center">
          <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.02] border border-white/10 shadow-lg backdrop-blur-xl">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]" />
-            <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">MONITOREO EN TIEMPO REAL ACTIVO</span>
+            <span className="text-[9px] font-semibold text-white/30 uppercase tracking-[0.4em]">Auditando Tráfico en Vivo</span>
          </div>
       </footer>
     </div>

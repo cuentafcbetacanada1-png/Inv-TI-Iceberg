@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -6,7 +7,7 @@
   --bg-dark: #090a09;
   --bg-card: #121412;
   --text-main: #ffffff;
-  --text-sub: #4e564e;
+  --text-sub: #889288;
   --emerald: #0e312a;
   --accent: #10ef87;
 }
@@ -22,6 +23,7 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
 .card-matrix {
