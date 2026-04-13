@@ -98,45 +98,45 @@ const LogsPage: React.FC = () => {
     }
   }
 
-  return    <div className="space-y-6 animate-in font-bold">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-white/5">
-        <div className="space-y-1">
-           <div className="flex items-center gap-1.5 text-[#00ff88] font-semibold text-[8px] uppercase tracking-[0.3em]">
-              <Activity size={10} />
-              <span>Auditoría de Infraestructura</span>
+  return (
+    <div className="space-y-4 animate-in font-bold">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-3 pb-3 border-b border-white/5">
+        <div className="space-y-0.5">
+           <div className="flex items-center gap-1 text-[#00ff88] font-semibold text-[7px] uppercase tracking-[0.3em]">
+              <Activity size={8} />
+              <span>Auditoría Infra</span>
            </div>
-           <h1 className="text-3xl font-bold text-white tracking-tighter italic uppercase">Logs</h1>
-           <p className="text-[10px] text-[#4e564e] max-w-md font-semibold uppercase tracking-widest">Historial de operaciones IT.</p>
+           <h1 className="text-xl font-bold text-white tracking-tighter italic uppercase">Logs</h1>
         </div>
         
-        <div className="flex gap-1.5">
+        <div className="flex gap-1">
           {(['all', 'create', 'update', 'validate', 'system'] as const).map(t => (
             <button
               key={t}
               onClick={() => setFilter(t)}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all border",
+                "px-2 py-1 rounded-md text-[7px] font-bold uppercase tracking-widest transition-all border",
                 filter === t 
-                  ? "bg-white/10 text-white border-white/20" 
-                  : "text-zinc-600 hover:text-zinc-400 border-transparent"
+                   ? "bg-white/10 text-white border-white/20" 
+                   : "text-zinc-600 hover:text-zinc-400 border-transparent shadow-none"
               )}
             >
-              {t === 'all' ? 'Todos' : t}
+              {t === 'all' ? 'Ver Todos' : t}
             </button>
           ))}
         </div>
       </header>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-3 opacity-50">
-             <div className="w-6 h-6 border-2 border-[#00ff88]/20 border-t-[#00ff88] rounded-full animate-spin" />
-             <span className="text-[8px] font-bold uppercase tracking-widest">Sincronizando...</span>
+          <div className="flex flex-col items-center justify-center py-10 gap-2 opacity-30">
+             <div className="w-4 h-4 border border-[#00ff88]/20 border-t-[#00ff88] rounded-full animate-spin" />
+             <span className="text-[7px] font-bold uppercase tracking-widest">Sinc...</span>
           </div>
         ) : filteredLogs.length === 0 ? (
-          <div className="card-matrix p-16 text-center">
-             <Activity size={32} className="text-[#0e312a] mx-auto mb-3" />
-             <p className="text-[9px] font-bold text-[#4e564e] uppercase tracking-widest">Sin registros</p>
+          <div className="card-matrix p-10 text-center">
+             <Activity size={24} className="text-[#0e312a] mx-auto mb-2" />
+             <p className="text-[8px] font-bold text-[#4e564e] uppercase tracking-widest">Sin registros</p>
           </div>
         ) : (
           filteredLogs.map((log) => {
@@ -146,64 +146,60 @@ const LogsPage: React.FC = () => {
             return (
               <div key={log.id} className={cn(
                 "card-matrix overflow-hidden transition-all duration-300",
-                isExpanded ? "ring-1 ring-[#00ff88]/30 bg-white/[0.03]" : "hover:bg-white/[0.02]"
+                isExpanded ? "bg-white/[0.04] border-[#00ff88]/30" : "hover:bg-white/[0.02]"
               )}>
                 <div 
-                  className="p-4 cursor-pointer group"
+                  className="p-2 cursor-pointer group"
                   onClick={() => toggleExpand(log.id)}
                 >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="flex gap-3">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                      <div className="flex gap-2.5 flex-1 min-w-0">
                         <div className={cn(
-                          "w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 transition-transform group-hover:scale-105",
+                          "w-8 h-8 rounded-lg flex items-center justify-center border shrink-0",
                           getTypeStyles(log.type)
                         )}>
                             {getTypeIcon(log.type)}
                         </div>
-                        <div className="space-y-0.5 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <h3 className="text-xs font-bold text-white italic uppercase tracking-tight truncate">{log.action}</h3>
+                        <div className="space-y-0 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <h3 className="text-[10px] font-bold text-white italic uppercase tracking-tight truncate">{log.action}</h3>
                               <span className={cn(
-                                "px-1.5 py-0.5 rounded text-[7px] font-bold uppercase tracking-widest border shrink-0",
+                                "px-1 py-0.5 rounded text-[6px] font-bold uppercase tracking-widest border shrink-0",
                                 getTypeStyles(log.type)
                               )}>{log.type}</span>
                             </div>
-                            <p className="text-[10px] text-zinc-500 font-semibold tracking-tight truncate">{log.details}</p>
+                            <p className="text-[8px] text-zinc-500 font-semibold tracking-tight truncate max-w-[200px]">{log.details}</p>
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-4 justify-between md:justify-end">
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1.5 text-[8px] font-bold text-zinc-600 uppercase">
-                              <User size={9} className="text-[#00ff88]" /> {log.user_email}
+                      <div className="flex items-center gap-3 justify-between md:justify-end shrink-0">
+                        <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 text-[7px] font-bold text-zinc-600 uppercase">
+                              <User size={8} className="text-[#00ff88]/80" /> {log.user_email}
                             </div>
-                            <div className="flex items-center gap-1.5 text-[8px] font-bold text-zinc-600 uppercase">
-                              <Clock size={9} className="text-zinc-700" /> {new Date(log.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                            <div className="flex items-center gap-1 text-[7px] font-bold text-zinc-700 uppercase">
+                              <Clock size={8} /> {new Date(log.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                             </div>
                         </div>
                         <div className={cn("transition-transform duration-300", isExpanded ? "rotate-90" : "")}>
-                           <ArrowRight size={14} className="text-zinc-700" />
+                           <ArrowRight size={10} className="text-zinc-800" />
                         </div>
                       </div>
                   </div>
                 </div>
 
-                {/* Área Desplegable Compacta */}
                 <div className={cn(
-                  "overflow-hidden transition-all duration-300 border-t border-white/5 bg-black/20",
-                  isExpanded ? "max-h-[200px] opacity-100 p-4" : "max-h-0 opacity-0"
+                  "overflow-hidden transition-all duration-300 border-t border-white/5 bg-black/30",
+                  isExpanded ? "max-h-[150px] opacity-100 p-2.5" : "max-h-0 opacity-0"
                 )}>
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="space-y-1.5">
-                       <p className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest italic">"{log.details}"</p>
-                       <p className="text-[8px] font-bold text-zinc-600 uppercase">Timestamp: {new Date(log.created_at).toLocaleString('es-ES')}</p>
-                    </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[7px] font-bold text-zinc-500 uppercase tracking-widest italic flex-1 truncate">"{log.details}"</p>
                     {eqId && (
                       <button 
                         onClick={(e) => { e.stopPropagation(); navigate(`/editar/${eqId}`); }}
-                        className="btn-matrix px-4 py-2 flex items-center gap-2 text-[8px] font-bold uppercase tracking-widest active:scale-95 transition-all"
+                        className="btn-matrix px-3 py-1 flex items-center gap-1.5 text-[7px] font-bold uppercase tracking-widest"
                       >
-                         <Edit2 size={10} /> Editar
+                         <Edit2 size={8} /> EDIT
                       </button>
                     )}
                   </div>
@@ -214,13 +210,15 @@ const LogsPage: React.FC = () => {
         )}
       </div>
 
-      <footer className="pt-6 flex justify-center">
-         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/5">
-            <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[8px] font-bold text-[#4e564e] uppercase tracking-widest uppercase">Monitoreo en Tiempo Real</span>
+      <footer className="pt-2 flex justify-center">
+         <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/[0.01] border border-white/5">
+            <span className="w-0.5 h-0.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[7px] font-bold text-[#2a302a] uppercase tracking-widest">LIVE MONITORING</span>
          </div>
       </footer>
     </div>
+  )
+}
   )
 }
 
