@@ -94,9 +94,10 @@ const LogsPage: React.FC = () => {
       case 'update': return <Edit2 size={14} />
       case 'delete': return <Trash2 size={14} />
       case 'validate': return <ShieldCheck size={14} />
-      default: return <Terminal size={14} />
     }
-    return (
+  }
+
+  return (
     <div className="space-y-6 animate-in font-bold">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-5 border-b border-white/10">
         <div className="space-y-1">

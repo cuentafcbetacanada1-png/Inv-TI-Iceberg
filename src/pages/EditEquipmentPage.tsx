@@ -171,8 +171,6 @@ const EditEquipmentPage: React.FC = () => {
          </div>
       </form>
     </div>
-      </form>
-    </div>
   )
 }
 
