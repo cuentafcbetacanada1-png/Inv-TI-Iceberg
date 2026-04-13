@@ -43,18 +43,18 @@ const COLORS = ['#00ff88', '#10b981', '#3b82f6', '#6366f1', '#a855f7', '#ec4899'
 
 const ResumenCard: React.FC<{ label: string, value: string | number, sub: string, icon: any, color: string }> = ({ label, value, sub, icon: Icon, color }) => (
    <div className="card-matrix p-6 flex flex-col justify-between group h-40 relative overflow-hidden">
-      <div className={cn("absolute -right-4 -top-4 w-24 h-24 opacity-5 transition-transform group-hover:scale-125", color)}>
+      <div className={cn("absolute -right-4 -top-4 w-24 h-24 opacity-[0.03] transition-transform group-hover:scale-125 group-hover:opacity-10", color)}>
          <Icon size={90} />
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 relative z-10">
          <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", color.replace('text-', 'bg-').concat('/10 border-').concat(color.replace('text-', '')))}>
             <Icon size={18} className={color} />
          </div>
-         <span className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.2em]">{label}</span>
+         <span className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-[0.2em]">{label}</span>
       </div>
-      <div>
-         <h4 className="text-3xl font-black text-white italic tracking-tighter mb-1">{value}</h4>
-         <p className="text-[10px] font-bold text-[#4e564e] uppercase tracking-widest flex items-center gap-1">
+      <div className="relative z-10">
+         <h4 className="text-3xl font-bold text-white italic tracking-tighter mb-1 font-sans">{value}</h4>
+         <p className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-widest flex items-center gap-1">
             <ArrowUpRight size={12} className="text-[#00ff88]" />
             {sub}
          </p>
@@ -119,8 +119,8 @@ const DashboardPage: React.FC = () => {
                <div className="absolute right-0 top-0 w-64 h-64 bg-[#00ff88]/5 blur-[100px]" />
                <div className="flex items-center justify-between relative z-10">
                   <div className="space-y-1">
-                     <h3 className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.4em]">Fuerza de Implementación</h3>
-                     <h2 className="text-3xl font-black text-white italic tracking-tighter">Historial de Red</h2>
+                     <h3 className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-[0.4em]">Fuerza de Implementación</h3>
+                     <h2 className="text-3xl font-bold text-white italic tracking-tighter">Historial de Red</h2>
                   </div>
                </div>
 
@@ -133,10 +133,10 @@ const DashboardPage: React.FC = () => {
                               <stop offset="95%" stopColor="#00ff88" stopOpacity={0}/>
                            </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#0e312a" vertical={false} opacity={0.2} />
-                        <XAxis dataKey="dia" axisLine={false} tickLine={false} tick={{fill: '#4e564e', fontSize: 10, fontWeight: 800}} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#0e312a" vertical={false} opacity={0.1} />
+                        <XAxis dataKey="dia" axisLine={false} tickLine={false} tick={{fill: '#4e564e', fontSize: 10, fontWeight: 600}} />
                         <YAxis hide />
-                        <Tooltip contentStyle={{ backgroundColor: '#121412', border: '1px solid #00ff8820', borderRadius: '12px' }} itemStyle={{ color: '#00ff88', fontSize: '10px', fontWeight: '900' }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#121412', border: '1px solid #00ff8820', borderRadius: '12px' }} itemStyle={{ color: '#00ff88', fontSize: '10px', fontWeight: '600' }} />
                         <Area type="monotone" dataKey="nodos" stroke="#00ff88" strokeWidth={5} fill="url(#glowGradient)" animationDuration={2000} />
                      </AreaChart>
                   </ResponsiveContainer>
@@ -150,7 +150,7 @@ const DashboardPage: React.FC = () => {
                      <div className="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-500">
                         <PieIcon size={18} />
                      </div>
-                     <h3 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Top Marcas de Hardware</h3>
+                     <h3 className="text-[10px] font-semibold text-white uppercase tracking-[0.2em] text-white/70">Top Marcas de Hardware</h3>
                   </div>
                   <div className="h-48 flex items-center justify-center">
                      <ResponsiveContainer width="100%" height="100%">
@@ -168,8 +168,8 @@ const DashboardPage: React.FC = () => {
                      {stats.brandData.slice(0, 4).map((b, i) => (
                        <div key={b.name} className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                          <span className="text-[9px] font-black text-white uppercase tracking-tighter truncate">{b.name}</span>
-                          <span className="text-[9px] font-bold text-[#4e564e] ml-auto">
+                          <span className="text-[9px] font-semibold text-white/80 uppercase tracking-tighter truncate">{b.name}</span>
+                          <span className="text-[9px] font-semibold text-[#4e564e] ml-auto">
                              {stats.total > 0 ? Math.round((Number(b.value) / stats.total) * 100) : 0}%
                           </span>
                        </div>
@@ -183,17 +183,17 @@ const DashboardPage: React.FC = () => {
                      <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-500">
                         <LayoutGrid size={18} />
                      </div>
-                     <h3 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Distribución SO</h3>
+                     <h3 className="text-[10px] font-semibold text-white/70 uppercase tracking-[0.2em]">Distribución SO</h3>
                   </div>
                   <div className="space-y-6 pt-4">
                      {stats.osData.map((os) => (
                        <div key={os.name} className="space-y-2">
-                          <div className="flex justify-between text-[10px] font-black uppercase tracking-widest italic">
-                             <span>{String(os.name)}</span>
+                          <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest italic">
+                             <span className="text-white/80">{String(os.name)}</span>
                              <span className="text-[#00ff88]">{Number(os.value)} Equipos</span>
                           </div>
-                          <div className="h-1.5 w-full bg-[#0e312a] rounded-full overflow-hidden">
-                             <div className="h-full bg-[#00ff88] shadow-[0_0_10px_#00ff88]" style={{ width: `${stats.total > 0 ? (Number(os.value) / stats.total) * 100 : 0}%` }} />
+                          <div className="h-1.5 w-full bg-[#0e312a] rounded-full overflow-hidden shadow-inner">
+                             <div className="h-full bg-gradient-to-r from-[#00ff88] to-[#10ef87] shadow-[0_0_10px_#00ff88]" style={{ width: `${stats.total > 0 ? (Number(os.value) / stats.total) * 100 : 0}%` }} />
                           </div>
                        </div>
                      ))}
@@ -205,64 +205,65 @@ const DashboardPage: React.FC = () => {
          {/* Línea de Tiempo Profesional */}
          <div className="xl:col-span-4 space-y-10">
             <div className="card-matrix p-8 space-y-8 min-h-[500px] flex flex-col">
-               <div className="flex items-center justify-between">
+               <div className="flex items-center justify-between border-b border-[#0e312a]/30 pb-4">
                   <div className="flex items-center gap-3">
                      <Activity size={18} className="text-[#00ff88] animate-pulse" />
-                     <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] italic">Timeline de Alta</h3>
+                     <h3 className="text-[10px] font-semibold text-white uppercase tracking-[0.3em] italic">Timeline de Alta</h3>
                   </div>
                   <Clock size={16} className="text-[#4e564e]" />
                </div>
 
-               <div className="space-y-8 flex-1">
+               <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-2">
                   {stats.recientes.length === 0 ? (
                     <div className="text-center py-20 opacity-20">
                        <Database size={40} className="mx-auto mb-4" />
-                       <p className="text-[10px] font-black uppercase tracking-widest">Sincronizando Matriz...</p>
+                       <p className="text-[10px] font-semibold uppercase tracking-widest">Sincronizando Matriz...</p>
                     </div>
                   ) : stats.recientes.map((e: Equipo) => (
-                    <div key={e.id} className="relative pl-8 border-l border-[#0e312a] group hover:bg-[#00ff88]/[0.02] p-2 rounded-xl transition-all">
-                       <div className="absolute left-[-6px] top-3 w-3 h-3 rounded-full bg-[#0e312a] border-2 border-[#090a09] group-hover:bg-[#00ff88] group-hover:shadow-[0_0_15px_#00ff88] transition-all" />
+                    <div key={e.id} className="relative pl-8 border-l border-[#0e312a] group hover:bg-[#00ff88]/[0.05] p-3 rounded-2xl transition-all">
+                       <div className="absolute left-[-6px] top-6 w-3 h-3 rounded-full bg-[#0e312a] border-2 border-[#090a09] group-hover:bg-[#00ff88] group-hover:shadow-[0_0_15px_#00ff88] transition-all" />
                        <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                             <span className="text-xs font-black text-white italic group-hover:text-[#00ff88] transition-colors uppercase">{String(e.hostname)}</span>
-                             <span className="bg-[#00ff88]/5 text-[#00ff88] px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">FUNCONANDO</span>
+                             <span className="text-xs font-bold text-white italic group-hover:text-[#00ff88] transition-colors uppercase tracking-tight">{String(e.hostname)}</span>
+                             <span className="bg-[#00ff88]/10 text-[#00ff88] px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest border border-[#00ff88]/20">ACTIVO</span>
                           </div>
-                          <div className="flex items-center gap-3 text-zinc-500 font-bold">
-                             <div className="text-[9px] uppercase tracking-tighter">IP: {e.ip_local}</div>
-                             <div className="text-[9px] uppercase bg-[#121412] px-2 rounded-md italic">{e.username}</div>
+                          <div className="flex items-center gap-3 text-zinc-500 font-semibold">
+                             <div className="text-[9px] uppercase tracking-tighter opacity-70">IP: {e.ip_local}</div>
+                             <div className="text-[9px] uppercase bg-white/5 px-2 py-0.5 rounded italic text-white/50">{e.username}</div>
                           </div>
                        </div>
                     </div>
                   ))}
                </div>
 
-               <Link to="/inventario" className="w-full py-5 rounded-2xl bg-[#00ff88] text-black text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white transition-all text-center flex items-center justify-center gap-3">
+               <Link to="/inventario" className="w-full py-5 rounded-2xl bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black text-[10px] font-bold uppercase tracking-[0.3em] hover:scale-[1.02] transition-all text-center flex items-center justify-center gap-3 shadow-[0_4px_20px_rgba(0,255,136,0.3)] border-none">
                   <Database size={16} />
                   Gestión Completa
                </Link>
             </div>
 
             {/* Hub de Servicios */}
-            <div className="card-matrix p-8 bg-black/40 border-[#0e312a] relative overflow-hidden group">
+            <div className="card-matrix p-8 bg-black/40 border-[#0e312a]/50 relative overflow-hidden group">
                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-[#121412] border border-[#0e312a] flex items-center justify-center text-[#00ff88]">
+                  <div className="w-12 h-12 rounded-2xl bg-[#121412] border border-[#0e312a] flex items-center justify-center text-[#00ff88] shadow-inner">
                      <Server size={22} className="group-hover:rotate-12 transition-transform" />
                   </div>
                   <div>
-                     <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Servidor de Telemetría</h4>
-                     <p className="text-[9px] font-bold text-[#4e564e] uppercase tracking-widest">Estado: Operativo</p>
+                     <h4 className="text-[10px] font-semibold text-white uppercase tracking-[0.2em]">Servidor de Telemetría</h4>
+                     <p className="text-[9px] font-semibold text-[#4e564e] uppercase tracking-widest">Estado: Operativo</p>
                   </div>
                </div>
                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-[#0e312a]/20 border border-[#0e312a] text-center">
-                     <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1">Carga CPU</p>
-                     <span className="text-sm font-black text-[#00ff88] italic">12%</span>
+                  <div className="p-4 rounded-2xl bg-[#0e312a]/10 border border-[#0e312a]/30 text-center backdrop-blur-sm">
+                     <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1">Carga CPU</p>
+                     <span className="text-sm font-bold text-[#00ff88] italic text-glow">12%</span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-[#0e312a]/20 border border-[#0e312a] text-center">
-                     <p className="text-[8px] font-black text-[#4e564e] uppercase mb-1">Red (Gbps)</p>
-                     <span className="text-sm font-black text-[#00ff88] italic">1.4</span>
+                  <div className="p-4 rounded-2xl bg-[#0e312a]/10 border border-[#0e312a]/30 text-center backdrop-blur-sm">
+                     <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1">Red (Gbps)</p>
+                     <span className="text-sm font-bold text-[#00ff88] italic text-glow">1.4</span>
                   </div>
                </div>
+               <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-[#00ff88]/5 rounded-full blur-3xl group-hover:bg-[#00ff88]/10 transition-colors" />
             </div>
          </div>
       </div>

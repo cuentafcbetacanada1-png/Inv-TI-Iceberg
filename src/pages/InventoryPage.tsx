@@ -63,6 +63,7 @@ const InventoryPage: React.FC = () => {
     }
   }
 
+  // ... exportToExcel function (omitted for brevity, keeping same logic) ...
   const exportToExcel = async () => {
     if (equipos.length === 0) return toast.error('No hay datos para exportar')
     
@@ -170,31 +171,31 @@ const InventoryPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-in pb-10 font-sans text-white">
       {/* Header Sección Principal - Ultra Compacto */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#00ff88]/10 relative">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#0e312a]/50 relative">
         <div className="space-y-1">
-           <div className="flex items-center gap-2 text-[#00ff88] font-black text-[9px] uppercase tracking-[0.4em]">
+           <div className="flex items-center gap-2 text-[#00ff88] font-semibold text-[9px] uppercase tracking-[0.4em]">
               <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] shadow-[0_0_10px_#00ff88] animate-pulse" />
-              <span>Sistemas Iceberg</span>
+              <span className="text-glow">Sistemas Iceberg</span>
            </div>
-           <h1 className="text-2xl md:text-3xl font-black tracking-tighter italic uppercase leading-tight">
+           <h1 className="text-2xl md:text-3xl font-bold tracking-tighter italic uppercase leading-tight text-white/90">
               Gestión de <span className="text-[#00ff88]">Inventario</span>
            </h1>
         </div>
-        <div className="flex flex-wrap gap-2">
-           <button onClick={exportToExcel} className="px-5 py-3 rounded-lg bg-[#121412]/50 border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-2 font-bold text-[8px] uppercase tracking-widest backdrop-blur-xl group">
+        <div className="flex flex-wrap gap-2 text-white">
+           <button onClick={exportToExcel} className="px-5 py-3 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-2 font-semibold text-[8px] uppercase tracking-widest backdrop-blur-xl group hover:border-[#00ff88]/30">
               <FileSpreadsheet size={14} /> Reporte Excel
            </button>
-           <button onClick={handleRefresh} disabled={isRefreshing} className="px-5 py-3 rounded-lg bg-[#121412]/50 border border-[#0e312a] text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-2 font-bold text-[8px] uppercase tracking-widest">
+           <button onClick={handleRefresh} disabled={isRefreshing} className="px-5 py-3 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#4e564e] hover:text-[#00ff88] transition-all flex items-center gap-2 font-semibold text-[8px] uppercase tracking-widest hover:border-[#00ff88]/30">
               <RefreshCcw size={14} className={isRefreshing ? "animate-spin" : ""} /> Sync
            </button>
-           <Link to="/crear" className="btn-matrix flex items-center gap-2 px-6 py-3 text-[8px] font-bold uppercase tracking-widest">
+           <Link to="/crear" className="btn-matrix flex items-center gap-2 px-6 py-3 text-[9px] font-bold uppercase tracking-widest">
               <Plus size={16} /> Agregar
            </Link>
         </div>
       </header>
 
       {/* Barra de Búsqueda y Filtros Compacta */}
-      <div className="flex flex-col lg:flex-row gap-3 items-center bg-[#0d0f0d]/90 p-1.5 rounded-xl border border-[#0e312a]/30">
+      <div className="flex flex-col lg:flex-row gap-3 items-center bg-[#0d0f0d]/50 p-2 rounded-2xl border border-[#0e312a]/30 backdrop-blur-md">
          <div className="relative flex-1 w-full">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#4e564e]" />
             <input
@@ -208,16 +209,16 @@ const InventoryPage: React.FC = () => {
                 else params.delete('search');
                 navigate({ search: params.toString() }, { replace: true });
               }}
-              className="w-full bg-transparent border-none rounded-lg pl-10 pr-4 py-3 text-[10px] outline-none focus:ring-0 transition-all font-bold uppercase tracking-widest text-[#00ff88] placeholder:text-[#2a302a]"
+              className="w-full bg-transparent border-none rounded-lg pl-10 pr-4 py-3 text-[10px] outline-none focus:ring-0 transition-all font-semibold uppercase tracking-widest text-[#00ff88] placeholder:text-[#2a302a]"
             />
          </div>
-         <div className="flex items-center gap-1.5 p-1 bg-black/40 rounded-lg">
+         <div className="flex items-center gap-1.5 p-1 bg-black/40 rounded-xl">
             {['todos', 'laptops', 'desktops'].map(f => (
               <button 
                 key={f} onClick={() => setFilterTech(f as any)}
                 className={cn(
-                  "px-4 py-2 rounded-md text-[8px] font-black uppercase tracking-widest transition-all", 
-                  filterTech === f ? "bg-[#00ff88] text-black" : "text-[#4e564e] hover:text-white"
+                  "px-4 py-2 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all", 
+                  filterTech === f ? "bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black shadow-[0_0_15px_rgba(0,255,136,0.3)]" : "text-[#4e564e] hover:text-white"
                 )}
               > {f} </button>
             ))}
@@ -225,69 +226,70 @@ const InventoryPage: React.FC = () => {
       </div>
 
       {/* Grilla de Equipos - Densidad Alta */}
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-4 text-white">
          {isLoading && equipos.length === 0 ? (
            <div className="flex flex-col items-center justify-center py-16 space-y-3">
               <Loader2 size={32} className="text-[#00ff88] animate-spin opacity-30" />
-              <p className="text-[9px] font-black text-[#00ff88] uppercase tracking-[0.3em]">Accediendo...</p>
+              <p className="text-[9px] font-semibold text-[#00ff88] uppercase tracking-[0.3em] opacity-50">Accediendo...</p>
            </div>
          ) : filteredEquipos.length > 0 ? (
            filteredEquipos.map((e: any) => (
              <div key={e.id} onClick={() => navigate(`/editar/${e.id}`)} className="group relative">
-                <div className="card-matrix relative bg-[#090a09]/90 backdrop-blur-xl border border-[#0e312a]/50 hover:border-[#00ff88]/20 transition-all duration-200 p-4 rounded-xl overflow-hidden cursor-pointer shadow-lg">
-                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                <div className="card-matrix relative bg-[#090a09]/50 backdrop-blur-xl border border-[#0e312a]/30 hover:border-[#00ff88]/30 transition-all duration-300 p-5 rounded-3xl overflow-hidden cursor-pointer shadow-2xl">
+                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                       
                       {/* Identidad Compacta */}
-                      <div className="lg:col-span-4 flex items-center gap-4">
+                      <div className="lg:col-span-4 flex items-center gap-5">
                          <div className={cn(
-                           "w-12 h-12 rounded-lg flex items-center justify-center border transition-all",
-                           e.es_laptop ? "bg-amber-500/5 border-amber-500/10 text-amber-500" : "bg-[#00ff88]/5 border-[#00ff88]/10 text-[#00ff88]"
+                           "w-14 h-14 rounded-2xl flex items-center justify-center border transition-all shadow-inner",
+                           e.es_laptop ? "bg-amber-500/10 border-amber-500/20 text-amber-500" : "bg-[#00ff88]/10 border-[#00ff88]/20 text-[#00ff88]"
                          )}>
-                            {e.es_laptop ? <Laptop size={24} /> : <DesktopIcon size={24} />}
+                            {e.es_laptop ? <Laptop size={28} /> : <DesktopIcon size={28} />}
                          </div>
-                         <div className="space-y-0.5">
-                            <h3 className="text-lg font-black italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-none">{e.hostname}</h3>
+                         <div className="space-y-1">
+                            <h3 className="text-xl font-bold italic uppercase tracking-tighter group-hover:text-[#00ff88] transition-colors leading-none text-white/90">{e.hostname}</h3>
                             <div className="flex items-center gap-2">
-                               <span className="text-[7.5px] font-bold text-white/40 bg-white/5 px-1.5 py-0.5 rounded border border-white/5">{e.codigo_activo || 'S/N ACT'}</span>
-                               <span className="flex items-center gap-1 text-[7.5px] font-black text-[#00ff88] uppercase opacity-60"><div className="w-1 h-1 rounded-full bg-[#00ff88]" /> ON</span>
+                               <span className="text-[8px] font-semibold text-white/40 bg-white/5 px-2 py-0.5 rounded-lg border border-white/5 uppercase">{e.codigo_activo || 'S/N ACT'}</span>
+                               <span className="flex items-center gap-1.5 text-[8px] font-bold text-[#00ff88] uppercase opacity-80 backdrop-blur-sm px-2 py-0.5 rounded-lg bg-[#00ff88]/5 border border-[#00ff88]/10"><div className="w-1 h-1 rounded-full bg-[#00ff88] animate-pulse" /> ON</span>
                             </div>
                          </div>
                       </div>
 
                       {/* Hardware Densa */}
-                      <div className="lg:col-span-6 grid grid-cols-2 gap-3 lg:border-l lg:border-white/5 lg:pl-6 py-1">
+                      <div className="lg:col-span-6 grid grid-cols-2 gap-4 lg:border-l lg:border-[#0e312a]/30 lg:pl-8 py-2">
                          <div className="overflow-hidden">
-                            <p className="text-[7.5px] font-black text-[#4e564e] uppercase flex items-center gap-1.5"><Zap size={7} /> CPU</p>
-                            <p className="text-[9px] font-bold text-zinc-300 truncate uppercase leading-tight">{e.caracteristicas_pc || 'GENERIC'}</p>
+                            <p className="text-[8px] font-bold text-[#4e564e] uppercase flex items-center gap-2 mb-1"><Zap size={10} className="text-[#00ff88]/50" /> Procesador</p>
+                            <p className="text-[10px] font-semibold text-zinc-300 truncate uppercase leading-tight">{e.caracteristicas_pc || 'GENERIC'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[7.5px] font-black text-[#4e564e] uppercase">MEM / DISK</p>
-                            <p className="text-[9px] font-bold text-zinc-500 uppercase leading-tight">{e.memoria_ram || 'N/A'} • {e.disco || 'N/A'}</p>
+                            <p className="text-[8px] font-bold text-[#4e564e] uppercase mb-1">Capacidad RAM/HD</p>
+                            <p className="text-[10px] font-semibold text-zinc-500 uppercase leading-tight">{e.memoria_ram || 'N/A'} • {e.disco || 'N/A'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[7.5px] font-black text-[#00ff88]/50 uppercase">Environment</p>
-                            <p className="text-[9px] font-bold text-white/50 truncate uppercase leading-tight">{e.sistema_operativo}</p>
+                            <p className="text-[8px] font-bold text-[#00ff88]/50 uppercase mb-1">Sistema Nativo</p>
+                            <p className="text-[10px] font-semibold text-white/40 truncate uppercase leading-tight">{e.sistema_operativo}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[7.5px] font-black text-indigo-400/50 uppercase">Monitors</p>
-                            <p className="text-[8.5px] font-bold text-white/30 uppercase truncate leading-tight">{e.monitores || 'Internal'}</p>
+                            <p className="text-[8px] font-bold text-indigo-400/50 uppercase mb-1">Terminales Visuales</p>
+                            <p className="text-[9.5px] font-semibold text-white/20 uppercase truncate leading-tight italic">{e.monitores || 'Internal Storage'}</p>
                          </div>
                       </div>
 
                       {/* Acciones Mini */}
-                      <div className="lg:col-span-2 flex items-center justify-end gap-1.5">
-                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-9 h-9 bg-[#1a1c1a] hover:bg-[#00ff88] text-[#4e564e] hover:text-black rounded-lg transition-all border border-[#0e312a] flex items-center justify-center group/btn"><Edit2 size={14} /></button>
-                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-9 h-9 bg-[#1a1c1a] hover:bg-red-500 text-[#4e564e] hover:text-white rounded-lg transition-all border border-[#0e312a] flex items-center justify-center group/btn"><Trash2 size={14} /></button>
+                      <div className="lg:col-span-2 flex items-center justify-end gap-2">
+                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-10 h-10 bg-white/5 hover:bg-[#00ff88] text-white/30 hover:text-black rounded-xl transition-all border border-white/5 flex items-center justify-center backdrop-blur-md shadow-lg group/btn hover:scale-110 active:scale-95"><Edit2 size={16} /></button>
+                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-10 h-10 bg-white/5 hover:bg-red-500 text-white/30 hover:text-white rounded-xl transition-all border border-white/5 flex items-center justify-center backdrop-blur-md shadow-lg group/btn hover:scale-110 active:scale-95"><Trash2 size={16} /></button>
                       </div>
 
                    </div>
+                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#00ff88]/5 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
              </div>
            ))
          ) : (
-           <div className="flex flex-col items-center justify-center py-20 border border-dashed border-[#0e312a] rounded-2xl space-y-4 bg-[#090a09]/30">
-              <ShieldAlert size={40} className="text-[#0e312a]" />
-              <p className="text-[10px] font-black text-[#4e564e] uppercase tracking-[0.3em]">Cero equipos detectados</p>
+           <div className="flex flex-col items-center justify-center py-24 border border-dashed border-[#0e312a]/50 rounded-3xl space-y-5 bg-[#090a09]/20 backdrop-blur-sm">
+              <ShieldAlert size={48} className="text-[#0e312a]" />
+              <p className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-[0.4em] italic">Cero registros detectados en la matriz</p>
            </div>
          )}
       </div>
