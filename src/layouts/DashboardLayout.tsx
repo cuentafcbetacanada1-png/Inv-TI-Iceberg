@@ -19,13 +19,15 @@ import { cn } from '../lib/utils'
 const SidebarItem: React.FC<{ to: string, icon: React.ElementType, label: string, active?: boolean }> = ({ to, icon: Icon, label, active }) => (
   <Link to={to} className="block group mb-1.5">
     <div className={cn(
-      "flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-300",
+      "flex items-center gap-4 px-5 py-3 rounded-2xl transition-all duration-300",
       active
-        ? "sidebar-active-emerald font-bold scale-[1.02] shadow-blue-500/20"
-        : "text-slate-500 hover:text-blue-600 hover:bg-slate-50"
+        ? "bg-gradient-to-r from-blue-600 to-blue-300 text-white shadow-xl shadow-blue-200/50 scale-[1.02]"
+        : "text-slate-400 hover:text-blue-600 hover:bg-slate-50"
     )}>
-      <Icon className={cn("w-4 h-4", active ? "text-black" : "group-hover:text-blue-600")} />
-      <span className={cn("text-[10px] tracking-widest uppercase", active ? "font-semibold" : "font-medium")}>{label}</span>
+      <Icon className={cn("w-5 h-5 transition-colors", active ? "text-white" : "group-hover:text-blue-600")} />
+      <span className={cn("text-[11px] font-extrabold tracking-[0.15em] uppercase", active ? "text-white" : "text-slate-500/80")}>
+        {label}
+      </span>
     </div>
   </Link>
 )
@@ -56,14 +58,14 @@ const DashboardLayout: React.FC = () => {
   return (
     <div className="flex h-screen bg-[#f1f5f9] font-sans text-slate-900 overflow-hidden selection:bg-blue-100">
       {/* Sidebar Compacto */}
-      <aside className="w-60 bg-white border-r border-slate-200 flex flex-col p-6 z-30 shadow-xl">
-        <div className="flex items-center gap-2 mb-10 px-1">
-           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-[0_0_15px_var(--primary-glow)] rotate-3">
-              <Zap size={18} className="text-black" />
+      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col p-8 z-30 shadow-xl">
+        <div className="flex items-center gap-3 mb-12">
+           <div className="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 rotate-3">
+              <Zap size={22} className="text-white fill-white" />
            </div>
            <div className="flex flex-col">
-               <span className="text-lg font-bold tracking-tight uppercase text-blue-600 leading-none">Iceberg IT</span>
-               <span className="text-[8px] font-bold uppercase tracking-[0.4em] text-slate-400 mt-1">Enterprise Infra</span>
+               <span className="text-xl font-extrabold tracking-tight uppercase text-blue-600 leading-none">Iceberg IT</span>
+               <span className="text-[9px] font-extrabold uppercase tracking-[0.3em] text-slate-400 mt-1">Enterprise Infra</span>
            </div>
         </div>
 
