@@ -72,26 +72,26 @@ const EditEquipmentPage: React.FC = () => {
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-vh-60 space-y-4">
-      <Loader2 className="animate-spin text-[var(--primary)]" size={40} />
-      <span className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-widest italic animate-pulse">Sincronizando Ficha Técnica...</span>
+      <Loader2 className="animate-spin text-blue-600" size={40} />
+      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic animate-pulse">Sincronizando Ficha Técnica...</span>
     </div>
   )
 
   const InputField = ({ label, icon: Icon, value, onChange, colSpan = "col-span-1" }: any) => (
     <div className={cn("space-y-2", colSpan)}>
-      <label className="text-[10px] font-semibold text-[#889288] uppercase tracking-normal ml-1 flex items-center gap-2">
-        {Icon && <Icon size={12} className="text-[var(--primary)] opacity-70" />}
+      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+        {Icon && <Icon size={12} className="text-blue-600 opacity-70" />}
         {label}
       </label>
       {(label === 'Monitores' || label === 'Matriz de Monitores' || label === 'Visualizadores') ? (
         <textarea
-          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner min-h-[100px] resize-none"
+          className="w-full bg-white border border-slate-200 text-xs text-slate-800 px-4 py-3 rounded-xl outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-50 transition-all font-bold placeholder:text-slate-200 shadow-sm min-h-[100px] resize-none"
           value={value || ''}
           onChange={onChange}
         />
       ) : (
         <input
-          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner"
+          className="w-full bg-white border border-slate-200 text-xs text-slate-800 px-4 py-3 rounded-xl outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-50 transition-all font-bold placeholder:text-slate-200 shadow-sm"
           value={value || ''}
           onChange={onChange}
         />
@@ -100,17 +100,17 @@ const EditEquipmentPage: React.FC = () => {
   )
 
   return (
-    <div className="space-y-6 animate-in pb-12 font-sans text-white">
+    <div className="space-y-6 animate-in pb-12 font-sans text-slate-800">
       <header className="space-y-2">
          <button 
            onClick={() => navigate(-1)}
-           className="flex items-center gap-2 text-[11px] font-semibold text-[#4e564e] uppercase tracking-normal hover:text-[var(--primary)] transition-all group"
+           className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-normal hover:text-blue-600 transition-all group"
          >
             <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             Volver al Inventario
          </button>
-         <h1 className="text-2xl font-semibold tracking-tight uppercase text-white/95 leading-none">
-            Configurar Computador <span className="text-[var(--primary)]">{formData.hostname}</span>
+         <h1 className="text-2xl font-extrabold tracking-tight uppercase text-slate-800 leading-none">
+            Configurar Computador <span className="text-blue-600">{formData.hostname}</span>
          </h1>
       </header>
 
@@ -118,8 +118,8 @@ const EditEquipmentPage: React.FC = () => {
         
          {/* LADO IZQUIERDO: Identidad */}
          <div className="card-matrix p-6 relative overflow-hidden group shadow-xl">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--primary)]/5 blur-3xl rounded-full" />
-            <h3 className="text-[11px] font-semibold uppercase tracking-normal text-[var(--primary)]/70 mb-6 flex items-center gap-2">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-3xl rounded-full" />
+            <h3 className="text-[11px] font-semibold uppercase tracking-normal text-blue-600/70 mb-6 flex items-center gap-2">
                <Server size={14} /> Gestión de Identidad
             </h3>
             <div className="grid grid-cols-2 gap-5 relative z-10">
@@ -149,21 +149,21 @@ const EditEquipmentPage: React.FC = () => {
 
          {/* BOTONES DE ACCIÓN */}
          <div className="flex flex-col md:flex-row gap-4 col-span-1 lg:col-span-2 mt-2">
-            <div className="flex bg-[#0e312a]/20 p-1 rounded-2xl border border-[#0e312a]/50 flex-1">
+            <div className="flex bg-slate-50 p-1 rounded-2xl border border-slate-200 flex-1">
                <button 
                  type="button"
                  onClick={() => setFormData({...formData, es_laptop: true, es_escritorio: false})}
-                 className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-semibold text-[10px] uppercase tracking-widest", formData.es_laptop ? "bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]" : "text-[#4e564e]")}
+                 className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-bold text-[10px] uppercase tracking-widest", formData.es_laptop ? "bg-amber-500 text-white shadow-lg" : "text-slate-400")}
                > <Laptop size={16} /> Laptop </button>
                <button 
                  type="button"
                  onClick={() => setFormData({...formData, es_laptop: false, es_escritorio: true})}
-                 className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-semibold text-[10px] uppercase tracking-widest", formData.es_escritorio ? "bg-[var(--primary)] text-black shadow-[0_0_20px_rgba(0,255,136,0.3)]" : "text-[#4e564e]")}
+                 className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-bold text-[10px] uppercase tracking-widest", formData.es_escritorio ? "bg-blue-600 text-white shadow-lg" : "text-slate-400")}
                > <DesktopIcon size={16} /> Estación PC </button>
             </div>
             <button 
               type="submit" 
-              className="flex-[1.4] py-4 rounded-2xl bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-black text-xs font-semibold uppercase tracking-normal hover:scale-[1.01] active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,255,136,0.2)] flex items-center justify-center gap-3 group"
+              className="flex-[1.4] py-4 rounded-2xl bg-blue-600 text-white text-xs font-bold uppercase tracking-widest hover:bg-blue-700 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-3 group"
             >
                <Save size={18} className="group-hover:rotate-12 transition-transform" /> 
                Actualizar Matriz

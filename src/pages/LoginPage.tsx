@@ -46,35 +46,35 @@ const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#090a09] flex items-center justify-center p-6 relative overflow-hidden font-sans">
-      {/* Background Decor (Cyber Grid) */}
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden font-sans">
+      {/* Background Decor (Grid) */}
       <div className="absolute inset-0 opacity-10 pointer-events-none" 
-           style={{ backgroundImage: 'radial-gradient(#00ff88 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} />
-      <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#00ff88]/5 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-[#00ff88]/5 rounded-full blur-[120px] animate-pulse" />
+           style={{ backgroundImage: 'radial-gradient(#2563eb 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }} />
+      <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px]" />
+      <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px]" />
 
       <div className="w-full max-w-md relative z-10 animate-in">
         <div className="flex flex-col items-center mb-12">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#00ff88] to-[#10ef87] rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(0,255,136,0.5)] mb-6 rotate-3 hover:rotate-0 transition-all duration-700 group cursor-pointer">
-                <Zap size={32} className="text-black group-hover:scale-110 transition-transform" />
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl flex items-center justify-center shadow-xl mb-6 rotate-3 hover:rotate-0 transition-all duration-700 group cursor-pointer">
+                <Zap size={32} className="text-white group-hover:scale-110 transition-transform" />
             </div>
-            <h1 className="text-4xl font-bold text-white italic tracking-tighter uppercase mb-1 ">Iceberg <span className="text-[#00ff88]">IT</span></h1>
-            <p className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-[0.4em] mb-4">Consola de Mando v10.4</p>
-            <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-[#00ff88]/30 to-transparent rounded-full" />
+            <h1 className="text-4xl font-extrabold text-slate-800 italic tracking-tighter uppercase mb-1 ">Iceberg <span className="text-blue-600">IT</span></h1>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em] mb-4">Consola de Mando v10.4</p>
+            <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-blue-600/30 to-transparent rounded-full" />
         </div>
 
-        <div className="card-matrix p-10 border-[#0e312a]/50 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff88]/5 rounded-full blur-2xl group-hover:bg-[#00ff88]/10 transition-all" />
+        <div className="card-matrix bg-white p-10 border-slate-200 shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full blur-2xl group-hover:bg-blue-600/10 transition-all" />
           
-          <div className="mb-10 text-center text-white">
-            <h2 className="text-xs font-bold uppercase tracking-normal italic mb-2 text-white/90">Autenticación Requerida</h2>
-            <p className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-widest leading-relaxed">Sincronice sus credenciales corporativas para acceder al panel de control.</p>
+          <div className="mb-10 text-center">
+            <h2 className="text-xs font-bold uppercase tracking-normal italic mb-2 text-slate-800">Autenticación Requerida</h2>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">Sincronice sus credenciales corporativas para acceder al panel de control.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-2">
-              <label className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-normal ml-1 flex items-center gap-2">
-                <Mail size={10} className={isFocused === 'email' ? 'text-[#00ff88]' : ''} />
+              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-normal ml-1 flex items-center gap-2">
+                <Mail size={10} className={isFocused === 'email' ? 'text-blue-600' : ''} />
                 Correo Electrónico
               </label>
               <div className={cn(
@@ -85,22 +85,18 @@ const LoginPage: React.FC = () => {
                   type="email"
                   required
                   placeholder="admin@it-iceberg.com"
-                  className="w-full bg-[#090a09]/80 backdrop-blur-sm border border-[#0e312a]/50 text-sm text-white px-5 py-4 rounded-2xl outline-none focus:border-[#00ff88] transition-all font-semibold placeholder:text-[#0e312a] placeholder:italic"
+                  className="w-full bg-slate-50 border border-slate-200 text-sm text-slate-800 px-5 py-4 rounded-2xl outline-none focus:border-blue-600 transition-all font-bold placeholder:text-slate-200 placeholder:italic"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setIsFocused('email')}
                   onBlur={() => setIsFocused(null)}
                 />
-                <div className={cn(
-                    "absolute inset-0 bg-[#00ff88]/5 rounded-2xl transition-opacity pointer-events-none",
-                    isFocused === 'email' ? "opacity-100" : "opacity-0"
-                )} />
               </div>
             </div>
 
             <div className="space-y-2 pb-2">
-              <label className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-normal ml-1 flex items-center gap-2">
-                <Lock size={10} className={isFocused === 'pass' ? 'text-[#00ff88]' : ''} />
+              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-normal ml-1 flex items-center gap-2">
+                <Lock size={10} className={isFocused === 'pass' ? 'text-blue-600' : ''} />
                 Contraseña
               </label>
               <div className={cn(
@@ -111,26 +107,22 @@ const LoginPage: React.FC = () => {
                   type="password"
                   required
                   placeholder="••••••••"
-                  className="w-full bg-[#090a09]/80 backdrop-blur-sm border border-[#0e312a]/50 text-sm text-white px-5 py-4 rounded-2xl outline-none focus:border-[#00ff88] transition-all font-semibold placeholder:text-[#2a302a]"
+                  className="w-full bg-slate-50 border border-slate-200 text-sm text-slate-800 px-5 py-4 rounded-2xl outline-none focus:border-blue-600 transition-all font-bold placeholder:text-slate-200"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onFocus={() => setIsFocused('pass')}
                   onBlur={() => setIsFocused(null)}
                 />
-                <div className={cn(
-                    "absolute inset-0 bg-[#00ff88]/5 rounded-2xl transition-opacity pointer-events-none",
-                    isFocused === 'pass' ? "opacity-100" : "opacity-0"
-                )} />
               </div>
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full group/btn relative py-5 bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black rounded-2xl font-semibold text-xs uppercase tracking-normal transition-all duration-500 shadow-[0_4px_30px_rgba(0,255,136,0.3)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 border-none cursor-pointer"
+              className="w-full group/btn relative py-5 bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-normal transition-all duration-500 shadow-lg hover:bg-blue-700 active:scale-95 flex items-center justify-center gap-3 border-none cursor-pointer"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
                   Entrar a la Matriz
@@ -140,20 +132,20 @@ const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-10 pt-8 border-t border-[#0e312a]/50 flex items-center justify-center gap-6 opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700">
-             <ShieldCheck size={18} className="text-[#00ff88]" />
-             <Cpu size={18} className="text-[#00ff88]" />
-             <Globe size={18} className="text-[#00ff88]" />
+          <div className="mt-10 pt-8 border-t border-slate-100 flex items-center justify-center gap-6 opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700">
+             <ShieldCheck size={18} className="text-blue-600" />
+             <Cpu size={18} className="text-blue-600" />
+             <Globe size={18} className="text-blue-600" />
           </div>
         </div>
 
         <div className="mt-12 text-center space-y-2">
-            <p className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-normal italic">
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-normal italic">
                 ICEBERG LOGISTICS IT SOLUTIONS © 2026
             </p>
             <div className="flex items-center justify-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse shadow-[0_0_10px_#00ff88]" />
-                <span className="text-[8px] font-semibold text-[#00ff88] uppercase tracking-widest">Servidores Cifrados Activos</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(37,99,235,0.4)]" />
+                <span className="text-[8px] font-bold text-blue-600/40 uppercase tracking-widest">Servidores Cifrados Activos</span>
             </div>
         </div>
       </div>

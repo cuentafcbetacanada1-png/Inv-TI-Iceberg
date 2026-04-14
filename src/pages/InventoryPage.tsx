@@ -63,7 +63,6 @@ const InventoryPage: React.FC = () => {
     }
   }
 
-  // ... exportToExcel function (omitted for brevity, keeping same logic) ...
   const exportToExcel = async () => {
     if (equipos.length === 0) return toast.error('No hay datos para exportar')
     
@@ -169,34 +168,33 @@ const InventoryPage: React.FC = () => {
   })
 
   return (
-    <div className="space-y-6 animate-in pb-12 font-sans text-white">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-5 border-b border-[#0e312a]/50 relative">
+    <div className="space-y-6 animate-in pb-12 font-sans text-slate-900">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-5 border-b border-slate-200 relative">
         <div className="space-y-1">
-           <div className="flex items-center gap-2 text-[var(--primary)] font-semibold text-[10px] uppercase tracking-normal">
-              <div className="w-2 h-2 rounded-full bg-[var(--primary)] shadow-[0_0_12px_var(--primary)] animate-pulse" />
+           <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-normal">
+              <div className="w-2 h-2 rounded-full bg-blue-600 shadow-[0_0_12px_rgba(37,99,235,0.3)] animate-pulse" />
               <span className="">Red Iceberg</span>
            </div>
-           <h1 className="text-2xl font-bold tracking-tight uppercase text-white/95 leading-none">
-              Control de <span className="text-[var(--primary)]">Inventario</span>
+           <h1 className="text-2xl font-extrabold tracking-tight uppercase text-slate-800 leading-none">
+              Control de <span className="text-blue-600">Inventario</span>
            </h1>
         </div>
-        <div className="flex flex-wrap gap-2 text-white">
-           <button onClick={exportToExcel} className="px-6 py-2.5 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#889288] hover:text-[var(--primary)] transition-all flex items-center gap-2 font-semibold text-[10px] uppercase tracking-widest backdrop-blur-xl group hover:border-[var(--primary)]/30 shrink-0">
+        <div className="flex flex-wrap gap-2">
+           <button onClick={exportToExcel} className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest shadow-sm">
               <FileSpreadsheet size={16} /> Exportar Reporte
            </button>
-           <button onClick={handleRefresh} disabled={isRefreshing} className="px-6 py-2.5 rounded-xl bg-[#121412]/30 border border-[#0e312a]/30 text-[#889288] hover:text-[var(--primary)] transition-all flex items-center gap-2 font-semibold text-[10px] uppercase tracking-widest hover:border-[var(--primary)]/30 shrink-0">
+           <button onClick={handleRefresh} disabled={isRefreshing} className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest shadow-sm">
               <RefreshCcw size={16} className={isRefreshing ? "animate-spin" : ""} /> Sincronizar
            </button>
-           <Link to="/crear" className="btn-matrix flex items-center gap-2 px-8 py-2.5 text-[10px] font-semibold uppercase tracking-widest shrink-0 shadow-lg">
+           <Link to="/crear" className="btn-matrix flex items-center gap-2 px-8 py-2.5 text-[10px] font-bold uppercase tracking-widest shrink-0 shadow-lg bg-blue-600 text-white">
               <Plus size={18} /> Nuevo Equipo
            </Link>
         </div>
       </header>
 
-      {/* Barra de BÃºsqueda y Filtros */}
-      <div className="flex flex-col lg:flex-row gap-3 items-center bg-[#0d0f0d]/50 p-2 rounded-2xl border border-[#0e312a]/30 backdrop-blur-md">
+      <div className="flex flex-col lg:flex-row gap-3 items-center bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
          <div className="relative flex-1 w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#4e564e]" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               placeholder="IDENTIFICAR EQUIPO..."
               value={searchTerm}
@@ -208,74 +206,73 @@ const InventoryPage: React.FC = () => {
                 else params.delete('search');
                 navigate({ search: params.toString() }, { replace: true });
               }}
-              className="w-full bg-transparent border-none rounded-xl pl-10 pr-4 py-3 text-[11px] outline-none focus:ring-0 transition-all font-semibold uppercase tracking-widest text-[var(--primary)] placeholder:text-[#2a302a]"
+              className="w-full bg-transparent border-none rounded-xl pl-10 pr-4 py-3 text-[11px] outline-none focus:ring-0 transition-all font-bold uppercase tracking-widest text-blue-600 placeholder:text-slate-300"
             />
          </div>
-         <div className="flex items-center gap-1.5 p-1 bg-black/40 rounded-xl">
+         <div className="flex items-center gap-1.5 p-1 bg-slate-50 rounded-xl">
             {['todos', 'laptops', 'desktops'].map(f => (
               <button 
                 key={f} onClick={() => setFilterTech(f as any)}
                 className={cn(
-                  "px-5 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-widest transition-all", 
-                  filterTech === f ? "bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-black" : "text-[#4e564e] hover:text-white"
+                  "px-5 py-2 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all", 
+                  filterTech === f ? "bg-blue-600 text-white shadow-lg" : "text-slate-400 hover:text-slate-600"
                 )}
               > {f} </button>
             ))}
          </div>
       </div>
 
-      {/* Grilla de Equipos */}
-      <div className="grid grid-cols-1 gap-3 text-white">
+      <div className="grid grid-cols-1 gap-3">
          {isLoading && equipos.length === 0 ? (
            <div className="flex flex-col items-center justify-center py-20 space-y-4">
-              <div className="w-8 h-8 border-2 border-[var(--primary)]/20 border-t-[var(--primary)] rounded-full animate-spin shadow-[0_0_15px_var(--primary)20]" />
-              <p className="text-[10px] font-semibold text-[var(--primary)] uppercase tracking-[0.4em] opacity-50">Consultando Matriz...</p>
+              <div className="w-8 h-8 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin" />
+              <p className="text-[10px] font-bold text-blue-600 uppercase tracking-[0.4em] opacity-50">Consultando Matriz...</p>
            </div>
          ) : filteredEquipos.length > 0 ? (
            filteredEquipos.map((e: any) => (
              <div key={e.id} onClick={() => navigate(`/editar/${e.id}`)} className="group relative">
-                <div className="card-matrix relative bg-[#090a09]/40 backdrop-blur-md border border-[#0e312a]/30 hover:border-[var(--primary)]/50 transition-all p-4 rounded-2xl cursor-pointer">
+                <div className="card-matrix relative bg-white border border-slate-200 hover:border-blue-400 transition-all p-4 rounded-2xl cursor-pointer">
                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
                       
                       <div className="flex items-center gap-4 min-w-0 flex-1">
                          <div className={cn(
-                           "w-12 h-12 rounded-xl flex items-center justify-center border transition-all shrink-0 shadow-inner group-hover:scale-105 duration-300",
-                           e.es_laptop ? "bg-amber-500/10 border-amber-500/40 text-amber-500" : "bg-[var(--primary)]/10 border-[var(--primary)]/40 text-[var(--primary)]"
+                           "w-12 h-12 rounded-xl flex items-center justify-center border transition-all shrink-0 shadow-sm group-hover:scale-105 duration-300",
+                           e.es_laptop ? "bg-amber-50 border-amber-200 text-amber-600" : "bg-blue-50 border-blue-200 text-blue-600"
                          )}>
                             {e.es_laptop ? <Laptop size={20} /> : <DesktopIcon size={20} />}
                          </div>
                          <div className="space-y-0.5 min-w-0">
-                            <h3 className="text-base font-semibold uppercase tracking-tight group-hover:text-[var(--primary)] transition-colors leading-tight truncate">{e.hostname}</h3>
+                            <h3 className="text-base font-bold uppercase tracking-tight group-hover:text-blue-600 transition-colors leading-tight truncate text-slate-800">{e.hostname}</h3>
                             <div className="flex items-center gap-2">
-                               <span className="text-[10px] font-medium text-white/50 truncate tracking-wide">{e.username}</span>
-                               <span className="w-1 h-1 rounded-full bg-white/20" />
-                               <span className="text-[11px] font-semibold text-[var(--primary)] uppercase opacity-80 tracking-widest">SISTEMA ACTIVO</span>
+                               <span className="text-[10px] font-bold text-slate-400 truncate tracking-wide">{e.username}</span>
+                               <span className="w-1 h-1 rounded-full bg-slate-200" />
+                               <span className="text-[11px] font-bold text-blue-600 uppercase opacity-80 tracking-widest">SISTEMA ACTIVO</span>
                             </div>
                          </div>
                       </div>
 
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 items-center flex-[2.5] w-full lg:w-auto">
                          <div className="overflow-hidden">
-                             <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">Fabricante</p>
-                             <p className="text-[10px] font-medium text-zinc-300 truncate uppercase leading-tight">{e.marca_pc || 'GENÉRICO'} / {e.modelo || 'S/D'}</p>
+                             <p className="text-[8px] font-bold text-slate-400 uppercase mb-1 tracking-widest">Fabricante</p>
+                             <p className="text-[10px] font-bold text-slate-600 truncate uppercase leading-tight">{e.marca_pc || 'GENÉRICO'} / {e.modelo || 'S/D'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">Capacidad</p>
-                            <p className="text-[10px] font-medium text-zinc-200 truncate uppercase">{e.memoria_ram || 'S/D'} RAM • {e.disco || 'S/D'}</p>
+                            <p className="text-[8px] font-bold text-slate-400 uppercase mb-1 tracking-widest">Capacidad</p>
+                            <p className="text-[10px] font-bold text-slate-500 truncate uppercase">{e.memoria_ram || 'S/D'} RAM • {e.disco || 'S/D'}</p>
                          </div>
                          <div className="overflow-hidden">
-                            <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">IP de Red</p>
-                            <p className="text-[10px] font-semibold text-[var(--primary)]/70 truncate uppercase font-mono">{e.ip_local || 'PENDIENTE'}</p>
+                            <p className="text-[8px] font-bold text-slate-400 uppercase mb-1 tracking-widest">IP de Red</p>
+                            <p className="text-[10px] font-bold text-blue-600/80 truncate uppercase font-mono">{e.ip_local || 'PENDIENTE'}</p>
                          </div>
                          <div className="overflow-hidden hidden lg:block">
-                            <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">Identificador</p>
-                            <p className="text-[10px] font-medium text-zinc-500 uppercase truncate">{e.numero_serie || 'N/A'}</p>
+                            <p className="text-[8px] font-bold text-slate-400 uppercase mb-1 tracking-widest">Identificador</p>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase truncate">{e.numero_serie || 'N/A'}</p>
                          </div>
                       </div>
 
                       <div className="flex items-center justify-end gap-2.5 shrink-0">
-                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-9 h-9 bg-white/5 hover:bg-[var(--primary)] text-white/50 hover:text-black rounded-xl transition-all border border-white/5 flex items-center justify-center"><Edit2 size={14} /></button>
-                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-9 h-9 bg-white/5 hover:bg-red-500 text-white/50 hover:text-white rounded-xl transition-all border border-white/5 flex items-center justify-center"><Trash2 size={14} /></button>
+                         <button onClick={(evt) => { evt.stopPropagation(); navigate(`/editar/${e.id}`); }} className="w-9 h-9 bg-slate-50 hover:bg-blue-600 text-slate-400 hover:text-white rounded-xl transition-all border border-slate-100 flex items-center justify-center shadow-sm"><Edit2 size={14} /></button>
+                         <button onClick={(ev) => { ev.stopPropagation(); handleActionDelete(e.id, e.hostname); }} className="w-9 h-9 bg-slate-50 hover:bg-red-500 text-slate-400 hover:text-white rounded-xl transition-all border border-slate-100 flex items-center justify-center shadow-sm"><Trash2 size={14} /></button>
                       </div>
 
                    </div>
@@ -283,9 +280,9 @@ const InventoryPage: React.FC = () => {
              </div>
            ))
          ) : (
-           <div className="flex flex-col items-center justify-center py-20 border border-dashed border-[#0e312a]/50 rounded-3xl space-y-4 bg-[#090a09]/20 backdrop-blur-sm">
-              <ShieldAlert size={48} className="text-[#0e312a]" />
-              <p className="text-xs font-semibold text-[#4e564e] uppercase tracking-[0.5em] italic">Ninguna coincidencia encontrada</p>
+           <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-slate-200 rounded-3xl space-y-4 bg-white shadow-inner">
+              <ShieldAlert size={48} className="text-slate-200" />
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.5em] italic">Ninguna coincidencia encontrada</p>
            </div>
          )}
       </div>

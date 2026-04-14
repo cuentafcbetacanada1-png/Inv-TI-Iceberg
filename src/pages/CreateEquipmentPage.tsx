@@ -47,19 +47,19 @@ const CreateEquipmentPage: React.FC = () => {
 
   const InputField = ({ label, icon: Icon, value, onChange, colSpan = "col-span-1" }: any) => (
     <div className={cn("space-y-2", colSpan)}>
-      <label className="text-[10px] font-semibold text-[#889288] uppercase tracking-normal ml-1 flex items-center gap-2">
-        {Icon && <Icon size={12} className="text-[var(--primary)] opacity-70" />}
+      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+        {Icon && <Icon size={12} className="text-blue-600 opacity-70" />}
         {label}
       </label>
       {(label === 'Monitores' || label === 'Visualizadores') ? (
         <textarea
-          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner min-h-[100px] resize-none"
+          className="w-full bg-white border border-slate-200 text-xs text-slate-800 px-4 py-3 rounded-xl outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-50 transition-all font-bold placeholder:text-slate-200 shadow-sm min-h-[100px] resize-none"
           value={value}
           onChange={onChange}
         />
       ) : (
         <input
-          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner"
+          className="w-full bg-white border border-slate-200 text-xs text-slate-800 px-4 py-3 rounded-xl outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-50 transition-all font-bold placeholder:text-slate-200 shadow-sm"
           value={value}
           onChange={onChange}
         />
@@ -68,13 +68,13 @@ const CreateEquipmentPage: React.FC = () => {
   )
 
   return (
-    <div className="space-y-6 animate-in pb-12 font-sans text-white">
+    <div className="space-y-6 animate-in pb-12 font-sans text-slate-800">
       <header className="space-y-2">
-         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[11px] font-semibold text-[#4e564e] hover:text-[var(--primary)] transition-all uppercase tracking-normal group">
+         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[11px] font-bold text-slate-400 hover:text-blue-600 transition-all uppercase tracking-normal group">
             <ChevronLeft size={14} className="group-hover:-translate-x-1" /> Volver al Inventario
          </button>
-         <h1 className="text-2xl font-semibold tracking-tight uppercase text-white/95 leading-none">
-            Nuevo <span className="text-[var(--primary)]">Registro de Red</span>
+         <h1 className="text-2xl font-extrabold tracking-tight uppercase text-slate-800 leading-none">
+            Nuevo <span className="text-blue-600">Registro de Red</span>
          </h1>
       </header>
 
@@ -82,8 +82,8 @@ const CreateEquipmentPage: React.FC = () => {
         
          {/* LADO IZQUIERDO: Identidad */}
          <div className="card-matrix p-6 border-[#1a1c1a]/60 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--primary)]/5 blur-3xl rounded-full" />
-            <h3 className="text-[11px] font-semibold uppercase tracking-normal text-[var(--primary)]/70 mb-6 flex items-center gap-2">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-3xl rounded-full" />
+            <h3 className="text-[11px] font-semibold uppercase tracking-normal text-blue-600/70 mb-6 flex items-center gap-2">
                <Zap size={14} /> Identidad del Equipo
             </h3>
             <div className="grid grid-cols-2 gap-5 relative z-10">
@@ -112,7 +112,7 @@ const CreateEquipmentPage: React.FC = () => {
          </div>
 
          {/* BOTÓN DE ACCIÓN */}
-         <button type="submit" className="w-full py-4 mt-2 rounded-2xl bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-black text-xs font-semibold uppercase tracking-normal hover:scale-[1.01] active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,255,136,0.2)] flex items-center justify-center gap-3 col-span-1 lg:col-span-2 group">
+         <button type="submit" className="w-full py-4 mt-2 rounded-2xl bg-blue-600 text-white text-xs font-bold uppercase tracking-widest hover:bg-blue-700 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-3 col-span-1 lg:col-span-2 group">
             <Save size={18} className="group-hover:rotate-12 transition-transform" /> 
             Finalizar y Registrar
          </button>
