@@ -1,24 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 :root {
-  --primary: #00ff88;
-  --primary-glow: rgba(0, 255, 136, 0.3);
-  --bg-dark: #090a09;
-  --bg-card: #121412;
-  --text-main: #ffffff;
-  --text-sub: #889288;
-  --emerald: #0e312a;
-  --accent: #10ef87;
+  --primary: #10b981;
+  --primary-glow: rgba(16, 185, 129, 0.2);
+  --bg-dark: #050605;
+  --bg-card: #0d0f0d;
+  --text-main: #f8fafc;
+  --text-sub: #94a3b8;
+  --emerald: #064e3b;
+  --accent: #34d399;
 }
 
 body {
   background-color: var(--bg-dark);
   background-image:
-    radial-gradient(circle at 10% 10%, rgba(14, 49, 42, 0.4) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(0, 255, 136, 0.05) 0%, transparent 40%);
+    radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.03) 0%, transparent 40%);
   color: var(--text-main);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -26,50 +26,50 @@ body {
 }
 
 .card-matrix {
-  background: rgba(18, 20, 18, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 255, 136, 0.08);
-  border-radius: 1.5rem;
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  background: rgba(13, 15, 13, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+  border-radius: 1.25rem;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.5);
 }
 
 .card-matrix:hover {
-  border-color: rgba(0, 255, 136, 0.3);
-  box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
-  transform: translateY(-6px) scale(1.01);
+  border-color: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.05);
+  transform: translateY(-4px);
 }
 
 .btn-matrix {
   background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-  color: #000000;
-  font-weight: 700;
-  padding: 0.75rem 1.75rem;
-  border-radius: 1.25rem;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.7rem 1.75rem;
+  border-radius: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
   border: none;
   cursor: pointer;
 }
 
 .btn-matrix:hover {
-  box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
-  transform: translateY(-2px);
-  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  filter: brightness(1.05);
+  transform: translateY(-1px);
 }
 
 .sidebar-active-emerald {
-  background: linear-gradient(90deg, var(--primary) 0%, rgba(0, 255, 136, 0.1) 100%);
-  color: #000000 !important;
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--primary) !important;
+  border-left: 2px solid var(--primary);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -77,38 +77,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(var(--emerald), var(--primary));
+  background: var(--emerald);
   border-radius: 10px;
 }
 
-@keyframes neonPulse {
-  0% {
-    opacity: 0.4;
-    filter: blur(1px);
-  }
-
-  50% {
-    opacity: 1;
-    filter: blur(0px);
-  }
-
-  100% {
-    opacity: 0.4;
-    filter: blur(1px);
-  }
-}
-
-.neon-pulse {
-  animation: neonPulse 3s infinite ease-in-out;
-}
-
 .text-glow {
-  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
 }
 
 .glass-pill {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 9999px;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+﻿import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { 
   ChevronLeft, 
@@ -37,7 +37,7 @@ const EditEquipmentPage: React.FC = () => {
           if (data) {
             setFormData(data)
           } else {
-            toast.error('No se encontró el registro')
+            toast.error('No se encontrÃ³ el registro')
             navigate('/')
           }
         } catch (err) {
@@ -72,26 +72,26 @@ const EditEquipmentPage: React.FC = () => {
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-vh-60 space-y-4">
-      <Loader2 className="animate-spin text-[#00ff88]" size={40} />
-      <span className="text-[10px] font-black text-[#4e564e] uppercase tracking-widest italic animate-pulse">Sincronizando Ficha Técnica...</span>
+      <Loader2 className="animate-spin text-[var(--primary)]" size={40} />
+      <span className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-widest italic animate-pulse">Sincronizando Ficha TÃ©cnica...</span>
     </div>
   )
 
   const InputField = ({ label, icon: Icon, value, onChange, colSpan = "col-span-1" }: any) => (
     <div className={cn("space-y-2", colSpan)}>
       <label className="text-[10px] font-semibold text-[#889288] uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
-        {Icon && <Icon size={12} className="text-[#00ff88] opacity-70" />}
+        {Icon && <Icon size={12} className="text-[var(--primary)] opacity-70" />}
         {label}
       </label>
       {(label === 'Monitores' || label === 'Matriz de Monitores' || label === 'Visualizadores') ? (
         <textarea
-          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[#00ff88] focus:ring-1 focus:ring-[#00ff88]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner min-h-[100px] resize-none"
+          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner min-h-[100px] resize-none"
           value={value || ''}
           onChange={onChange}
         />
       ) : (
         <input
-          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[#00ff88] focus:ring-1 focus:ring-[#00ff88]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner"
+          className="w-full bg-[#090a09]/60 border border-[#0e312a]/40 text-xs text-white px-4 py-3 rounded-xl outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]/20 transition-all font-medium placeholder:text-[#0e312a]/50 shadow-inner"
           value={value || ''}
           onChange={onChange}
         />
@@ -104,13 +104,13 @@ const EditEquipmentPage: React.FC = () => {
       <header className="space-y-2">
          <button 
            onClick={() => navigate(-1)}
-           className="flex items-center gap-2 text-[9px] font-semibold text-[#4e564e] uppercase tracking-[0.2em] hover:text-[#00ff88] transition-all group"
+           className="flex items-center gap-2 text-[9px] font-semibold text-[#4e564e] uppercase tracking-[0.2em] hover:text-[var(--primary)] transition-all group"
          >
             <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
             Volver al Inventario
          </button>
-         <h1 className="text-2xl font-bold tracking-tight uppercase text-white/95 leading-none">
-            Configurar Computador <span className="text-[#00ff88]">{formData.hostname}</span>
+         <h1 className="text-2xl font-semibold tracking-tight uppercase text-white/95 leading-none">
+            Configurar Computador <span className="text-[var(--primary)]">{formData.hostname}</span>
          </h1>
       </header>
 
@@ -118,15 +118,15 @@ const EditEquipmentPage: React.FC = () => {
         
          {/* LADO IZQUIERDO: Identidad */}
          <div className="card-matrix p-6 relative overflow-hidden group shadow-xl">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff88]/5 blur-3xl rounded-full" />
-            <h3 className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#00ff88]/70 mb-6 flex items-center gap-2">
-               <Server size={14} /> Gestión de Identidad
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--primary)]/5 blur-3xl rounded-full" />
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--primary)]/70 mb-6 flex items-center gap-2">
+               <Server size={14} /> GestiÃ³n de Identidad
             </h3>
             <div className="grid grid-cols-2 gap-5 relative z-10">
                <InputField label="Hostname" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />
                <InputField label="Fabricante" value={formData.marca_pc} onChange={(e: any) => setFormData({...formData, marca_pc: e.target.value})} />
                <InputField label="Modelo" value={formData.modelo} onChange={(e: any) => setFormData({...formData, modelo: e.target.value})} />
-               <InputField label="Dirección IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
+               <InputField label="DirecciÃ³n IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
                <InputField icon={UserIcon} label="Administrador" value={formData.username} onChange={(e: any) => setFormData({...formData, username: e.target.value})} />
                <InputField icon={Tag} label="Serial Identificador" value={formData.numero_serie} onChange={(e: any) => setFormData({...formData, numero_serie: e.target.value})} colSpan="col-span-2" />
             </div>
@@ -136,7 +136,7 @@ const EditEquipmentPage: React.FC = () => {
          <div className="card-matrix p-6 relative overflow-hidden group border-[#1a1c1a]/60 shadow-xl">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full" />
             <h3 className="text-[11px] font-semibold uppercase tracking-[0.3em] text-indigo-400/70 mb-6 flex items-center gap-2">
-               <Cpu size={14} /> Parámetros de Hardware
+               <Cpu size={14} /> ParÃ¡metros de Hardware
             </h3>
             <div className="grid grid-cols-2 gap-5 relative z-10">
                <InputField icon={Cpu} label="RAM Instalada" value={formData.memoria_ram} onChange={(e: any) => setFormData({...formData, memoria_ram: e.target.value})} />
@@ -147,7 +147,7 @@ const EditEquipmentPage: React.FC = () => {
             </div>
          </div>
 
-         {/* BOTONES DE ACCIÓN */}
+         {/* BOTONES DE ACCIÃ“N */}
          <div className="flex flex-col md:flex-row gap-4 col-span-1 lg:col-span-2 mt-2">
             <div className="flex bg-[#0e312a]/20 p-1 rounded-2xl border border-[#0e312a]/50 flex-1">
                <button 
@@ -158,12 +158,12 @@ const EditEquipmentPage: React.FC = () => {
                <button 
                  type="button"
                  onClick={() => setFormData({...formData, es_laptop: false, es_escritorio: true})}
-                 className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-semibold text-[10px] uppercase tracking-widest", formData.es_escritorio ? "bg-[#00ff88] text-black shadow-[0_0_20px_rgba(0,255,136,0.3)]" : "text-[#4e564e]")}
-               > <DesktopIcon size={16} /> Estación PC </button>
+                 className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-semibold text-[10px] uppercase tracking-widest", formData.es_escritorio ? "bg-[var(--primary)] text-black shadow-[0_0_20px_rgba(0,255,136,0.3)]" : "text-[#4e564e]")}
+               > <DesktopIcon size={16} /> EstaciÃ³n PC </button>
             </div>
             <button 
               type="submit" 
-              className="flex-[1.4] py-4 rounded-2xl bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black text-xs font-bold uppercase tracking-[0.3em] hover:scale-[1.01] active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,255,136,0.2)] flex items-center justify-center gap-3 group"
+              className="flex-[1.4] py-4 rounded-2xl bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-black text-xs font-semibold uppercase tracking-[0.3em] hover:scale-[1.01] active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,255,136,0.2)] flex items-center justify-center gap-3 group"
             >
                <Save size={18} className="group-hover:rotate-12 transition-transform" /> 
                Actualizar Matriz

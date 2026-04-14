@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+﻿import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './store/authStore'
 import { supabase } from './services/supabase'
@@ -25,8 +25,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
              <div className="w-24 h-24 border-4 border-primary-500 border-t-transparent rounded-full animate-spin relative z-10" />
           </div>
           <div className="text-center space-y-2">
-             <p className="text-[10px] font-black text-primary-500 uppercase tracking-[0.5em] animate-pulse">Sincronizando Núcleo</p>
-             <p className="text-lg font-black text-white uppercase italic tracking-tighter">Iceberg Sistema v8.4</p>
+             <p className="text-[10px] font-semibold text-primary-500 uppercase tracking-[0.5em] animate-pulse">Sincronizando NÃºcleo</p>
+             <p className="text-lg font-semibold text-white uppercase italic tracking-tighter">Iceberg Sistema v8.4</p>
           </div>
         </div>
       </div>

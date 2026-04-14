@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+﻿import React, { useEffect, useState } from 'react'
 import { 
   Activity, 
   Clock, 
@@ -43,10 +43,10 @@ const LogsPage: React.FC = () => {
       const fecha = now.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
       const hora = now.toLocaleTimeString('es-ES')
 
-      // Generar logs basados en los equipos reales para que no salgan nombres genéricos
+      // Generar logs basados en los equipos reales para que no salgan nombres genÃ©ricos
       const realLogs: LogEntry[] = equipos.slice(0, 5).map((eq, index) => ({
         id: `real-${eq.id}`,
-        action: 'Sincronización de Activo',
+        action: 'SincronizaciÃ³n de Activo',
         details: `Equipo ${eq.hostname} ha sido agregado correctamente, por Administrador, ${dia}, ${fecha} y ${hora} exactamente`,
         user_email: 'admin@empresa.com',
         created_at: eq.created_at || new Date().toISOString(),
@@ -57,7 +57,7 @@ const LogsPage: React.FC = () => {
       const finalLogs = realLogs.length > 0 ? realLogs : [
         {
           id: '1',
-          action: 'Inicialización de Sistema',
+          action: 'InicializaciÃ³n de Sistema',
           details: 'Sistema de Inventario Iceberg iniciado. Esperando reportes del Agente...',
           user_email: 'sistema@iceberg.com.co',
           created_at: new Date().toISOString(),
@@ -101,11 +101,11 @@ const LogsPage: React.FC = () => {
     <div className="space-y-6 animate-in font-sans">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-5 border-b border-white/10">
         <div className="space-y-1">
-           <div className="flex items-center gap-2 text-[#00ff88] font-semibold text-[9px] uppercase tracking-[0.3em]">
+           <div className="flex items-center gap-2 text-[var(--primary)] font-semibold text-[9px] uppercase tracking-[0.3em]">
               <Activity size={10} />
-              <span>Centro de Auditoría</span>
+              <span>Centro de AuditorÃ­a</span>
            </div>
-           <h1 className="text-2xl font-bold text-white tracking-tight uppercase">Registros <span className="text-[#00ff88]">de Actividad</span></h1>
+           <h1 className="text-2xl font-semibold text-white tracking-tight uppercase">Registros <span className="text-[var(--primary)]">de Actividad</span></h1>
         </div>
         
         <div className="flex gap-1.5 bg-black/40 p-1 rounded-xl border border-white/5">
@@ -129,7 +129,7 @@ const LogsPage: React.FC = () => {
       <div className="space-y-3">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 opacity-50">
-              <div className="w-8 h-8 border-2 border-[#00ff88]/20 border-t-[#00ff88] rounded-full animate-spin shadow-[0_0_15px_#00ff8820]" />
+              <div className="w-8 h-8 border-2 border-[var(--primary)]/20 border-t-[var(--primary)] rounded-full animate-spin shadow-[0_0_15px_var(--primary)20]" />
               <span className="text-[10px] font-semibold uppercase tracking-[0.3em] animate-pulse">Consultando Logs...</span>
           </div>
         ) : filteredLogs.length === 0 ? (
@@ -145,7 +145,7 @@ const LogsPage: React.FC = () => {
             return (
               <div key={log.id} className={cn(
                 "card-matrix overflow-hidden transition-all duration-500 rounded-2xl",
-                isExpanded ? "bg-white/[0.05] border-[#00ff88]/40 shadow-2xl" : "hover:bg-white/[0.03]"
+                isExpanded ? "bg-white/[0.05] border-[var(--primary)]/40 shadow-2xl" : "hover:bg-white/[0.03]"
               )}>
                 <div 
                   className="p-4 cursor-pointer group"
@@ -174,14 +174,14 @@ const LogsPage: React.FC = () => {
                       <div className="flex items-center gap-5 justify-between md:justify-end shrink-0">
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2 text-[9px] font-semibold text-white/40 uppercase tracking-widest">
-                              <User size={10} className="text-[#00ff88]/60" /> {log.user_email}
+                              <User size={10} className="text-[var(--primary)]/60" /> {log.user_email}
                             </div>
                             <div className="flex items-center gap-2 text-[9px] font-semibold text-zinc-600 uppercase">
                               <Clock size={10} /> {new Date(log.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </div>
                         </div>
-                        <div className={cn("transition-transform duration-500 bg-white/5 p-1.5 rounded-lg", isExpanded ? "rotate-90 bg-[#00ff88]/20" : "group-hover:translate-x-1")}>
-                           <ArrowRight size={14} className={isExpanded ? "text-[#00ff88]" : "text-zinc-800"} />
+                        <div className={cn("transition-transform duration-500 bg-white/5 p-1.5 rounded-lg", isExpanded ? "rotate-90 bg-[var(--primary)]/20" : "group-hover:translate-x-1")}>
+                           <ArrowRight size={14} className={isExpanded ? "text-[var(--primary)]" : "text-zinc-800"} />
                         </div>
                       </div>
                   </div>
@@ -193,7 +193,7 @@ const LogsPage: React.FC = () => {
                 )}>
                   <div className="flex items-center justify-between gap-5">
                     <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest flex-1 leading-relaxed">
-                       <span className="text-[#00ff88]/40 mr-2">DETALLE:</span>
+                       <span className="text-[var(--primary)]/40 mr-2">DETALLE:</span>
                        "{log.details}"
                     </p>
                     {eqId && (
@@ -215,7 +215,7 @@ const LogsPage: React.FC = () => {
       <footer className="pt-6 flex justify-center">
          <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.02] border border-white/10 shadow-lg backdrop-blur-xl">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]" />
-            <span className="text-[9px] font-semibold text-white/30 uppercase tracking-[0.4em]">Auditando Tráfico en Vivo</span>
+            <span className="text-[9px] font-semibold text-white/30 uppercase tracking-[0.4em]">Auditando TrÃ¡fico en Vivo</span>
          </div>
       </footer>
     </div>
