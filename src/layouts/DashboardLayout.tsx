@@ -71,7 +71,7 @@ const DashboardLayout: React.FC = () => {
           <SidebarItem to="/" icon={LayoutDashboard} label="Panel General" active={location.pathname === '/'} />
           <SidebarItem to="/inventario" icon={Database} label="Inventario" active={location.pathname === '/inventario'} />
           <SidebarItem to="/crear" icon={PlusCircle} label="Registrar Equipo" active={location.pathname === '/crear'} />
-          <SidebarItem to="/logs" icon={Activity} label="AuditorÃ­a Red" active={location.pathname === '/logs'} />
+          <SidebarItem to="/logs" icon={Activity} label="Auditoría Red" active={location.pathname === '/logs'} />
         </nav>
         
         <div className="mt-auto space-y-4">
@@ -88,7 +88,7 @@ const DashboardLayout: React.FC = () => {
              className="flex items-center gap-2.5 px-4 py-2 text-[#4e564e] hover:text-[var(--primary)] transition-all w-full font-semibold text-[10px] uppercase tracking-[0.2em] group"
            >
               <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
-              <span>Cerrar SesiÃ³n</span>
+              <span>Cerrar Sesión</span>
            </button>
         </div>
       </aside>
@@ -101,7 +101,7 @@ const DashboardLayout: React.FC = () => {
                 {location.pathname === '/' ? 'Panel de Control' : 'Inventario de Activos'}
              </h2>
              <div className="h-4 w-px bg-[#0e312a]/50" />
-             <div className="flex items-center gap-3 bg-[#121412]/50 px-4 py-2 rounded-xl border border-[#0e312a]/30 w-72 focus-within:border-[var(--primary)]/40 transition-all backdrop-blur-xl">
+             <div className="flex items-center gap-3 bg-[#121412]/50 px-4 py-2 rounded-xl border border-[#0e312a]/30 w-64 md:w-72 focus-within:border-[var(--primary)]/40 transition-all backdrop-blur-xl">
                 <Search size={14} className="text-[#4e564e]" />
                 <input 
                   type="text" 
@@ -116,7 +116,7 @@ const DashboardLayout: React.FC = () => {
           <div className="flex items-center gap-4">
              <div className="flex items-center gap-2 px-3 py-1.5 bg-[#121412]/30 rounded-full border border-[#0e312a]/30 whitespace-nowrap">
                 <div className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse shadow-[0_0_10px_var(--primary)]" />
-                <span className="text-[9px] font-semibold uppercase tracking-widest text-[var(--primary)]">ConexiÃ³n Estable</span>
+                <span className="text-[9px] font-semibold uppercase tracking-widest text-[var(--primary)]">Conexión Estable</span>
              </div>
              <div className="w-10 h-10 flex items-center justify-center bg-zinc-900/40 rounded-xl border border-white/5 hover:border-[var(--primary)]/30 transition-colors cursor-pointer shadow-lg">
               <User size={18} className="text-[var(--primary)]" />

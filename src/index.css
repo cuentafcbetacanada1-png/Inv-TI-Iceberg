@@ -19,8 +19,8 @@ body {
     radial-gradient(circle at 90% 90%, rgba(0, 255, 136, 0.05) 0%, transparent 40%);
   color: var(--text-main);
   font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-weight: 700;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 13.5px;
   min-height: 100vh;
   margin: 0;
   -webkit-font-smoothing: antialiased;

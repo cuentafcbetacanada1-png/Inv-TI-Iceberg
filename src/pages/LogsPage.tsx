@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
   Activity, 
   Clock, 
@@ -43,10 +43,10 @@ const LogsPage: React.FC = () => {
       const fecha = now.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
       const hora = now.toLocaleTimeString('es-ES')
 
-      // Generar logs basados en los equipos reales para que no salgan nombres genÃ©ricos
-      const realLogs: LogEntry[] = equipos.slice(0, 5).map((eq, index) => ({
+      // Generar logs basados en los equipos reales para que no salgan nombres genéricos
+      const realLogs: LogEntry[] = equipos.map((eq, index) => ({
         id: `real-${eq.id}`,
-        action: 'SincronizaciÃ³n de Activo',
+        action: 'Sincronización de Activo',
         details: `Equipo ${eq.hostname} ha sido agregado correctamente, por Administrador, ${dia}, ${fecha} y ${hora} exactamente`,
         user_email: 'admin@empresa.com',
         created_at: eq.created_at || new Date().toISOString(),
@@ -57,7 +57,7 @@ const LogsPage: React.FC = () => {
       const finalLogs = realLogs.length > 0 ? realLogs : [
         {
           id: '1',
-          action: 'InicializaciÃ³n de Sistema',
+          action: 'Inicialización de Sistema',
           details: 'Sistema de Inventario Iceberg iniciado. Esperando reportes del Agente...',
           user_email: 'sistema@iceberg.com.co',
           created_at: new Date().toISOString(),
@@ -103,12 +103,12 @@ const LogsPage: React.FC = () => {
         <div className="space-y-1">
            <div className="flex items-center gap-2 text-[var(--primary)] font-semibold text-[11px] uppercase tracking-normal">
               <Activity size={10} />
-              <span>Centro de AuditorÃ­a</span>
+              <span>Centro de Auditoría</span>
            </div>
            <h1 className="text-2xl font-semibold text-white tracking-tight uppercase">Registros <span className="text-[var(--primary)]">de Actividad</span></h1>
         </div>
         
-        <div className="flex gap-1.5 bg-black/40 p-1 rounded-xl border border-white/5">
+        <div className="flex flex-wrap gap-1.5 bg-black/40 p-1 rounded-xl border border-white/5">
           {(['all', 'create', 'update', 'validate', 'system'] as const).map(t => (
             <button
               key={t}
@@ -215,7 +215,7 @@ const LogsPage: React.FC = () => {
       <footer className="pt-6 flex justify-center">
          <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.02] border border-white/10 shadow-lg backdrop-blur-xl">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]" />
-            <span className="text-[11px] font-semibold text-white/30 uppercase tracking-[0.4em]">Auditando TrÃ¡fico en Vivo</span>
+            <span className="text-[11px] font-semibold text-white/30 uppercase tracking-[0.4em]">Auditando Tráfico en Vivo</span>
          </div>
       </footer>
     </div>
