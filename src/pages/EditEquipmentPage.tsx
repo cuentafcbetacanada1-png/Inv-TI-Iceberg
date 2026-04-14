@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { 
   ChevronLeft, 
@@ -37,7 +37,7 @@ const EditEquipmentPage: React.FC = () => {
           if (data) {
             setFormData(data)
           } else {
-            toast.error('No se encontrÃ³ el registro')
+            toast.error('No se encontró el registro')
             navigate('/')
           }
         } catch (err) {
@@ -73,7 +73,7 @@ const EditEquipmentPage: React.FC = () => {
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-vh-60 space-y-4">
       <Loader2 className="animate-spin text-[var(--primary)]" size={40} />
-      <span className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-widest italic animate-pulse">Sincronizando Ficha TÃ©cnica...</span>
+      <span className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-widest italic animate-pulse">Sincronizando Ficha Técnica...</span>
     </div>
   )
 
@@ -120,13 +120,13 @@ const EditEquipmentPage: React.FC = () => {
          <div className="card-matrix p-6 relative overflow-hidden group shadow-xl">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--primary)]/5 blur-3xl rounded-full" />
             <h3 className="text-[11px] font-semibold uppercase tracking-normal text-[var(--primary)]/70 mb-6 flex items-center gap-2">
-               <Server size={14} /> GestiÃ³n de Identidad
+               <Server size={14} /> Gestión de Identidad
             </h3>
             <div className="grid grid-cols-2 gap-5 relative z-10">
                <InputField label="Hostname" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />
                <InputField label="Fabricante" value={formData.marca_pc} onChange={(e: any) => setFormData({...formData, marca_pc: e.target.value})} />
                <InputField label="Modelo" value={formData.modelo} onChange={(e: any) => setFormData({...formData, modelo: e.target.value})} />
-               <InputField label="DirecciÃ³n IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
+               <InputField label="Dirección IP Local" value={formData.ip_local} onChange={(e: any) => setFormData({...formData, ip_local: e.target.value})} />
                <InputField icon={UserIcon} label="Administrador" value={formData.username} onChange={(e: any) => setFormData({...formData, username: e.target.value})} />
                <InputField icon={Tag} label="Serial Identificador" value={formData.numero_serie} onChange={(e: any) => setFormData({...formData, numero_serie: e.target.value})} colSpan="col-span-2" />
             </div>
@@ -136,7 +136,7 @@ const EditEquipmentPage: React.FC = () => {
          <div className="card-matrix p-6 relative overflow-hidden group border-[#1a1c1a]/60 shadow-xl">
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full" />
             <h3 className="text-[11px] font-semibold uppercase tracking-normal text-indigo-400/70 mb-6 flex items-center gap-2">
-               <Cpu size={14} /> ParÃ¡metros de Hardware
+               <Cpu size={14} /> Parámetros de Hardware
             </h3>
             <div className="grid grid-cols-2 gap-5 relative z-10">
                <InputField icon={Cpu} label="RAM Instalada" value={formData.memoria_ram} onChange={(e: any) => setFormData({...formData, memoria_ram: e.target.value})} />
@@ -147,7 +147,7 @@ const EditEquipmentPage: React.FC = () => {
             </div>
          </div>
 
-         {/* BOTONES DE ACCIÃ“N */}
+         {/* BOTONES DE ACCIÓN */}
          <div className="flex flex-col md:flex-row gap-4 col-span-1 lg:col-span-2 mt-2">
             <div className="flex bg-[#0e312a]/20 p-1 rounded-2xl border border-[#0e312a]/50 flex-1">
                <button 
@@ -159,7 +159,7 @@ const EditEquipmentPage: React.FC = () => {
                  type="button"
                  onClick={() => setFormData({...formData, es_laptop: false, es_escritorio: true})}
                  className={cn("flex-1 py-3 flex items-center justify-center gap-2 rounded-xl transition-all font-semibold text-[10px] uppercase tracking-widest", formData.es_escritorio ? "bg-[var(--primary)] text-black shadow-[0_0_20px_rgba(0,255,136,0.3)]" : "text-[#4e564e]")}
-               > <DesktopIcon size={16} /> EstaciÃ³n PC </button>
+               > <DesktopIcon size={16} /> Estación PC </button>
             </div>
             <button 
               type="submit" 

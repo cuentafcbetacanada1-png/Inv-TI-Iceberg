@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
   ChevronLeft, 
@@ -111,7 +111,7 @@ const CreateEquipmentPage: React.FC = () => {
             </div>
          </div>
 
-         {/* BOTÃ“N DE ACCIÃ“N */}
+         {/* BOTÓN DE ACCIÓN */}
          <button type="submit" className="w-full py-4 mt-2 rounded-2xl bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-black text-xs font-semibold uppercase tracking-normal hover:scale-[1.01] active:scale-95 transition-all shadow-[0_10px_30px_rgba(0,255,136,0.2)] flex items-center justify-center gap-3 col-span-1 lg:col-span-2 group">
             <Save size={18} className="group-hover:rotate-12 transition-transform" /> 
             Finalizar y Registrar

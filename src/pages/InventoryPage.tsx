@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import ExcelJS from 'exceljs'
 import { saveAs } from 'file-saver'
@@ -46,7 +46,7 @@ const InventoryPage: React.FC = () => {
   }
 
   const handleActionDelete = async (id: string, name: string) => {
-    const confirmed = window.confirm(`ATENCIÃ“N: Â¿Desea eliminar definitivamente el equipo [${name}]?`);
+    const confirmed = window.confirm(`ATENCIÓN: ¿Desea eliminar definitivamente el equipo [${name}]?`);
     if (confirmed) {
       try {
         await deleteEquipo(id);
@@ -153,7 +153,7 @@ const InventoryPage: React.FC = () => {
     const data = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
     saveAs(data, `REPORTE_INVENTARIO_ICEBERG_${new Date().toISOString().split('T')[0]}.xlsx`)
     
-    toast.success('Excel Ejecutivo generado con Ã©xito')
+    toast.success('Excel Ejecutivo generado con éxito')
   }
 
   const filteredEquipos = equipos.filter(e => {
@@ -170,14 +170,13 @@ const InventoryPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-in pb-12 font-sans text-white">
-      {/* Header SecciÃ³n Principal */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-5 border-b border-[#0e312a]/50 relative">
         <div className="space-y-1">
            <div className="flex items-center gap-2 text-[var(--primary)] font-semibold text-[10px] uppercase tracking-normal">
               <div className="w-2 h-2 rounded-full bg-[var(--primary)] shadow-[0_0_12px_var(--primary)] animate-pulse" />
               <span className="">Red Iceberg</span>
            </div>
-           <h1 className="text-2xl font-semibold tracking-tight uppercase text-white/95 leading-none">
+           <h1 className="text-2xl font-bold tracking-tight uppercase text-white/95 leading-none">
               Control de <span className="text-[var(--primary)]">Inventario</span>
            </h1>
         </div>
@@ -258,11 +257,11 @@ const InventoryPage: React.FC = () => {
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 items-center flex-[2.5] w-full lg:w-auto">
                          <div className="overflow-hidden">
                              <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">Fabricante</p>
-                             <p className="text-[10px] font-medium text-zinc-300 truncate uppercase leading-tight">{e.marca_pc || 'GENÃ‰RICO'} / {e.modelo || 'S/D'}</p>
+                             <p className="text-[10px] font-medium text-zinc-300 truncate uppercase leading-tight">{e.marca_pc || 'GENÉRICO'} / {e.modelo || 'S/D'}</p>
                          </div>
                          <div className="overflow-hidden">
                             <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">Capacidad</p>
-                            <p className="text-[10px] font-medium text-zinc-200 truncate uppercase">{e.memoria_ram || 'S/D'} RAM â€¢ {e.disco || 'S/D'}</p>
+                            <p className="text-[10px] font-medium text-zinc-200 truncate uppercase">{e.memoria_ram || 'S/D'} RAM • {e.disco || 'S/D'}</p>
                          </div>
                          <div className="overflow-hidden">
                             <p className="text-[8px] font-semibold text-[#4e564e] uppercase mb-1 tracking-widest">IP de Red</p>
