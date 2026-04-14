@@ -201,7 +201,7 @@ const LogsPage: React.FC = () => {
                         onClick={(e) => { e.stopPropagation(); navigate(`/editar/${eqId}`); }}
                         className="btn-matrix px-6 py-2.5 flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.1em] shadow-lg shrink-0"
                       >
-                         <Edit2 size={12} /> Gestionar Nodo
+                         <Edit2 size={12} /> Gestionar Equipo
                       </button>
                     )}
                   </div>

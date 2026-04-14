@@ -84,7 +84,7 @@ const CreateEquipmentPage: React.FC = () => {
          <div className="card-matrix p-6 border-[#1a1c1a]/60 shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff88]/5 blur-3xl rounded-full" />
             <h3 className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#00ff88]/70 mb-6 flex items-center gap-2">
-               <Zap size={14} /> Identidad del Nodo
+               <Zap size={14} /> Identidad del Equipo
             </h3>
             <div className="grid grid-cols-2 gap-5 relative z-10">
                <InputField label="Hostname" value={formData.hostname} onChange={(e: any) => setFormData({...formData, hostname: e.target.value})} colSpan="col-span-2" />

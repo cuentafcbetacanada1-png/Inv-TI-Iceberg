@@ -110,7 +110,7 @@ const EditEquipmentPage: React.FC = () => {
             Volver al Inventario
          </button>
          <h1 className="text-2xl font-bold tracking-tight uppercase text-white/95 leading-none">
-            Configurar Nodo <span className="text-[#00ff88]">{formData.hostname}</span>
+            Configurar Computador <span className="text-[#00ff88]">{formData.hostname}</span>
          </h1>
       </header>
 

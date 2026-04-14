@@ -106,7 +106,7 @@ const DashboardPage: React.FC = () => {
     <div className="space-y-6 pb-12 animate-in font-sans text-white">
       {/* Indicadores Principales */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-         <ResumenCard label="Activos Totales" value={stats.total} sub="Nodos Conectados" icon={Monitor} color="text-[#00ff88]" />
+         <ResumenCard label="Activos Totales" value={stats.total} sub="Equipos Conectados" icon={Monitor} color="text-[#00ff88]" />
          <ResumenCard label="Terminales Laptops" value={stats.laptops} sub="Flota en Red" icon={Laptop} color="text-amber-500" />
          <ResumenCard label="Consistencia" value={`${stats.salud}%`} sub="Estado General" icon={ShieldCheck} color="text-indigo-500" />
          <ResumenCard label="Estado Red" value="Estable" sub="Latencia: 14ms" icon={Zap} color="text-[#00ff88]" />
@@ -186,7 +186,7 @@ const DashboardPage: React.FC = () => {
                        <div key={os.name} className="space-y-2">
                           <div className="flex justify-between text-[10px] font-semibold uppercase tracking-widest leading-none">
                              <span className="text-white/80">{String(os.name)}</span>
-                             <span className="text-[#00ff88]">{Number(os.value)} Nodos</span>
+                             <span className="text-[#00ff88]">{Number(os.value)} Equipos</span>
                           </div>
                           <div className="h-1.5 w-full bg-[#0e312a] rounded-full overflow-hidden">
                              <div className="h-full bg-gradient-to-r from-[#00ff88] to-[#10ef87]" style={{ width: `${stats.total > 0 ? (Number(os.value) / stats.total) * 100 : 0}%` }} />

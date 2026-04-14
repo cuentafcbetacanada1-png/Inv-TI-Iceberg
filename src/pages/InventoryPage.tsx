@@ -189,7 +189,7 @@ const InventoryPage: React.FC = () => {
               <RefreshCcw size={16} className={isRefreshing ? "animate-spin" : ""} /> Sincronizar
            </button>
            <Link to="/crear" className="btn-matrix flex items-center gap-2 px-8 py-2.5 text-[10px] font-semibold uppercase tracking-widest shrink-0 shadow-lg">
-              <Plus size={18} /> Nuevo Nodo
+              <Plus size={18} /> Nuevo Equipo
            </Link>
         </div>
       </header>
