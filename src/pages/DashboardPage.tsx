@@ -50,11 +50,11 @@ const ResumenCard: React.FC<{ label: string, value: string | number, sub: string
          <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center border", color.replace('text-', 'bg-').concat('/10 border-').concat(color.replace('text-', '')))}>
             <Icon size={14} className={color} />
          </div>
-         <span className="text-[10px] font-semibold text-[#889288] uppercase tracking-[0.2em]">{label}</span>
+         <span className="text-[10px] font-semibold text-[#889288] uppercase tracking-normal">{label}</span>
       </div>
       <div className="relative z-10 mt-2">
          <h4 className="text-2xl font-semibold text-white tracking-tight mb-0.5 font-sans leading-none">{value}</h4>
-         <p className="text-[9px] font-semibold text-[#4e564e] uppercase tracking-widest flex items-center gap-1.5 mt-1">
+         <p className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-widest flex items-center gap-1.5 mt-1">
             <ArrowUpRight size={10} className="text-[var(--primary)]" />
             {sub}
          </p>
@@ -119,7 +119,7 @@ const DashboardPage: React.FC = () => {
                <div className="absolute right-0 top-0 w-64 h-64 bg-[var(--primary)]/5 blur-[100px]" />
                <div className="flex items-center justify-between relative z-10">
                   <div className="space-y-1">
-                     <h3 className="text-[10px] font-semibold text-[#889288] uppercase tracking-[0.3em]">Crecimiento de Red</h3>
+                     <h3 className="text-[10px] font-semibold text-[#889288] uppercase tracking-normal">Crecimiento de Red</h3>
                      <h2 className="text-xl font-semibold text-white tracking-tight uppercase">Historial LogÃ­stico</h2>
                   </div>
                </div>
@@ -148,7 +148,7 @@ const DashboardPage: React.FC = () => {
                <div className="card-matrix p-6 space-y-5">
                   <div className="flex items-center gap-3">
                      <PieIcon size={16} className="text-indigo-500" />
-                     <h3 className="text-[10px] font-semibold text-white/70 uppercase tracking-[0.2em]">Top Fabricantes</h3>
+                     <h3 className="text-[10px] font-semibold text-white/70 uppercase tracking-normal">Top Fabricantes</h3>
                   </div>
                   <div className="h-40 flex items-center justify-center">
                      <ResponsiveContainer width="100%" height="100%">
@@ -166,8 +166,8 @@ const DashboardPage: React.FC = () => {
                      {stats.brandData.slice(0, 4).map((b, i) => (
                        <div key={b.name} className="flex items-center gap-2 min-w-0">
                           <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                          <span className="text-[9px] font-semibold text-white/80 uppercase tracking-tight truncate">{b.name}</span>
-                          <span className="text-[9px] font-semibold text-[#4e564e] ml-auto">
+                          <span className="text-[11px] font-semibold text-white/80 uppercase tracking-tight truncate">{b.name}</span>
+                          <span className="text-[11px] font-semibold text-[#4e564e] ml-auto">
                              {stats.total > 0 ? Math.round((Number(b.value) / stats.total) * 100) : 0}%
                           </span>
                        </div>
@@ -179,7 +179,7 @@ const DashboardPage: React.FC = () => {
                <div className="card-matrix p-6 space-y-5">
                   <div className="flex items-center gap-3">
                      <LayoutGrid size={16} className="text-emerald-500" />
-                     <h3 className="text-[10px] font-semibold text-white/70 uppercase tracking-[0.2em]">Sistemas Operativos</h3>
+                     <h3 className="text-[10px] font-semibold text-white/70 uppercase tracking-normal">Sistemas Operativos</h3>
                   </div>
                   <div className="space-y-4 pt-1">
                      {stats.osData.map((os) => (
@@ -204,7 +204,7 @@ const DashboardPage: React.FC = () => {
                <div className="flex items-center justify-between border-b border-[#0e312a]/30 pb-3">
                   <div className="flex items-center gap-2">
                      <Activity size={16} className="text-[var(--primary)] animate-pulse" />
-                     <h3 className="text-[10px] font-semibold text-white uppercase tracking-[0.2em]">Ãšltimos Reportes</h3>
+                     <h3 className="text-[10px] font-semibold text-white uppercase tracking-normal">Ãšltimos Reportes</h3>
                   </div>
                   <Clock size={16} className="text-[#4e564e]" />
                </div>
@@ -213,7 +213,7 @@ const DashboardPage: React.FC = () => {
                   {stats.recientes.length === 0 ? (
                     <div className="text-center py-20 opacity-20">
                        <Database size={32} className="mx-auto mb-3" />
-                       <p className="text-[9px] font-semibold uppercase tracking-widest">Sincronizando...</p>
+                       <p className="text-[11px] font-semibold uppercase tracking-widest">Sincronizando...</p>
                     </div>
                   ) : stats.recientes.map((e: Equipo) => (
                     <div key={e.id} className="relative pl-5 border-l border-slate-800 group hover:bg-emerald-500/[0.03] p-2 rounded-xl transition-all">
@@ -223,7 +223,7 @@ const DashboardPage: React.FC = () => {
                              <span className="text-[11px] font-semibold text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight truncate">{String(e.hostname)}</span>
                              <span className="bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded-md text-[7px] font-semibold uppercase tracking-widest border border-emerald-500/20">ACTIVO</span>
                           </div>
-                          <div className="flex items-center gap-2 text-[#889288] font-medium text-[9px]">
+                          <div className="flex items-center gap-2 text-[#889288] font-medium text-[11px]">
                              <div className="uppercase tracking-wide truncate">{e.username}</div>
                              <div className="w-1 h-1 rounded-full bg-zinc-800" />
                              <div className="shrink-0 font-mono text-[#4e564e]">{e.ip_local}</div>
@@ -247,7 +247,7 @@ const DashboardPage: React.FC = () => {
                      <Server size={18} className="group-hover:rotate-12 transition-transform" />
                   </div>
                   <div>
-                     <h4 className="text-[10px] font-semibold text-white uppercase tracking-[0.2em]">Conectividad</h4>
+                     <h4 className="text-[10px] font-semibold text-white uppercase tracking-normal">Conectividad</h4>
                      <p className="text-[8px] font-medium text-[#889288] uppercase tracking-widest">Protocolo: Iceberg-SSL</p>
                   </div>
                </div>

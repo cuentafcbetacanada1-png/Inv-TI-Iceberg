@@ -101,7 +101,7 @@ const LogsPage: React.FC = () => {
     <div className="space-y-6 animate-in font-sans">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-5 border-b border-white/10">
         <div className="space-y-1">
-           <div className="flex items-center gap-2 text-[var(--primary)] font-semibold text-[9px] uppercase tracking-[0.3em]">
+           <div className="flex items-center gap-2 text-[var(--primary)] font-semibold text-[11px] uppercase tracking-normal">
               <Activity size={10} />
               <span>Centro de AuditorÃ­a</span>
            </div>
@@ -114,7 +114,7 @@ const LogsPage: React.FC = () => {
               key={t}
               onClick={() => setFilter(t)}
               className={cn(
-                "px-4 py-2 rounded-lg text-[9px] font-semibold uppercase tracking-widest transition-all border",
+                "px-4 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-widest transition-all border",
                 filter === t 
                    ? "bg-white/10 text-white border-white/20 shadow-lg" 
                    : "text-zinc-600 hover:text-zinc-400 border-transparent shadow-none"
@@ -130,7 +130,7 @@ const LogsPage: React.FC = () => {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 opacity-50">
               <div className="w-8 h-8 border-2 border-[var(--primary)]/20 border-t-[var(--primary)] rounded-full animate-spin shadow-[0_0_15px_var(--primary)20]" />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] animate-pulse">Consultando Logs...</span>
+              <span className="text-[10px] font-semibold uppercase tracking-normal animate-pulse">Consultando Logs...</span>
           </div>
         ) : filteredLogs.length === 0 ? (
           <div className="card-matrix p-16 text-center border-dashed border-white/10">
@@ -173,10 +173,10 @@ const LogsPage: React.FC = () => {
                       
                       <div className="flex items-center gap-5 justify-between md:justify-end shrink-0">
                         <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 text-[9px] font-semibold text-white/40 uppercase tracking-widest">
+                            <div className="flex items-center gap-2 text-[11px] font-semibold text-white/40 uppercase tracking-widest">
                               <User size={10} className="text-[var(--primary)]/60" /> {log.user_email}
                             </div>
-                            <div className="flex items-center gap-2 text-[9px] font-semibold text-zinc-600 uppercase">
+                            <div className="flex items-center gap-2 text-[11px] font-semibold text-zinc-600 uppercase">
                               <Clock size={10} /> {new Date(log.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                             </div>
                         </div>
@@ -199,7 +199,7 @@ const LogsPage: React.FC = () => {
                     {eqId && (
                       <button 
                         onClick={(e) => { e.stopPropagation(); navigate(`/editar/${eqId}`); }}
-                        className="btn-matrix px-6 py-2.5 flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.1em] shadow-lg shrink-0"
+                        className="btn-matrix px-6 py-2.5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] shadow-lg shrink-0"
                       >
                          <Edit2 size={12} /> Gestionar Equipo
                       </button>
@@ -215,7 +215,7 @@ const LogsPage: React.FC = () => {
       <footer className="pt-6 flex justify-center">
          <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.02] border border-white/10 shadow-lg backdrop-blur-xl">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]" />
-            <span className="text-[9px] font-semibold text-white/30 uppercase tracking-[0.4em]">Auditando TrÃ¡fico en Vivo</span>
+            <span className="text-[11px] font-semibold text-white/30 uppercase tracking-[0.4em]">Auditando TrÃ¡fico en Vivo</span>
          </div>
       </footer>
     </div>

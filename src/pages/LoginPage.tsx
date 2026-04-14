@@ -58,7 +58,7 @@ const LoginPage: React.FC = () => {
             <div className="w-16 h-16 bg-gradient-to-br from-[#00ff88] to-[#10ef87] rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(0,255,136,0.5)] mb-6 rotate-3 hover:rotate-0 transition-all duration-700 group cursor-pointer">
                 <Zap size={32} className="text-black group-hover:scale-110 transition-transform" />
             </div>
-            <h1 className="text-4xl font-semibold text-white italic tracking-tighter uppercase mb-1 text-glow">Iceberg <span className="text-[#00ff88]">IT</span></h1>
+            <h1 className="text-4xl font-semibold text-white italic tracking-tighter uppercase mb-1 ">Iceberg <span className="text-[#00ff88]">IT</span></h1>
             <p className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-[0.4em] mb-4">Consola de Mando v10.4</p>
             <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-[#00ff88]/30 to-transparent rounded-full" />
         </div>
@@ -67,13 +67,13 @@ const LoginPage: React.FC = () => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff88]/5 rounded-full blur-2xl group-hover:bg-[#00ff88]/10 transition-all" />
           
           <div className="mb-10 text-center text-white">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.3em] italic mb-2 text-white/90">AutenticaciÃ³n Requerida</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-normal italic mb-2 text-white/90">AutenticaciÃ³n Requerida</h2>
             <p className="text-[10px] font-semibold text-[#4e564e] uppercase tracking-widest leading-relaxed">Sincronice sus credenciales corporativas para acceder al panel de control.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-2">
-              <label className="text-[9px] font-semibold text-[#4e564e] uppercase tracking-[0.3em] ml-1 flex items-center gap-2">
+              <label className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-normal ml-1 flex items-center gap-2">
                 <Mail size={10} className={isFocused === 'email' ? 'text-[#00ff88]' : ''} />
                 Correo ElectrÃ³nico
               </label>
@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
             </div>
 
             <div className="space-y-2 pb-2">
-              <label className="text-[9px] font-semibold text-[#4e564e] uppercase tracking-[0.3em] ml-1 flex items-center gap-2">
+              <label className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-normal ml-1 flex items-center gap-2">
                 <Lock size={10} className={isFocused === 'pass' ? 'text-[#00ff88]' : ''} />
                 ContraseÃ±a
               </label>
@@ -127,7 +127,7 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full group/btn relative py-5 bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black rounded-2xl font-semibold text-xs uppercase tracking-[0.3em] transition-all duration-500 shadow-[0_4px_30px_rgba(0,255,136,0.3)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 border-none cursor-pointer"
+              className="w-full group/btn relative py-5 bg-gradient-to-r from-[#00ff88] to-[#10ef87] text-black rounded-2xl font-semibold text-xs uppercase tracking-normal transition-all duration-500 shadow-[0_4px_30px_rgba(0,255,136,0.3)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 border-none cursor-pointer"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
@@ -148,7 +148,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="mt-12 text-center space-y-2">
-            <p className="text-[9px] font-semibold text-[#4e564e] uppercase tracking-[0.2em] italic">
+            <p className="text-[11px] font-semibold text-[#4e564e] uppercase tracking-normal italic">
                 ICEBERG LOGISTICS IT SOLUTIONS Â© 2026
             </p>
             <div className="flex items-center justify-center gap-2">

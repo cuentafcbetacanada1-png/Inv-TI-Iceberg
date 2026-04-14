@@ -173,9 +173,9 @@ const InventoryPage: React.FC = () => {
       {/* Header SecciÃ³n Principal */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-5 border-b border-[#0e312a]/50 relative">
         <div className="space-y-1">
-           <div className="flex items-center gap-2 text-[var(--primary)] font-semibold text-[10px] uppercase tracking-[0.3em]">
+           <div className="flex items-center gap-2 text-[var(--primary)] font-semibold text-[10px] uppercase tracking-normal">
               <div className="w-2 h-2 rounded-full bg-[var(--primary)] shadow-[0_0_12px_var(--primary)] animate-pulse" />
-              <span className="text-glow">Red Iceberg</span>
+              <span className="">Red Iceberg</span>
            </div>
            <h1 className="text-2xl font-semibold tracking-tight uppercase text-white/95 leading-none">
               Control de <span className="text-[var(--primary)]">Inventario</span>
@@ -217,7 +217,7 @@ const InventoryPage: React.FC = () => {
               <button 
                 key={f} onClick={() => setFilterTech(f as any)}
                 className={cn(
-                  "px-5 py-2 rounded-lg text-[9px] font-semibold uppercase tracking-widest transition-all", 
+                  "px-5 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-widest transition-all", 
                   filterTech === f ? "bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-black" : "text-[#4e564e] hover:text-white"
                 )}
               > {f} </button>
@@ -250,7 +250,7 @@ const InventoryPage: React.FC = () => {
                             <div className="flex items-center gap-2">
                                <span className="text-[10px] font-medium text-white/50 truncate tracking-wide">{e.username}</span>
                                <span className="w-1 h-1 rounded-full bg-white/20" />
-                               <span className="text-[9px] font-semibold text-[var(--primary)] uppercase opacity-80 tracking-widest">SISTEMA ACTIVO</span>
+                               <span className="text-[11px] font-semibold text-[var(--primary)] uppercase opacity-80 tracking-widest">SISTEMA ACTIVO</span>
                             </div>
                          </div>
                       </div>
